@@ -11,7 +11,7 @@ public class MapTile
 
     public Vector3[] cornerVertices;
 
-    //private bool isOccupied;
+    private bool isOccupied;
     private int contentCode;
     private GameObject actor;
 
@@ -27,27 +27,9 @@ public class MapTile
         x = j;
     }
 
-    //--------------------
-    //  Public Functions  
-    //--------------------
-    //public void drawBorder()
-    //{
-    //    lr.loop = true;
-    //    lr.startWidth = 0.01f;
-    //    lr.endWidth = 0.01f;
-
-    //    lr.positionCount = 4;
-    //    lr.SetPositions(cornerVertices);
-
-
-    //    //Debug.Log("bitchasshoe");
-   
-    //}
-
-
-    ////////////////
-    //  GETTERS   //
-    ////////////////
+    //----------------------
+    //  GETTERS & SETTERS  
+    //----------------------
     public int getX()
     {
         return this.x;
@@ -56,10 +38,6 @@ public class MapTile
     {
         return this.y;
     }
-
-    ////////////////
-    //  SETTERS   //
-    ////////////////
     public void setX(int i)
     {
         this.x = i;

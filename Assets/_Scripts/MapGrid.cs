@@ -4,9 +4,8 @@ using UnityEngine;
 public class MapGrid : MonoBehaviour
 {
 
-    public int rows = 1;
-    public int columns = 1;
-
+    private int rows;
+    private int columns;
     private float tileWidth;
     private float tileHeight;
 
@@ -21,26 +20,40 @@ public class MapGrid : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //FIND CORNERS OF GRID
         planeMesh = GetComponent<MeshFilter>();
         corners = new Vector3[4];
 
-        //init corners array
-        corners[2] = transform.TransformPoint(planeMesh.sharedMesh.vertices[0]);
-        corners[3] = transform.TransformPoint(planeMesh.sharedMesh.vertices[10]);
-        corners[1] = transform.TransformPoint(planeMesh.sharedMesh.vertices[110]);
-        corners[0] = transform.TransformPoint(planeMesh.sharedMesh.vertices[120]);
+        corners[2] = transform.TransformPoint(planeMesh.sharedMesh.vertices[0]);    //bottom right
+        corners[3] = transform.TransformPoint(planeMesh.sharedMesh.vertices[10]);   //bottom left
+        corners[1] = transform.TransformPoint(planeMesh.sharedMesh.vertices[110]);  //top right
+        corners[0] = transform.TransformPoint(planeMesh.sharedMesh.vertices[120]);  //top left
+            
 
+        //FIND TILE DIMENSIONS
+        rows = GameManager.Instance.rows;
+        columns = GameManager.Instance.columns;
 
-        //determine tile width and height based on params
-        tileWidth = Mathf.Abs((corners[1].x - corners[0].x)) / columns;
-        tileHeight = Mathf.Abs((corners[2].y - corners[0].y)) / rows;
+        GameManager.Instance.tileWidth = (Mathf.Abs(corners[1].x - corners[0].x) / columns);
+        GameManager.Instance.tileHeight = (Mathf.Abs(corners[2].y - corners[0].y) / rows);
+        tileWidth = GameManager.Instance.tileWidth;
+        tileHeight = GameManager.Instance.tileHeight;
 
+        initTilesAndRenderer();
 
-        //init tiles array
+    }
+
+    // Update is called once per frame
+    void Update(){}
+
+    private void initTilesAndRenderer()
+    {
+
+        //INITIALISE TILE ARRAY AND CALCULATE LINE VERTICES
         tiles = new MapTile[rows, columns];
         MapTile newTile;
-        Vector3 vert = corners[0];  //BEWARE: Not sure if this just copies the values or the actual reference
-        
+        Vector3 vert = corners[3];  //BEWARE: Not sure if this just copies the values or the actual reference
+
         for (int i = 0; i < rows; i++)
         {
             lineVerts.Add(vert);
@@ -48,18 +61,19 @@ public class MapGrid : MonoBehaviour
             for (int j = 0; j < columns; j++)
             {
                 newTile = new MapTile(vert, tileWidth, tileHeight, i, j);
+                tiles[i, j] = newTile;
                 vert.x += tileWidth;
             }
 
             lineVerts.Add(vert);
             vert.x = corners[0].x;
             lineVerts.Add(vert);
-            vert.y -= tileHeight;
+            vert.y += tileHeight;
         }
 
         //finish adding the vertices for the line renderer
         Vector3 vert2;
-        vert = corners[3];
+        vert = corners[0];
         lineVerts.Add(vert);
 
         for (int i = 0; i < columns; i++)
@@ -67,39 +81,57 @@ public class MapGrid : MonoBehaviour
             vert.x += tileWidth;
             lineVerts.Add(vert);
             vert2 = vert;
-            vert2.y = corners[0].y;
+            vert2.y = corners[3].y;
             lineVerts.Add(vert2);
             lineVerts.Add(vert);
-            
+
         }
 
-
-
-        //draw the grid
+        //DRAW THE GRID
         lr = GetComponent<LineRenderer>();
-        lr.startWidth = 0.01f;
-        lr.endWidth = 0.01f;
+        lr.startWidth = 0.008f;
+        lr.endWidth = 0.008f;
 
         lr.positionCount = lineVerts.Count;
         lr.SetPositions(lineVerts.ToArray());
-
-
     }
 
-    // Update is called once per frame
-    void Update(){}
-    
-    
+
     //////////////////////////
     //COORDINATE CONVERSIONS//
     //////////////////////////
-    private Vector3 gridToWorldCoords(int x, int y)
+    
+    //finds the centerpoint of the given tile in world coordinates
+    public Vector3 gridToWorldCoords(int x, int y)
     {
-        return Vector3.one;
+        if (x < 0 || x >= columns || y < 0 || y >= rows)
+        {
+            Debug.Log("Invalid coordinates as input. There will be error in returned coordinates.");
+        }
+        
+        Vector3 coord = new Vector3();
+        coord.x = corners[3].x + ((x + 0.5f) * tileWidth);
+        coord.y = corners[3].y + ((y + 0.5f) * tileHeight);
+        coord.z = 0;
+
+        return coord;
     }
 
-    private Vector2Int worldToGridCoords(Vector3 worldCoords)
+    //finds the tile that the given point lies within. Returns -1 if the point lies outsidfe of the grid
+    public Vector2Int worldToGridCoords(Vector3 worldCoords)
     {
-        return Vector2Int.one;
+        Vector2Int coord = new Vector2Int();
+        if(worldCoords.x < corners[0].x || worldCoords.x > corners[1].x || worldCoords.y > corners[0].y || worldCoords.y < corners[2].y)
+        {
+            Debug.Log("Coordinate lies outside of the playing field.");
+            coord.x = -1;
+            coord.y = -1;
+            return coord;
+        }
+
+        coord.x = Mathf.FloorToInt(worldCoords.x/tileWidth);
+        coord.y = Mathf.FloorToInt(worldCoords.y/tileHeight);
+
+        return coord;
     }
 }
