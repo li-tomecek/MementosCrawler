@@ -131,7 +131,7 @@ public class MapGrid : MonoBehaviour
         Vector2Int coord = new Vector2Int();
         if(worldCoords.x < corners[0].x || worldCoords.x > corners[1].x || worldCoords.y > corners[0].y || worldCoords.y < corners[2].y)
         {
-            Debug.Log("Coordinate lies outside of the playing field.");
+           // Debug.Log("Coordinate lies outside of the playing field.");
             coord.x = -1;
             coord.y = -1;
             return coord;

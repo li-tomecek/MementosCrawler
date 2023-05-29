@@ -7,18 +7,15 @@ public class Player : MonoBehaviour
 
     private bool isMoving;
     private Vector3 origPos, targetPos;
-    public float timeToMove = 0.5f;
+    public float timeToMove = 5.5f;
 
 
-    float tileHeight, tileWidth;
+    float movementDir;
 
     // Start is called before the first frame update
     void Start()
     {
-        //boxCollider = GetComponent<BoxCollider2D>();
         moveToStart();
-        tileHeight = GameManager.Instance.tileHeight;
-        tileWidth = GameManager.Instance.tileWidth;
     }
 
     // Update is called once per frame
@@ -36,17 +33,22 @@ public class Player : MonoBehaviour
 
     private void checkMovementInputs()
     {
-        if (Input.GetKey(KeyCode.W) && !isMoving)
-            StartCoroutine(MoveActor(Vector3.up * GameManager.Instance.tileHeight));
 
-        if (Input.GetKey(KeyCode.A) && !isMoving)
-            StartCoroutine(MoveActor(Vector3.left * GameManager.Instance.tileWidth));
+        float x = Input.GetAxisRaw("Horizontal");
+        float y = Input.GetAxisRaw("Vertical");
 
-        if (Input.GetKey(KeyCode.S) && !isMoving)
-            StartCoroutine(MoveActor(Vector3.down * GameManager.Instance.tileHeight));
+        //swap sprite direction
+        if (x > 0)
+            transform.localScale = Vector3.one;
+        else if (x < 0)
+            transform.localScale = new Vector3(-1, 1, 1);
 
-        if (Input.GetKey(KeyCode.D) && !isMoving)
-            StartCoroutine(MoveActor(Vector3.right * GameManager.Instance.tileWidth));
+        //actual sprite movement
+        if (Input.GetAxisRaw("Vertical") != 0 && !isMoving)
+        StartCoroutine(MoveActor(Vector3.up * GameManager.Instance.tileHeight * y));
+
+        if (Input.GetAxisRaw("Horizontal") != 0 && !isMoving)
+            StartCoroutine(MoveActor(Vector3.right * GameManager.Instance.tileWidth * x));
     }
 
 
@@ -61,7 +63,6 @@ public class Player : MonoBehaviour
 
         //will only move player if they stay within the grid
         Vector2Int coord = MapGrid.Instance.worldToGridCoords(targetPos);
-        //Debug.Log(coord.x + "," + coord.y);
         if (coord.x != -1 && !MapGrid.Instance.tiles[coord.x, coord.y].isOccupied())
         {
             while (elapsedTime < timeToMove)
@@ -93,12 +94,6 @@ public class Player : MonoBehaviour
 //float y = Input.GetAxisRaw("Vertical");
 
 //moveDelta = new Vector3(x,y,0);
-
-////swap sprite direction
-//if (moveDelta.x > 0)
-//    transform.localScale = Vector3.one;
-//else if (moveDelta.x < 0)
-//    transform.localScale = new Vector3(-1, 1, 1);
 
 ////can only move in one axis direction at a time. prioritize x axis for 
 //if (moveDelta.x != 0)
