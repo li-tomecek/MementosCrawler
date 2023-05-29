@@ -13,9 +13,15 @@ public class MapGrid : MonoBehaviour
     private Vector3[] corners;
     private List<Vector3> lineVerts = new List<Vector3>();
 
-    private MapTile[,] tiles;
+    [HideInInspector] public MapTile[,] tiles;
     private LineRenderer lr;
 
+
+    public static MapGrid Instance { get; private set; }
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -50,7 +56,7 @@ public class MapGrid : MonoBehaviour
     {
 
         //INITIALISE TILE ARRAY AND CALCULATE LINE VERTICES
-        tiles = new MapTile[rows, columns];
+        tiles = new MapTile[columns, rows];
         MapTile newTile;
         Vector3 vert = corners[3];  //BEWARE: Not sure if this just copies the values or the actual reference
 
@@ -60,9 +66,10 @@ public class MapGrid : MonoBehaviour
 
             for (int j = 0; j < columns; j++)
             {
-                newTile = new MapTile(vert, tileWidth, tileHeight, i, j);
-                tiles[i, j] = newTile;
+                newTile = new MapTile(vert, tileWidth, tileHeight, j, i);
+                tiles[j, i] = newTile;
                 vert.x += tileWidth;
+                //Debug.Log("New Tile: [" + j + "," + i + "]");
             }
 
             lineVerts.Add(vert);
@@ -120,6 +127,7 @@ public class MapGrid : MonoBehaviour
     //finds the tile that the given point lies within. Returns -1 if the point lies outsidfe of the grid
     public Vector2Int worldToGridCoords(Vector3 worldCoords)
     {
+        //Debug.Log("TL: " + corners[0] + "\nBR: " + corners[2] + "\nCoord: " + worldCoords);
         Vector2Int coord = new Vector2Int();
         if(worldCoords.x < corners[0].x || worldCoords.x > corners[1].x || worldCoords.y > corners[0].y || worldCoords.y < corners[2].y)
         {
@@ -128,10 +136,16 @@ public class MapGrid : MonoBehaviour
             coord.y = -1;
             return coord;
         }
-
-        coord.x = Mathf.FloorToInt(worldCoords.x/tileWidth);
-        coord.y = Mathf.FloorToInt(worldCoords.y/tileHeight);
+       
+        coord.x = Mathf.FloorToInt((worldCoords.x - corners[3].x)/tileWidth);
+        coord.y = Mathf.FloorToInt((worldCoords.y - corners[3].y)/tileHeight);
 
         return coord;
+    }
+
+
+    public Vector3[] getCorners()
+    {
+        return this.corners;
     }
 }

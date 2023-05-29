@@ -11,20 +11,20 @@ public class MapTile
 
     public Vector3[] cornerVertices;
 
-    private bool isOccupied;
+    private bool occupied = false;
     private int contentCode;
     private GameObject actor;
 
 
-    public MapTile(Vector3 vert, float tileWidth, float tileHeight, int i, int j)
+    public MapTile(Vector3 vert, float tileWidth, float tileHeight, int x, int y)
     {
         cornerVertices = new Vector3[4];
         cornerVertices[0] = vert;
         cornerVertices[1] = new Vector3(vert.x + tileWidth, vert.y, 0);
         cornerVertices[2] = new Vector3(vert.x + tileWidth, vert.y - tileHeight, 0);
         cornerVertices[3] = new Vector3(vert.x, vert.y - tileHeight, 0);
-        y = i;
-        x = j;
+        this.y = y;
+        this.x = x;
     }
 
     //----------------------
@@ -37,6 +37,10 @@ public class MapTile
     public int getY()
     {
         return this.y;
+    }
+    public bool isOccupied()
+    {
+        return occupied;
     }
     public void setX(int i)
     {
