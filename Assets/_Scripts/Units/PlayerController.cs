@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
 
     private bool isMoving;
@@ -18,12 +18,7 @@ public class Player : MonoBehaviour
         moveToStart();
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        checkMovementInputs();
 
-    }
     //Moves the player character to the bottom row in the middle/left-mid cell of the grid
     private void moveToStart()  
     {
@@ -31,9 +26,9 @@ public class Player : MonoBehaviour
         transform.position = (GameObject.Find("PlayingField").GetComponent<MapGrid>().gridToWorldCoords(column, 0));
     }
 
-    private void checkMovementInputs()
+    public void checkInputs()
     {
-
+        //--------MOVEMENT---------
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
 
@@ -45,10 +40,17 @@ public class Player : MonoBehaviour
 
         //actual sprite movement
         if (Input.GetAxisRaw("Vertical") != 0 && !isMoving)
-        StartCoroutine(MoveActor(Vector3.up * GameManager.Instance.tileHeight * y));
+            StartCoroutine(MoveActor(Vector3.up * GameManager.Instance.tileHeight * y));
 
         if (Input.GetAxisRaw("Horizontal") != 0 && !isMoving)
             StartCoroutine(MoveActor(Vector3.right * GameManager.Instance.tileWidth * x));
+
+        //--------MOVE SELECT-------------
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            GameManager.Instance.mode = Mode.move_select;
+        }
+
     }
 
 
@@ -79,6 +81,17 @@ public class Player : MonoBehaviour
         isMoving = false;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

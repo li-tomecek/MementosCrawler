@@ -27,8 +27,8 @@ public abstract class GameUnit : MonoBehaviour
     protected Coords position;
 
     //---------Shared Methods----------
-    protected abstract void ChooseAction();
-    protected abstract void ChooseMovement();
+    public abstract void ChooseAction();
+    public abstract void ChooseMovement();
 
     //----------GET/SET----------------
     //--~~getters~~--
@@ -53,9 +53,3 @@ public abstract class GameUnit : MonoBehaviour
     }
 
 }
-
-public struct Stats {
-    public int strength, defense, maxHP, maxSP, agility;
-}
-//later if you want: luck, magic, intelligence
-//also later: strengths and weaknesses
