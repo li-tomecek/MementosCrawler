@@ -2,20 +2,55 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameUnit : MonoBehaviour
+public abstract class GameUnit : MonoBehaviour
 {
-    //Will need:
-    /**
-    moveset(must create another class)          enemies too  
-    type weakness/strengths (later)             enemies too  
-    stats struct                                enemies too
-     
-    grid position                               enemies too
-     **/
+    //--------Constructors------------
+    public GameUnit() { }
+    public GameUnit(Move[] moveset, Stats stats, Coords pos)
+    {
+        this.moveset = moveset;
+        this.stats = stats;
+        this.position = pos;
+        this.currentHP = stats.maxHP;
+        this.currentSP = stats.maxSP;
+    }
 
+    //--------Shared components---------
+    private Move[] moveset;
+    private Stats stats;
+    private int currentHP, currentSP;
     Coords position;
 
-    //SHARED METHODS
-    protected void ChooseAction() {}
-    protected void ChooseMovement() {}
+    //---------Shared Methods----------
+    protected abstract void ChooseAction();
+    protected abstract void ChooseMovement();
+
+    //----------GET/SET----------------
+    //--~~getters~~--
+    public Coords getPosition() { return position; }
+    public Stats getStats() { return stats; }
+    public int getHP() { return currentHP; }
+    public int getSP() { return currentSP; }
+    public Move[] getMoveset() { return moveset; }
+    //--~~setters~~--
+    public void setHP(int hp) { currentHP = hp; }
+    public void setSP(int sp) { currentSP = sp; }
+    public void setPosition(int x, int y) { position.X = x; position.Y = y; }
+    public void decreaseHP(int amt)
+    {
+        currentHP -= amt;
+        currentHP = (currentHP < 0) ? 0 : currentHP;    //think this is correct syntax?
+    }
+    public void decreaseSP(int amt)
+    {
+        currentSP -= amt;
+        currentSP = (currentSP < 0) ? 0 : currentSP;   
+    }
+
 }
+
+public struct Stats {
+    public int strength, defense, maxHP, maxSP, agility;
+}
+//later if you want: luck, magic, intelligence
+//also later: strengths and weaknesses

@@ -11,7 +11,7 @@ public enum TileType
     ClosedChest
 }
 
-public class TileMaster : MonoBehaviour
+public class TileMaster
 {
     protected int movementPenalty;
     protected TileType type;

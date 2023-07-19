@@ -4,5 +4,18 @@ using UnityEngine;
 
 public class EnemyUnit : GameUnit
 {
-    //WILL NEED melee weapon(must create another class)  
+    //------constructors-------
+    public EnemyUnit() : base() { }
+    public EnemyUnit(Move[] moveset, Stats stats, Coords pos) : base(moveset, stats, pos) { }
+
+
+    protected override void ChooseAction()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    protected override void ChooseMovement()
+    {
+        throw new System.NotImplementedException();
+    }
 }

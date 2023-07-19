@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class PlayableUnit : GameUnit
 {
-    // Start is called before the first frame update
-    void Start()
+    //------constructors-------
+    public PlayableUnit() : base() { }
+    public PlayableUnit(Move[] moveset, Stats stats, Coords pos) : base(moveset, stats, pos) { }
+
+
+    protected override void ChooseAction()
     {
-        
+        throw new System.NotImplementedException();
     }
 
-    // Update is called once per frame
-    void Update()
+    protected override void ChooseMovement()
     {
-        
+        throw new System.NotImplementedException();
     }
 }
