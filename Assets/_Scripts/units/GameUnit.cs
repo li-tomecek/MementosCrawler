@@ -8,6 +8,11 @@ public abstract class GameUnit : MonoBehaviour
     public GameUnit() { }
     public GameUnit(Move[] moveset, Stats stats, Coords pos)
     {
+        if(moveset.Length != 4)
+        {
+            Debug.Log("This unit's moveset must contain 4 moves.");
+            return;
+        }
         this.moveset = moveset;
         this.stats = stats;
         this.position = pos;
@@ -16,10 +21,10 @@ public abstract class GameUnit : MonoBehaviour
     }
 
     //--------Shared components---------
-    private Move[] moveset;
-    private Stats stats;
-    private int currentHP, currentSP;
-    Coords position;
+    protected Move[] moveset;
+    protected Stats stats;
+    protected int currentHP, currentSP;
+    protected Coords position;
 
     //---------Shared Methods----------
     protected abstract void ChooseAction();
