@@ -44,11 +44,14 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetAxisRaw("Horizontal") != 0 && !isMoving)
             StartCoroutine(MoveActor(Vector3.right * GameManager.Instance.tileWidth * x));
-
-        //--------MOVE SELECT-------------
-        if (Input.GetKeyDown(KeyCode.L))
+        
+        //--------player has chosen their location-------------
+        if (Input.GetKeyDown(KeyCode.Return))
         {
-            GameManager.Instance.mode = Mode.move_select;
+            Debug.Log("opened the action menu");
+            GameManager.Instance.mode = Mode.ACTION_SELECT;
+            GameManager.Instance.getMenuManager().getActionMenu().SetActive(true);
+            return;
         }
 
     }

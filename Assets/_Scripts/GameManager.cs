@@ -9,10 +9,9 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        mode = Mode.free_movement;
+        mode = Mode.FREE_MOVE;
+        menuManager = gameObject.GetComponent<MenuManager>();
     }
-
-    //-------GRID DATA-------
 
     public int rows = 1;
     public int columns = 1;
@@ -20,12 +19,11 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public float tileWidth;
     [HideInInspector] public float tileHeight;
 
-    //-------PLAYER AND MODE CONTROL-------
-    GameObject[] ActiveUnits; //is this needed? not doing anything with this yet
     [SerializeField]
     GameObject activeUnit;
     public Mode mode;
 
+    MenuManager menuManager;
     
     //-------METHODS-------
     public void swapActiveUnit(GameObject unit)
@@ -36,18 +34,20 @@ public class GameManager : MonoBehaviour
 
     }
 
+    //-------Getters and Setters-------
+    public GameObject getActiveUnit() {return this.activeUnit;}
+    public MenuManager getMenuManager() {return this.menuManager; }
+
     //---------------------
     //       UPDATE      
     //---------------------
-    void FixedUpdate()  //called once per frame
+    void Update()  //called once per frame
     {
-        if(mode == Mode.free_movement || mode == Mode.battle_movement)
+        if(mode == Mode.FREE_MOVE || mode == Mode.BATTLE_MOVE)
             activeUnit.GetComponent<PlayerController>().checkInputs();
-        if (mode == Mode.move_select)
-            return; //replace with menuManager.checkInputs();
+        //if (mode == Mode.ACTION_SELECT)
+            //menuManager.checkInputs();
     }
-
-    
     
     //I am hoping that the following code creates a 2D array that stores "references" to one of the TileMaster instances
     //public TileMaster tileMaster = new TileMaster();

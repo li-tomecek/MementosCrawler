@@ -25,13 +25,13 @@ public class PlayableUnit : GameUnit
     public void initializeTestUnit()
     {
         moveset = new Move[4];
-        Move move = new Move("atk 1", MoveType.attack, 10, 100, 1);
+        Move move = new Move("atk 1", MoveType.ATTACK, 10, 100, 1);
         moveset[0] = move;
-        move = new Move("atk 2", MoveType.attack, 10, 100, 1);
+        move = new Move("atk 2", MoveType.ATTACK, 10, 100, 1);
         moveset[1] = move;
-        move = new Move("atk 3", MoveType.attack, 10, 100, 1);
+        move = new Move("atk 3", MoveType.ATTACK, 10, 100, 1);
         moveset[2] = move;
-        move = new Move("atk 4", MoveType.attack, 10, 100, 1);
+        move = new Move("atk 4", MoveType.ATTACK, 10, 100, 1);
         moveset[3] = move;
 
         stats.strength = 10;

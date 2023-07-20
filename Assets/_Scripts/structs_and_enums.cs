@@ -4,14 +4,14 @@ using UnityEngine;
 
 public enum MoveType
 {
-    attack,
-    buff,
-    debuff,
-    heal
+    ATTACK,
+    BUFF,
+    DEBUFF,
+    HEAL
 }
 public enum Mode
 {
-    battle_movement, free_movement, move_select, enemy_turn
+    BATTLE_MOVE, FREE_MOVE, ACTION_SELECT, ENEMY_TURN
 }
 
 
