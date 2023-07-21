@@ -5,9 +5,8 @@ using UnityEngine;
 public class BattleManager : MonoBehaviour
 {
     //-------------fields-----------------
-    List<GameUnit> activeUnits;
-    List<GameObject> test;
-
+    public List<GameUnit> activeUnits;
+    int turn_index;
     //------constructors and start--------
     private void onAwake()
     {
@@ -20,7 +19,19 @@ public class BattleManager : MonoBehaviour
     public void setupBattle()
     {
         activeUnits.Sort();
-        GameManager.Instance.swapActiveUnit(activeUnits[activeUnits.Count - 1].gameObject); //i THINK this should work.....
-        activeUnits.RemoveAt(activeUnits.Count - 1);///TODO HERE LATER
+        turn_index = -1;
+
+        nextTurn();
+    }
+
+    public void nextTurn()
+    {
+        turn_index++;
+        if (turn_index >= activeUnits.Count)
+            turn_index = 0;
+        Debug.Log("It is now " + activeUnits[turn_index].gameObject.name + "'s turn.");
+
+        GameManager.Instance.swapActiveUnit(activeUnits[turn_index].gameObject);
+        activeUnits[turn_index].TakeTurn();
     }
 }

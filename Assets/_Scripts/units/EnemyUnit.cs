@@ -9,13 +9,18 @@ public class EnemyUnit : GameUnit
     public EnemyUnit(Move[] moveset, Stats stats, Coords pos) : base(moveset, stats, pos) { }
 
 
-    public override void ChooseAction()
+    public override void TakeTurn()
     {
-        throw new System.NotImplementedException();
+        ChooseAction();
+        executeMovement();
     }
-
-    public override void ChooseMovement()
+    public  void ChooseAction()
     {
-        throw new System.NotImplementedException();
+        print("choosing and action...");
+    }
+    public  void executeMovement()
+    {
+        print("executing movement...");
+
     }
 }

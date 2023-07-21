@@ -12,14 +12,9 @@ public class PlayableUnit : GameUnit
     [HideInInspector] public bool isBlocking;
 
     //-------implemented methods----------
-    public override void ChooseAction()
+    public override void TakeTurn()
     {
-        Debug.Log("A playable character is choosing an action...");
-    }
-
-    public override void ChooseMovement()
-    {
-        throw new System.NotImplementedException();
+        GameManager.Instance.setMode(Mode.BATTLE_MOVE);
     }
 
     //----------other methods--------------
@@ -42,8 +37,9 @@ public class PlayableUnit : GameUnit
         stats.maxSP = 50;
     }
 
-    public void Start()
+    public new void Start()
     {
+        base.Start();
         initializeTestUnit();   //This is obviously temporary
     }
 }

@@ -7,12 +7,12 @@ using UnityEngine.EventSystems;
 
 public class MenuManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    [SerializeField]
-    GameObject currentMenu;
     [SerializeField]
     GameObject actionMenu;
+    [SerializeField]
+    GameObject abilityMenu;
 
-    public GameObject getActionMenu() { return actionMenu; }
+    public GameObject getActionSelectMenu() { return actionMenu; }
+    public GameObject getAbilitySelectMenu() { return abilityMenu; }
 
 }

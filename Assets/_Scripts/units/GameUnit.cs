@@ -9,7 +9,7 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
     public GameUnit() { }
     public GameUnit(Move[] moveset, Stats stats, Coords pos)
     {
-        if(moveset.Length != 4)
+        if (moveset.Length != 4)
         {
             Debug.Log("This unit's moveset must contain 4 moves.");
             return;
@@ -23,13 +23,18 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
 
     //--------Shared components---------
     protected Move[] moveset;
-    protected Stats stats;
+    [SerializeField] protected Stats stats;
     protected int currentHP, currentSP;
     protected Coords position;
 
-    //---------Shared Methods----------
-    public abstract void ChooseAction();
-    public abstract void ChooseMovement();
+    // --------Shared Methods----------
+    public abstract void TakeTurn();
+
+    public void Start()
+    {
+        GameManager.Instance.getBattleManager().activeUnits.Add(this);
+        Debug.Log("added "+ gameObject.name +  " to active unit list");
+    }
 
     //----------GET/SET----------------
     //--~~getters~~--
@@ -56,6 +61,6 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
     }
     public int CompareTo(GameUnit other)
     {
-        return this.stats.agility.CompareTo(other.stats.agility);  //sorting lists in reverse agility order bc poping from the back of the list is more efficient
+        return (this.stats.agility.CompareTo(other.stats.agility) * -1);  //sorting lists in descending agility order
     }
 }

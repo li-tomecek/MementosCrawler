@@ -9,8 +9,9 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        mode = Mode.FREE_MOVE;
+        mode = Mode.BATTLE_MOVE;
         menuManager = gameObject.GetComponent<MenuManager>();
+        battleManager = gameObject.GetComponent<BattleManager>();
     }
 
     public int rows = 1;
@@ -21,10 +22,11 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     GameObject activeUnit;
-    private Mode mode;
-    private bool justSwappedModes;
+    [SerializeField] Mode mode;
+    bool justSwappedModes;
 
     MenuManager menuManager;
+    BattleManager battleManager;
     
     //-------METHODS-------
     public void swapActiveUnit(GameObject unit)
@@ -38,6 +40,8 @@ public class GameManager : MonoBehaviour
     //-------Getters and Setters-------
     public GameObject getActiveUnit() {return this.activeUnit;}
     public MenuManager getMenuManager() {return this.menuManager; }
+    public BattleManager getBattleManager() {return this.battleManager; }
+    public Mode getMode() {return this.mode; }
     public void setMode(Mode m)
     {
         this.mode = m;

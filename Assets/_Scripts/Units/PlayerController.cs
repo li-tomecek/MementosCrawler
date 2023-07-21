@@ -29,10 +29,10 @@ public class PlayerController : MonoBehaviour
     public void checkInputs()
     {
         //--------player has chosen their location-------------
-        if (Input.GetKeyDown(KeyCode.Return))
+        if ((GameManager.Instance.getMode() == Mode.BATTLE_MOVE) && (Input.GetKeyDown(KeyCode.Return)))
         {
             GameManager.Instance.setMode(Mode.ACTION_SELECT);
-            GameManager.Instance.getMenuManager().getActionMenu().SetActive(true);
+            GameManager.Instance.getMenuManager().getActionSelectMenu().SetActive(true);
             return;
         }
 
