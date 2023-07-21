@@ -13,6 +13,8 @@ public class EnemyUnit : GameUnit
     {
         ChooseAction();
         executeMovement();
+
+        GameManager.Instance.getBattleManager().nextTurn();
     }
     public  void ChooseAction()
     {

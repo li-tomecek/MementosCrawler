@@ -31,7 +31,11 @@ public class BattleManager : MonoBehaviour
             turn_index = 0;
         Debug.Log("It is now " + activeUnits[turn_index].gameObject.name + "'s turn.");
 
-        GameManager.Instance.swapActiveUnit(activeUnits[turn_index].gameObject);
+        if (activeUnits[turn_index] is PlayableUnit)
+            GameManager.Instance.swapActiveUnit(activeUnits[turn_index].gameObject);
+        else
+            GameManager.Instance.getActiveUnit().GetComponent<PlayerController>().enabled = false;
+
         activeUnits[turn_index].TakeTurn();
     }
 }

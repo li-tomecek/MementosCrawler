@@ -25,6 +25,7 @@ public class ActionSelectMenu : MonoBehaviour
     {
         Debug.Log("This unit will take half damage from the next attack.");
         GameManager.Instance.getActiveUnit().GetComponent<PlayableUnit>().isBlocking = true;
+        GameManager.Instance.getBattleManager().nextTurn();
         gameObject.SetActive(false);
     }
     public void OnWaitButton()
