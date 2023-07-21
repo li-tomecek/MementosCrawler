@@ -28,6 +28,14 @@ public class PlayerController : MonoBehaviour
 
     public void checkInputs()
     {
+        //--------player has chosen their location-------------
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            GameManager.Instance.setMode(Mode.ACTION_SELECT);
+            GameManager.Instance.getMenuManager().getActionMenu().SetActive(true);
+            return;
+        }
+
         //--------MOVEMENT---------
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
@@ -45,17 +53,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetAxisRaw("Horizontal") != 0 && !isMoving)
             StartCoroutine(MoveActor(Vector3.right * GameManager.Instance.tileWidth * x));
         
-        //--------player has chosen their location-------------
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            Debug.Log("opened the action menu");
-            GameManager.Instance.mode = Mode.ACTION_SELECT;
-            GameManager.Instance.getMenuManager().getActionMenu().SetActive(true);
-            return;
-        }
-
     }
-
 
     private IEnumerator MoveActor(Vector3 direction)
     {

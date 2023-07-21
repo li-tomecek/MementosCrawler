@@ -6,9 +6,10 @@ public class PlayableUnit : GameUnit
 {
     //-----------constructors------------
     public PlayableUnit() : base() { }
-    public PlayableUnit(Move[] moveset, Stats stats, Coords pos) : base(moveset, stats, pos) {}
+    public PlayableUnit(Move[] moveset, Stats stats, Coords pos) : base(moveset, stats, pos) { }
 
     //-------------fields-----------------
+    [HideInInspector] public bool isBlocking;
 
     //-------implemented methods----------
     public override void ChooseAction()

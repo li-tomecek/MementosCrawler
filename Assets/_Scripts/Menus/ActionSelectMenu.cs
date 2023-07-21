@@ -17,10 +17,12 @@ public class ActionSelectMenu : MonoBehaviour
     public void OnPersonaButton()
     {
         Debug.Log("Pressed the persona button");
+        //TODO: open a new menu (the attack options menu)
     }
-    public void OnBlockButton()
+    public void OnGuardButton()
     {
-        Debug.Log("Pressed the block button");
+        Debug.Log("This unit will take half damage from the next attack.");
+        GameManager.Instance.getActiveUnit().GetComponent<PlayableUnit>().isBlocking = true;
     }
     public void OnWaitButton()
     {
@@ -28,7 +30,7 @@ public class ActionSelectMenu : MonoBehaviour
     }
     public void OnExitButton()
     {
+        GameManager.Instance.setMode(Mode.BATTLE_MOVE);
         gameObject.SetActive(false);
-        GameManager.Instance.mode = Mode.BATTLE_MOVE;
     }
 }

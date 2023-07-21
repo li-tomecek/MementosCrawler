@@ -21,7 +21,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     GameObject activeUnit;
-    public Mode mode;
+    private Mode mode;
+    private bool justSwappedModes;
 
     MenuManager menuManager;
     
@@ -37,16 +38,28 @@ public class GameManager : MonoBehaviour
     //-------Getters and Setters-------
     public GameObject getActiveUnit() {return this.activeUnit;}
     public MenuManager getMenuManager() {return this.menuManager; }
+    public void setMode(Mode m)
+    {
+        this.mode = m;
+        justSwappedModes = true;
+    }
 
     //---------------------
     //       UPDATE      
     //---------------------
     void Update()  //called once per frame
     {
-        if(mode == Mode.FREE_MOVE || mode == Mode.BATTLE_MOVE)
+        if (justSwappedModes)
+        { 
+            justSwappedModes = false;
+            return;          //ensures one frame delay between mode swaps
+        }
+
+        if (mode == Mode.FREE_MOVE || mode == Mode.BATTLE_MOVE)
+        {
             activeUnit.GetComponent<PlayerController>().checkInputs();
-        //if (mode == Mode.ACTION_SELECT)
-            //menuManager.checkInputs();
+        }
+
     }
     
     //I am hoping that the following code creates a 2D array that stores "references" to one of the TileMaster instances

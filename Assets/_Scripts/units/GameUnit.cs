@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public abstract class GameUnit : MonoBehaviour
+public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
 {
     //--------Constructors------------
     public GameUnit() { }
@@ -41,6 +42,8 @@ public abstract class GameUnit : MonoBehaviour
     public void setHP(int hp) { currentHP = hp; }
     public void setSP(int sp) { currentSP = sp; }
     public void setPosition(int x, int y) { position.X = x; position.Y = y; }
+    
+    
     public void decreaseHP(int amt)
     {
         currentHP -= amt;
@@ -51,5 +54,8 @@ public abstract class GameUnit : MonoBehaviour
         currentSP -= amt;
         currentSP = (currentSP < 0) ? 0 : currentSP;   
     }
-
+    public int CompareTo(GameUnit other)
+    {
+        return this.stats.agility.CompareTo(other.stats.agility);  //sorting lists in reverse agility order bc poping from the back of the list is more efficient
+    }
 }
