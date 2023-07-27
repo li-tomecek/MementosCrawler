@@ -18,28 +18,9 @@ public class PlayableUnit : GameUnit
     }
 
     //----------other methods--------------
-    public void initializeTestUnit()
-    {
-        moveset = new Move[4];
-        Move move = new Move("atk 1", MoveType.ATTACK, 10, 100, 1);
-        moveset[0] = move;
-        move = new Move("atk 2", MoveType.ATTACK, 10, 100, 1);
-        moveset[1] = move;
-        move = new Move("atk 3", MoveType.ATTACK, 10, 100, 1);
-        moveset[2] = move;
-        move = new Move("atk 4", MoveType.ATTACK, 10, 100, 1);
-        moveset[3] = move;
-
-        stats.strength = 10;
-        stats.defense = 10;
-        stats.agility = 10;
-        stats.maxHP = 25;
-        stats.maxSP = 50;
-    }
 
     public new void Start()
     {
         base.Start();
-        initializeTestUnit();   //This is obviously temporary
     }
 }

@@ -2,28 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : UnitController
 {
-
-    private bool isMoving;
-    private Vector3 origPos, targetPos;
-    public float timeToMove = 5.5f;
-
-
-    float movementDir;
-
-    // Start is called before the first frame update
     void Start()
     {
         moveToStart();
     }
 
-
-    //Moves the player character to the bottom row in the middle/left-mid cell of the grid
+    //----------other methods--------------
+    /**Moves the player character to the bottom row in the middle/left-mid cell of the grid**/
     private void moveToStart()  
     {
         int column = Mathf.CeilToInt(GameManager.Instance.columns / 2.0f) - 1; 
-        transform.position = (GameObject.Find("PlayingField").GetComponent<MapGrid>().gridToWorldCoords(column, 0));
+        //transform.position = (GameObject.Find("PlayingField").GetComponent<MapGrid>().gridToWorldCoords(column, 0));
+        transform.position = (MapGrid.Instance.gridToWorldCoords(column, 0));
     }
 
     public void checkInputs()
@@ -53,33 +45,6 @@ public class PlayerController : MonoBehaviour
         if (Input.GetAxisRaw("Horizontal") != 0 && !isMoving)
             StartCoroutine(MoveActor(Vector3.right * GameManager.Instance.tileWidth * x));
         
-    }
-
-    private IEnumerator MoveActor(Vector3 direction)
-    {
-        isMoving = true;
-
-        float elapsedTime = 0;
-
-        origPos = transform.position;
-        targetPos = origPos + direction;
-
-        //will only move player if they stay within the grid
-        Vector2Int coord = MapGrid.Instance.worldToGridCoords(targetPos);
-        if (coord.x != -1 && !MapGrid.Instance.tiles[coord.x, coord.y].isOccupied())
-        {
-            while (elapsedTime < timeToMove)
-            {
-                transform.position = Vector3.Lerp(origPos, targetPos, elapsedTime / timeToMove);
-
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
-
-            transform.position = targetPos; //just to be safe
-        }
-
-        isMoving = false;
     }
 }
 

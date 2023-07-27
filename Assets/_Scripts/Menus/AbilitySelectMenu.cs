@@ -12,8 +12,8 @@ public class AbilitySelectMenu : MonoBehaviour
     public void OnEnable()
     {
   
-        EventSystem.current.SetSelectedGameObject(action_1_btn);//idk why this isnt working :)
-        PlayableUnit unit = GameManager.Instance.getActiveUnit().GetComponent<PlayableUnit>();  //shoudl put exception around here ig..
+        //EventSystem.current.SetSelectedGameObject(action_1_btn);//idk why this isnt working :)
+        PlayableUnit unit = GameManager.Instance.getActiveUnit().GetComponent<PlayableUnit>();  //should put exception around here ig..
 
         action_1_btn.transform.GetChild(0).GetComponent<Text>().text = unit.getMoveset()[0].name;
         action_2_btn.transform.GetChild(0).GetComponent<Text>().text = unit.getMoveset()[1].name;
@@ -24,5 +24,11 @@ public class AbilitySelectMenu : MonoBehaviour
     public void OnButtonPress()
     {
         print("player just pressed " + EventSystem.current.currentSelectedGameObject.name);
+        
+        //check for enemies in range
+
+        //if enemies in range: select an enemy (list maybe? draw and indicator on the map to show which enemy?)
+
+        //if no enemies: print some message? or make a noise?
     }
 }

@@ -4961,7 +4961,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Persona
+  m_Text: Abilities
 --- !u!222 &563631779
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7077,7 +7077,7 @@ GameObject:
   - component: {fileID: 1267660524}
   - component: {fileID: 1267660523}
   m_Layer: 0
-  m_Name: PersonaButton
+  m_Name: AbilitiesButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7149,7 +7149,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1354642806}
         m_TargetAssemblyTypeName: ActionSelectMenu, Assembly-CSharp
-        m_MethodName: OnPersonaButton
+        m_MethodName: OnAbilitiesButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7426,7 +7426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ab11ecbc7c3e7642be2075338baa7c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  personaButton: {fileID: 1267660521}
+  abilityButton: {fileID: 1267660521}
 --- !u!114 &1354642807
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9854,7 +9854,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1895327263}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e83c79de8ffb9e949985b56323fe93a8, type: 3}
   m_Name: 
@@ -9968,6 +9968,7 @@ GameObject:
   - component: {fileID: 2117061509}
   - component: {fileID: 2117061508}
   - component: {fileID: 2117061507}
+  - component: {fileID: 2117061511}
   m_Layer: 9
   m_Name: test_enemy
   m_TagString: Player
@@ -10078,6 +10079,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2117061511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2117061506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 225a3ae5b6ebfce49a8f1da33cfde86e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeToMove: 5.5
 --- !u!1 &2122395335
 GameObject:
   m_ObjectHideFlags: 0

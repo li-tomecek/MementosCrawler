@@ -18,11 +18,11 @@ public class EnemyUnit : GameUnit
     }
     public  void ChooseAction()
     {
-        print("choosing and action...");
+        Debug.Log("choosing and action...");
     }
-    public  void executeMovement()
+    public void executeMovement()
     {
-        print("executing movement...");
+        Debug.Log("executing movement...");
 
     }
 }

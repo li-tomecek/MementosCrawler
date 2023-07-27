@@ -11,7 +11,7 @@ public class MapGrid : MonoBehaviour
 
     private MeshFilter planeMesh;
     private Vector3[] corners;
-    private List<Vector3> lineVerts = new List<Vector3>();
+    private List<Vector3> lineVerts;
 
     [HideInInspector] public MapTile[,] tiles;
     private LineRenderer lr;
@@ -40,23 +40,22 @@ public class MapGrid : MonoBehaviour
         rows = GameManager.Instance.rows;
         columns = GameManager.Instance.columns;
 
-        GameManager.Instance.tileWidth = (Mathf.Abs(corners[1].x - corners[0].x) / columns);
-        GameManager.Instance.tileHeight = (Mathf.Abs(corners[2].y - corners[0].y) / rows);
-        tileWidth = GameManager.Instance.tileWidth;
-        tileHeight = GameManager.Instance.tileHeight;
+        tileWidth = (Mathf.Abs(corners[1].x - corners[0].x) / columns);
+        tileHeight = (Mathf.Abs(corners[2].y - corners[0].y) / rows);
+        GameManager.Instance.tileWidth = tileWidth;
+        GameManager.Instance.tileHeight = tileHeight;
 
         initTilesAndRenderer();
 
     }
-
-    // Update is called once per frame
-    void Update(){}
 
     private void initTilesAndRenderer()
     {
 
         //INITIALISE TILE ARRAY AND CALCULATE LINE VERTICES
         tiles = new MapTile[columns, rows];
+        lineVerts = new List<Vector3>();
+
         MapTile newTile;
         Vector3 vert = corners[3];  //BEWARE: Not sure if this just copies the values or the actual reference
 
@@ -66,7 +65,7 @@ public class MapGrid : MonoBehaviour
 
             for (int j = 0; j < columns; j++)
             {
-                newTile = new MapTile(vert, tileWidth, tileHeight, j, i);
+                newTile = new MapTile(j, i);
                 tiles[j, i] = newTile;
                 vert.x += tileWidth;
                 //Debug.Log("New Tile: [" + j + "," + i + "]");

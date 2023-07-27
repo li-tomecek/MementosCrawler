@@ -33,6 +33,7 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
     public void Start()
     {
         GameManager.Instance.getBattleManager().activeUnits.Add(this);
+        initializeTestUnit();   //obviously temporary
         Debug.Log("added "+ gameObject.name +  " to active unit list");
     }
 
@@ -62,5 +63,24 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
     public int CompareTo(GameUnit other)
     {
         return (this.stats.agility.CompareTo(other.stats.agility) * -1);  //sorting lists in descending agility order
+    }
+
+    public void initializeTestUnit()
+    {
+        moveset = new Move[4];
+        Move move = new Move("atk 1", MoveType.ATTACK, 10, 100, 1);
+        moveset[0] = move;
+        move = new Move("atk 2", MoveType.ATTACK, 10, 100, 1);
+        moveset[1] = move;
+        move = new Move("atk 3", MoveType.ATTACK, 10, 100, 1);
+        moveset[2] = move;
+        move = new Move("atk 4", MoveType.ATTACK, 10, 100, 1);
+        moveset[3] = move;
+
+        stats.strength = 10;
+        stats.defense = 10;
+        stats.agility = 10;
+        stats.maxHP = 25;
+        stats.maxSP = 50;
     }
 }

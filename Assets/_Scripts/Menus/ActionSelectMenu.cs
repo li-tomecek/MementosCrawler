@@ -8,15 +8,15 @@ using UnityEngine.EventSystems;
 public class ActionSelectMenu : MonoBehaviour
 {
 
-    public GameObject personaButton;
+    public GameObject abilityButton;
     public void OnEnable()
     {
-        EventSystem.current.SetSelectedGameObject(personaButton);
+        EventSystem.current.SetSelectedGameObject(abilityButton);
     }
 
-    public void OnPersonaButton()
+    public void OnAbilitiesButton()
     {
-        Debug.Log("Pressed the persona button");
+        Debug.Log("Pressed the abilities button");
         //TODO: open a new menu (the attack options menu)
         GameManager.Instance.getMenuManager().getAbilitySelectMenu().SetActive(true);
         gameObject.SetActive(false);
