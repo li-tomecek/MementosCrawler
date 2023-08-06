@@ -20,6 +20,8 @@ public class PlayerController : UnitController
 
     public void checkInputs()
     {
+        if (GameManager.Instance.getBattleManager().blockPlayerInputs)
+            return;
         //--------player has chosen their location-------------
         if ((GameManager.Instance.getMode() == Mode.BATTLE_MOVE) && (Input.GetKeyDown(KeyCode.Return)))
         {

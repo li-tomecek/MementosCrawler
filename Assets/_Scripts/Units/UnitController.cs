@@ -14,8 +14,6 @@ public class UnitController : MonoBehaviour
     public int startX;
     public int startY;
 
-    private bool coroutineRunning;
-
     float movementDir;
 
     private void Start()
@@ -85,15 +83,15 @@ public class UnitController : MonoBehaviour
 
     private IEnumerator PlayQueuedRoutines(Queue<IEnumerator> coroutines)
     {
-        coroutineRunning = true;
+        GameManager.Instance.getBattleManager().blockPlayerInputs = true;
         IEnumerator currentCoroutine;
         while(coroutines.Count > 0)
         {
             currentCoroutine = coroutines.Dequeue();
             yield return StartCoroutine(currentCoroutine);
         }
-        
-        coroutineRunning = false;
+        GameManager.Instance.getBattleManager().blockPlayerInputs = false;
+
 
     }
 
@@ -179,7 +177,6 @@ public class Node       //!!!!WILL PROBABLY WANT TO EVENTUALLY MERGE THIS INTO M
     public int manhattanDist;
     public int costToStart = -1;
     public bool visited = false;
-    //public bool isTraversible
 
     public int getManhattanDistanceToCoord(Coords c)
     {

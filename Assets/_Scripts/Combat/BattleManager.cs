@@ -7,6 +7,7 @@ public class BattleManager : MonoBehaviour
     //-------------fields-----------------
     public List<GameUnit> activeUnits;
     int turn_index;
+    [HideInInspector] public bool blockPlayerInputs;
     //------constructors and start--------
     private void onAwake()
     {
