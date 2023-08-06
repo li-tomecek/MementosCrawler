@@ -124,20 +124,20 @@ public class MapGrid : MonoBehaviour
     }
 
     //finds the tile that the given point lies within. Returns -1 if the point lies outsidfe of the grid
-    public Vector2Int worldToGridCoords(Vector3 worldCoords)
+    public Coords worldToGridCoords(Vector3 worldCoords)
     {
         //Debug.Log("TL: " + corners[0] + "\nBR: " + corners[2] + "\nCoord: " + worldCoords);
-        Vector2Int coord = new Vector2Int();
+        Coords coord = new Coords();
         if(worldCoords.x < corners[0].x || worldCoords.x > corners[1].x || worldCoords.y > corners[0].y || worldCoords.y < corners[2].y)
         {
            // Debug.Log("Coordinate lies outside of the playing field.");
-            coord.x = -1;
-            coord.y = -1;
+            coord.X = -1;
+            coord.Y = -1;
             return coord;
         }
        
-        coord.x = Mathf.FloorToInt((worldCoords.x - corners[3].x)/tileWidth);
-        coord.y = Mathf.FloorToInt((worldCoords.y - corners[3].y)/tileHeight);
+        coord.X = Mathf.FloorToInt((worldCoords.x - corners[3].x)/tileWidth);
+        coord.Y = Mathf.FloorToInt((worldCoords.y - corners[3].y)/tileHeight);
 
         return coord;
     }

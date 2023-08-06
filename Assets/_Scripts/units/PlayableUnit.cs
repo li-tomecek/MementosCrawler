@@ -22,5 +22,6 @@ public class PlayableUnit : GameUnit
     public new void Start()
     {
         base.Start();
+        GameManager.Instance.ActivePlayerUnits.Add(this);
     }
 }

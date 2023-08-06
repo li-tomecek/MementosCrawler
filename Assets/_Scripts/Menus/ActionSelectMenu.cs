@@ -17,7 +17,6 @@ public class ActionSelectMenu : MonoBehaviour
     public void OnAbilitiesButton()
     {
         Debug.Log("Pressed the abilities button");
-        //TODO: open a new menu (the attack options menu)
         GameManager.Instance.getMenuManager().getAbilitySelectMenu().SetActive(true);
         gameObject.SetActive(false);
     }

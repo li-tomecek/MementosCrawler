@@ -12,8 +12,6 @@ public class MapTile
     private int y;      //grid coordinates? may not need them at all.
 
     private bool occupied = false;
-    private int contentCode;
-    private GameObject actor;
 
 
     public MapTile(int x, int y)

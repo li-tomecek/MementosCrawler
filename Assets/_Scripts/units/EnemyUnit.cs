@@ -8,21 +8,33 @@ public class EnemyUnit : GameUnit
     public EnemyUnit() : base() { }
     public EnemyUnit(Move[] moveset, Stats stats, Coords pos) : base(moveset, stats, pos) { }
 
+    private UnitController controller;
+
 
     public override void TakeTurn()
     {
-        ChooseAction();
         executeMovement();
+        chooseAction();
 
         GameManager.Instance.getBattleManager().nextTurn();
     }
-    public  void ChooseAction()
+    public  void chooseAction()
     {
         Debug.Log("choosing and action...");
     }
     public void executeMovement()
     {
-        Debug.Log("executing movement...");
+        Coords coord = new Coords(1,1);
+        controller.MoveToDistantTile(coord);
 
+        Debug.Log("executing movement...");
+    }
+
+
+    public new void Start()
+    {
+        base.Start();
+        GameManager.Instance.ActiveEnemyUnits.Add(this);
+        this.controller = gameObject.GetComponent<UnitController>();
     }
 }
