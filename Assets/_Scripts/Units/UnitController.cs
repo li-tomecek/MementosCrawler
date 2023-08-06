@@ -4,7 +4,6 @@ using UnityEngine;
 
 using System;
 using System.Linq;
-//using System.Collections.Generic;
 
 public class UnitController : MonoBehaviour
 {
@@ -14,6 +13,8 @@ public class UnitController : MonoBehaviour
     public float timeToMove = 5.5f;
     public int startX;
     public int startY;
+
+    private bool coroutineRunning;
 
     float movementDir;
 
@@ -56,7 +57,7 @@ public class UnitController : MonoBehaviour
     protected IEnumerator MoveOneStep(Coords target)
     {
         float elapsedTime = 0;
-        isMoving = true;
+        //isMoving = true;
 
         origPos = transform.position;
         targetPos = MapGrid.Instance.gridToWorldCoords(target.X, target.Y);
@@ -71,6 +72,7 @@ public class UnitController : MonoBehaviour
 
                 elapsedTime += Time.deltaTime;
                 yield return null;
+
             }
 
             transform.position = targetPos; //just to be safe
@@ -78,13 +80,29 @@ public class UnitController : MonoBehaviour
             MapGrid.Instance.tiles[target.X, target.Y].setOccupied(true);
         }
 
-        isMoving = false;
+        //isMoving = false;
+    }
+
+    private IEnumerator PlayQueuedRoutines(Queue<IEnumerator> coroutines)
+    {
+        coroutineRunning = true;
+        IEnumerator currentCoroutine;
+        while(coroutines.Count > 0)
+        {
+            currentCoroutine = coroutines.Dequeue();
+            yield return StartCoroutine(currentCoroutine);
+        }
+        
+        coroutineRunning = false;
+
     }
 
     public void MoveToDistantTile(Coords target)
     {
 
         Coords startCoord = MapGrid.Instance.worldToGridCoords(transform.position);
+        if (startCoord == target)
+            return;
         
         List<Node> nodeQueue = new List<Node>();
         Node[,] allNodes = new Node[GameManager.Instance.columns, GameManager.Instance.rows];
@@ -141,13 +159,15 @@ public class UnitController : MonoBehaviour
             n = n.parent;
 
         } while (n.coord != startCoord);
+
         //for each step, get vector from current position to next adjacent tile, start coroutine (MoveActor(this vector))?
+        Queue<IEnumerator> corountineQueue = new Queue<IEnumerator>();
         for (int i = pathToTarget.Count() - 1; i >=0; i--)
         {
-            Debug.Log("Moving to: " + pathToTarget.ElementAt(i));
-           
-            StartCoroutine(MoveOneStep(pathToTarget.ElementAt(i)));
+            corountineQueue.Enqueue(MoveOneStep(pathToTarget.ElementAt(i)));
         }
+        
+        StartCoroutine(PlayQueuedRoutines(corountineQueue));
     }
 }
 
