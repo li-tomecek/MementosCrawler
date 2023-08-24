@@ -15,9 +15,9 @@ public enum Mode
 }
 
 
-public struct Coords
+public struct Coord
 {
-    public Coords(int x, int y)
+    public Coord(int x, int y)
     {
         X = x;
         Y = y;
@@ -25,11 +25,11 @@ public struct Coords
     public int X { get; set; }
     public int Y { get; set; }
     public override string ToString() => $"({X}, {Y})";
-    public static bool operator ==(Coords c1, Coords c2)
+    public static bool operator ==(Coord c1, Coord c2)
     {
         return ((c1.X == c2.X) && (c1.Y == c2.Y));
     }
-    public static bool operator !=(Coords c1, Coords c2)
+    public static bool operator !=(Coord c1, Coord c2)
     {
         return ((c1.X != c2.X) || (c1.Y != c2.Y));
     }

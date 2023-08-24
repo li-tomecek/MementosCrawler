@@ -7,7 +7,7 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
 {
     //--------Constructors------------
     public GameUnit() { }
-    public GameUnit(Move[] moveset, Stats stats, Coords pos)
+    public GameUnit(Move[] moveset, Stats stats, Coord pos)
     {
         if (moveset.Length != 4)
         {
@@ -25,7 +25,7 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
     protected Move[] moveset;
     [SerializeField] protected Stats stats;
     protected int currentHP, currentSP;
-    protected Coords position;
+    protected Coord position;
 
     // --------Shared Methods----------
     public abstract void TakeTurn();
@@ -39,7 +39,7 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
 
     //----------GET/SET----------------
     //--~~getters~~--
-    public Coords getPosition() { return position; }
+    public Coord getPosition() { return position; }
     public Stats getStats() { return stats; }
     public int getHP() { return currentHP; }
     public int getSP() { return currentSP; }

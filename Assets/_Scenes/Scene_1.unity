@@ -5050,6 +5050,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeUnits: []
+  blockPlayerInputs: 0
 --- !u!1 &653047584
 GameObject:
   m_ObjectHideFlags: 0
@@ -10095,7 +10096,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 225a3ae5b6ebfce49a8f1da33cfde86e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeToMove: 5.5
+  timeToMove: 0.35
   startX: 5
   startY: 3
 --- !u!1 &2122395335

@@ -11,7 +11,7 @@ public class MapTile
     private int x;
     private int y;      //grid coordinates? may not need them at all.
 
-    private bool occupied = false;
+    private bool traversible = true;
 
 
     public MapTile(int x, int y)
@@ -31,20 +31,12 @@ public class MapTile
     {
         return this.y;
     }
-    public bool isOccupied()
+    public bool isTraversible()
     {
-        return occupied;
+        return traversible;
     }
-    public void setX(int i)
+    public void setTraversible(bool b)
     {
-        this.x = i;
-    }
-    public void setY(int  i)
-    {
-        this.y = i;
-    }
-    public void setOccupied(bool occ)
-    {
-        occupied = occ;
+        traversible = b;
     }
 }

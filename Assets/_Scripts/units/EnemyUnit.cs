@@ -6,7 +6,7 @@ public class EnemyUnit : GameUnit
 {
     //------constructors-------
     public EnemyUnit() : base() { }
-    public EnemyUnit(Move[] moveset, Stats stats, Coords pos) : base(moveset, stats, pos) { }
+    public EnemyUnit(Move[] moveset, Stats stats, Coord pos) : base(moveset, stats, pos) { }
 
     private UnitController controller;
 
@@ -24,7 +24,7 @@ public class EnemyUnit : GameUnit
     }
     public void executeMovement()
     {
-        Coords coord = new Coords(1,1);
+        Coord coord = new Coord(1,1);
         controller.MoveToDistantTile(coord);
 
         Debug.Log("executing movement...");

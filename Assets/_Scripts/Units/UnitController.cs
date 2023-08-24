@@ -10,7 +10,7 @@ public class UnitController : MonoBehaviour
     //--------Shared components---------
     protected bool isMoving;
     protected Vector3 origPos, targetPos;
-    public float timeToMove = 5.5f;
+    public float timeToMove = 5.0f;
     public int startX;
     public int startY;
 
@@ -32,10 +32,10 @@ public class UnitController : MonoBehaviour
         targetPos = origPos + direction;
 
         //will only move player if they stay within the grid
-        Coords coord = MapGrid.Instance.worldToGridCoords(targetPos);
-        Coords startCoord = MapGrid.Instance.worldToGridCoords(origPos);
+        Coord coord = MapGrid.Instance.worldToGridCoords(targetPos);
+        Coord startCoord = MapGrid.Instance.worldToGridCoords(origPos);
 
-        if (coord.X != -1 && !MapGrid.Instance.tiles[coord.X, coord.Y].isOccupied())
+        if (coord.X != -1 && MapGrid.Instance.tiles[coord.X, coord.Y].isTraversible())
         {
             while (elapsedTime < timeToMove)
             {
@@ -46,23 +46,22 @@ public class UnitController : MonoBehaviour
             }
 
             transform.position = targetPos; //just to be safe
-            MapGrid.Instance.tiles[startCoord.X, startCoord.Y].setOccupied(false);
-            MapGrid.Instance.tiles[coord.X, coord.Y].setOccupied(true);
+            MapGrid.Instance.tiles[startCoord.X, startCoord.Y].setTraversible(true);
+            MapGrid.Instance.tiles[coord.X, coord.Y].setTraversible(false);
         }
         isMoving = false;
     }
 
-    protected IEnumerator MoveOneStep(Coords target)
+    protected IEnumerator MoveOneStep(Coord target)
     {
         float elapsedTime = 0;
-        //isMoving = true;
 
         origPos = transform.position;
         targetPos = MapGrid.Instance.gridToWorldCoords(target.X, target.Y);
-        Coords startCoord = MapGrid.Instance.worldToGridCoords(origPos);
+        Coord startCoord = MapGrid.Instance.worldToGridCoords(origPos);
 
 
-        if (target.X != -1 && !MapGrid.Instance.tiles[target.X, target.Y].isOccupied()) //this is just an extra layer of precaution at this point
+        if (target.X != -1 && MapGrid.Instance.tiles[target.X, target.Y].isTraversible()) //this is just an extra layer of precaution at this point
         {
             while (elapsedTime < timeToMove)
             {
@@ -74,11 +73,10 @@ public class UnitController : MonoBehaviour
             }
 
             transform.position = targetPos; //just to be safe
-            MapGrid.Instance.tiles[startCoord.X, startCoord.Y].setOccupied(false);
-            MapGrid.Instance.tiles[target.X, target.Y].setOccupied(true);
+            MapGrid.Instance.tiles[startCoord.X, startCoord.Y].setTraversible(true);
+            MapGrid.Instance.tiles[target.X, target.Y].setTraversible(false);
         }
 
-        //isMoving = false;
     }
 
     private IEnumerator PlayQueuedRoutines(Queue<IEnumerator> coroutines)
@@ -95,10 +93,10 @@ public class UnitController : MonoBehaviour
 
     }
 
-    public void MoveToDistantTile(Coords target)
+    public void MoveToDistantTile(Coord target)
     {
 
-        Coords startCoord = MapGrid.Instance.worldToGridCoords(transform.position);
+        Coord startCoord = MapGrid.Instance.worldToGridCoords(transform.position);
         if (startCoord == target)
             return;
         
@@ -111,6 +109,7 @@ public class UnitController : MonoBehaviour
             temp.coord.X = tile.getX();
             temp.coord.Y = tile.getY();
             temp.manhattanDist = temp.getManhattanDistanceToCoord(target);
+            temp.traversible = tile.isTraversible();
             
             allNodes[temp.coord.X, temp.coord.Y] = temp;
 
@@ -119,20 +118,27 @@ public class UnitController : MonoBehaviour
                 temp.costToStart = 0;
                 nodeQueue.Add(temp);
             }
-        }
-        //A* pathfinding using Manhattan distance as heuristic
 
+            if(temp.coord == target && !temp.traversible)
+            {
+                Debug.Log("The target tile is not traversible! Skipping movement.");
+                return;
+            }
+
+        }
+        
+        //A* pathfinding using Manhattan distance as heuristic
         Node n;
         do
         {
-            nodeQueue = nodeQueue.OrderBy(x => x.costToStart + x.manhattanDist).ToList();
+            nodeQueue = nodeQueue.OrderBy(x => x.costToStart + x.manhattanDist).ToList();       //the maps are small enough that there should not be very many nodes in this at all, thus there is not really a time concern
             n = nodeQueue.First();
             nodeQueue.Remove(n);
 
             List<Node> neighbours = n.getNeighbours(allNodes);
             foreach (Node neighbour in neighbours)
             {
-                if (!neighbour.visited)
+                if (!neighbour.visited && neighbour.traversible)
                 {
                     if( neighbour.costToStart == -1 || neighbour.costToStart > n.costToStart + 1)
                     {
@@ -150,7 +156,7 @@ public class UnitController : MonoBehaviour
         } while(nodeQueue.Count > 0);
 
         //use list from A* to trace a path (reverse order)
-        List<Coords> pathToTarget = new List<Coords>();
+        List<Coord> pathToTarget = new List<Coord>();
         do
         {
             pathToTarget.Add(n.coord);
@@ -158,7 +164,7 @@ public class UnitController : MonoBehaviour
 
         } while (n.coord != startCoord);
 
-        //for each step, get vector from current position to next adjacent tile, start coroutine (MoveActor(this vector))?
+        //for each step, get vector from current position to next adjacent tile, start coroutine
         Queue<IEnumerator> corountineQueue = new Queue<IEnumerator>();
         for (int i = pathToTarget.Count() - 1; i >=0; i--)
         {
@@ -170,15 +176,16 @@ public class UnitController : MonoBehaviour
 }
 
 
-public class Node       //!!!!WILL PROBABLY WANT TO EVENTUALLY MERGE THIS INTO MAPTILE SO THAT WE CAN HAVE SOME COLLISION PREVENTION (WALKING AROUND OTHER UNITS RATHER THAN THROUGH THEM!!!!!)
+public class Node       
 {
-    public Coords coord;
+    public Coord coord;
     public Node parent;
     public int manhattanDist;
     public int costToStart = -1;
     public bool visited = false;
+    public bool traversible;
 
-    public int getManhattanDistanceToCoord(Coords c)
+    public int getManhattanDistanceToCoord(Coord c)
     {
         return Mathf.Abs(c.X - coord.X) + Mathf.Abs(c.Y - coord.Y);
     }
