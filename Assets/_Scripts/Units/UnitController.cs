@@ -19,6 +19,8 @@ public class UnitController : MonoBehaviour
     private void Start()
     {
         transform.position = (MapGrid.Instance.gridToWorldCoords(startX,startY));
+        MapGrid.Instance.tiles[startX, startY].setTraversible(false);
+
     }
 
     // ---------Shared Methods-----------
