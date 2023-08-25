@@ -11,6 +11,8 @@ public class MapTile
     private int x;
     private int y;      //grid coordinates? may not need them at all.
 
+    //maybe want a center point so avoid doing calcualtions easch turn?
+
     private bool traversible = true;
 
 

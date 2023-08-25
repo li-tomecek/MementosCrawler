@@ -11,7 +11,7 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
     {
         if (moveset.Length != 4)
         {
-            Debug.Log("This unit's moveset must contain 4 moves.");
+            Debug.Log("This unit's moveset must contain exactly 4 moves.");
             return;
         }
         this.moveset = moveset;
@@ -37,6 +37,34 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
         Debug.Log("added "+ gameObject.name +  " to active unit list");
     }
 
+    protected List<GameUnit> getAlliesInRange()
+    {
+        List<GameUnit> allies = new List<GameUnit>();
+        foreach (GameUnit unit in GameManager.Instance.getBattleManager().activeUnits)
+        {
+            if ((this is EnemyUnit && unit is EnemyUnit) || (this is PlayableUnit && unit is PlayableUnit))
+            {
+                //TODO: check if they are within range, then check if an adjacent space is open. assuming this open space is always reachable?
+                allies.Add(unit);
+            }
+        }
+        return allies;
+    }
+
+    protected List<GameUnit> getEnemiesInRange()
+    {
+        List<GameUnit> enemies = new List<GameUnit>();
+        foreach (GameUnit unit in GameManager.Instance.getBattleManager().activeUnits)
+        {
+            if ((this is EnemyUnit && unit is PlayableUnit) || (this is PlayableUnit && unit is EnemyUnit))
+            {
+                //TODO: check if they are within range, then check if an adjacent space is open. assuming this open space is always reachable?
+                enemies.Add(unit);
+            }
+        }
+        return enemies;
+    }
+
     //----------GET/SET----------------
     //--~~getters~~--
     public Coord getPosition() { return position; }
@@ -48,7 +76,6 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
     public void setHP(int hp) { currentHP = hp; }
     public void setSP(int sp) { currentSP = sp; }
     public void setPosition(int x, int y) { position.X = x; position.Y = y; }
-    
     
     public void decreaseHP(int amt)
     {
@@ -68,13 +95,13 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
     public void initializeTestUnit()
     {
         moveset = new Move[4];
-        Move move = new Move("atk 1", MoveType.ATTACK, 10, 100, 1);
+        Move move = new Move("attack", MoveType.ATTACK, 10, 100, 1, 2);
         moveset[0] = move;
-        move = new Move("atk 2", MoveType.ATTACK, 10, 100, 1);
+        move = new Move("buff", MoveType.BUFF, 10, 100, 1, 2);
         moveset[1] = move;
-        move = new Move("atk 3", MoveType.ATTACK, 10, 100, 1);
+        move = new Move("debuff", MoveType.DEBUFF, 10, 100, 1, 2);
         moveset[2] = move;
-        move = new Move("atk 4", MoveType.ATTACK, 10, 100, 1);
+        move = new Move("heal", MoveType.HEAL, 10, 100, 1, 2);
         moveset[3] = move;
 
         stats.strength = 10;

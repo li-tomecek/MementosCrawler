@@ -8,6 +8,8 @@ public class BattleManager : MonoBehaviour
     public List<GameUnit> activeUnits;
     int turn_index;
     [HideInInspector] public bool blockPlayerInputs;
+
+    public int MOVEMENT = 4;       //represents how many tiles characters may move in one turn.
     //------constructors and start--------
     private void onAwake()
     {
