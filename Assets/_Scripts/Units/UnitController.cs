@@ -14,6 +14,8 @@ public class UnitController : MonoBehaviour
     public int startX;
     public int startY;
 
+    public Coord position;
+
     float movementDir;
 
     private void Start()
@@ -50,6 +52,9 @@ public class UnitController : MonoBehaviour
             transform.position = targetPos; //just to be safe
             MapGrid.Instance.tiles[startCoord.X, startCoord.Y].setTraversible(true);
             MapGrid.Instance.tiles[coord.X, coord.Y].setTraversible(false);
+            position = coord;
+            //Debug.Log("Position is now " + position.ToString());
+
         }
         isMoving = false;
     }
@@ -77,6 +82,8 @@ public class UnitController : MonoBehaviour
             transform.position = targetPos; //just to be safe
             MapGrid.Instance.tiles[startCoord.X, startCoord.Y].setTraversible(true);
             MapGrid.Instance.tiles[target.X, target.Y].setTraversible(false);
+            position = target;
+            //Debug.Log("Position is now " + position.ToString());
         }
 
     }

@@ -7,7 +7,7 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
 {
     //--------Constructors------------
     public GameUnit() { }
-    public GameUnit(Move[] moveset, Stats stats, Coord pos)
+    public GameUnit(Move[] moveset, Stats stats)
     {
         if (moveset.Length != 4)
         {
@@ -16,7 +16,6 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
         }
         this.moveset = moveset;
         this.stats = stats;
-        this.position = pos;
         this.currentHP = stats.maxHP;
         this.currentSP = stats.maxSP;
     }
@@ -25,49 +24,25 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
     protected Move[] moveset;
     [SerializeField] protected Stats stats;
     protected int currentHP, currentSP;
-    protected Coord position;
+    private UnitController controller;
 
     // --------Shared Methods----------
     public abstract void TakeTurn();
+    public abstract List<GameUnit> getAlliesInRange();
+    public abstract List<GameUnit> getEnemiesInRange();
 
     public void Start()
     {
         GameManager.Instance.getBattleManager().activeUnits.Add(this);
         initializeTestUnit();   //obviously temporary
+        this.controller = gameObject.GetComponent<UnitController>();
         Debug.Log("added "+ gameObject.name +  " to active unit list");
+
     }
 
-    protected List<GameUnit> getAlliesInRange()
-    {
-        List<GameUnit> allies = new List<GameUnit>();
-        foreach (GameUnit unit in GameManager.Instance.getBattleManager().activeUnits)
-        {
-            if ((this is EnemyUnit && unit is EnemyUnit) || (this is PlayableUnit && unit is PlayableUnit))
-            {
-                //TODO: check if they are within range, then check if an adjacent space is open. assuming this open space is always reachable?
-                allies.Add(unit);
-            }
-        }
-        return allies;
-    }
-
-    protected List<GameUnit> getEnemiesInRange()
-    {
-        List<GameUnit> enemies = new List<GameUnit>();
-        foreach (GameUnit unit in GameManager.Instance.getBattleManager().activeUnits)
-        {
-            if ((this is EnemyUnit && unit is PlayableUnit) || (this is PlayableUnit && unit is EnemyUnit))
-            {
-                //TODO: check if they are within range, then check if an adjacent space is open. assuming this open space is always reachable?
-                enemies.Add(unit);
-            }
-        }
-        return enemies;
-    }
 
     //----------GET/SET----------------
     //--~~getters~~--
-    public Coord getPosition() { return position; }
     public Stats getStats() { return stats; }
     public int getHP() { return currentHP; }
     public int getSP() { return currentSP; }
@@ -75,7 +50,6 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
     //--~~setters~~--
     public void setHP(int hp) { currentHP = hp; }
     public void setSP(int sp) { currentSP = sp; }
-    public void setPosition(int x, int y) { position.X = x; position.Y = y; }
     
     public void decreaseHP(int amt)
     {

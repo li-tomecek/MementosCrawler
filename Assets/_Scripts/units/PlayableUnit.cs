@@ -6,15 +6,25 @@ public class PlayableUnit : GameUnit
 {
     //-----------constructors------------
     public PlayableUnit() : base() { }
-    public PlayableUnit(Move[] moveset, Stats stats, Coord pos) : base(moveset, stats, pos) { }
+    public PlayableUnit(Move[] moveset, Stats stats) : base(moveset, stats) { }
 
     //-------------fields-----------------
     [HideInInspector] public bool isBlocking;
+  
 
     //-------implemented methods----------
     public override void TakeTurn()
     {
         GameManager.Instance.setMode(Mode.BATTLE_MOVE);
+
+    }
+    public override List<GameUnit> getAlliesInRange()
+    {
+        throw new System.NotImplementedException();
+    }
+    public override List<GameUnit> getEnemiesInRange()
+    {
+        throw new System.NotImplementedException();
     }
 
     //----------other methods--------------

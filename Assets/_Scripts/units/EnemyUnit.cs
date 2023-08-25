@@ -6,11 +6,12 @@ public class EnemyUnit : GameUnit
 {
     //------constructors-------
     public EnemyUnit() : base() { }
-    public EnemyUnit(Move[] moveset, Stats stats, Coord pos) : base(moveset, stats, pos) { }
+    public EnemyUnit(Move[] moveset, Stats stats) : base(moveset, stats) { }
 
     private UnitController controller;
 
 
+    //-------implemented methods----------
     public override void TakeTurn()
     {
         executeMovement();
@@ -18,7 +19,17 @@ public class EnemyUnit : GameUnit
 
         GameManager.Instance.getBattleManager().nextTurn();
     }
-    public  void chooseAction()
+    public override List<GameUnit> getAlliesInRange()       //positions taken from controller! its updates when the unit is moved by the controller
+    {
+        throw new System.NotImplementedException();
+    }
+    public override List<GameUnit> getEnemiesInRange()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    //----------other methods--------------
+    public void chooseAction()
     {
         Debug.Log("choosing and action...");
     }
@@ -26,8 +37,8 @@ public class EnemyUnit : GameUnit
     {
         Coord coord = new Coord(1,1);
         controller.MoveToDistantTile(coord);
-
         Debug.Log("executing movement...");
+
     }
 
 
