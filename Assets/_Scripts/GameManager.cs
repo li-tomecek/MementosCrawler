@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    //PUTTING SOME RANDOM TEXT HERE AS A TEST TO THE NEW REPOSITORY BRANCH
+    
     public static GameManager Instance { get; private set; }
     private void Awake()
     {
