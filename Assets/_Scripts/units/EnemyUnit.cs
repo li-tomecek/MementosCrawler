@@ -88,7 +88,7 @@ public class EnemyUnit : GameUnit
         {
             enemy_health = Math.Max(0.0f,(unit.getHP() - (this.stats.strength + move.getPower() - unit.getStats().defense)));
             
-            desire = Math.Max(0.0f, ATK_K * (ENEMY_HEALTH_C*(GameManager.MAX_HP_VALUE - enemy_health)) * (ATK_SP_C*(GameManager.MAX_SP_VALUE - move.getSPCost())) * (ACC_C*(move.getAccuracy()))); 
+            desire = Math.Max(0.0f, ATK_K * (ENEMY_HEALTH_C*(GameManager.MAX_HP_VALUE - enemy_health)) * (ATK_SP_C*(GameManager.MAX_SP_VALUE - move.getSPCost()) * (ACC_C*(move.getAccuracy()))); 
             if (desire > max_desire)
             {
                 max_desire = desire;

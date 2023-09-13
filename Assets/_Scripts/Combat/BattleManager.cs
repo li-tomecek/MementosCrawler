@@ -52,7 +52,7 @@ public class BattleManager : MonoBehaviour
         if(move.getType() == MoveType.ATTACK)
         {
             Debug.Log("used an attack move");
-        } else if(move.getType() == MoveType.HEAL)
+        } else if(move.getType() == MoveType.HEAL)      //TODO: make moves do something, and consider th case when there is no sp to use a move -- what should the enemy choose to so then???
         {
             Debug.Log("used a healing move");
         }
