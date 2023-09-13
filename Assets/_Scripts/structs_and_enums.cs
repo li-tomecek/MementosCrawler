@@ -46,6 +46,17 @@ public struct Coord
         }
         return adj;
     }
+    public List<Coord> findOpenAdjacentCoords()
+    {
+        List<Coord> list = findAdjacentCoords();
+        foreach(Coord c in list)
+        {
+            if (!MapGrid.Instance.tiles[c.X, c.Y].isTraversible())
+                list.Remove(c);
+        }
+
+        return list;
+    }
 
     public override string ToString() => $"({X}, {Y})";
     public static bool operator ==(Coord c1, Coord c2)

@@ -36,7 +36,6 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
     {
         GameManager.Instance.getBattleManager().activeUnits.Add(this);
         initializeTestUnit();   //obviously temporary
-        this.controller = gameObject.GetComponent<UnitController>();
         Debug.Log("added "+ gameObject.name +  " to active unit list");
 
     }
@@ -48,6 +47,8 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
     public int getHP() { return currentHP; }
     public int getSP() { return currentSP; }
     public Move[] getMoveset() { return moveset; }
+    public UnitController getController() { return controller; }
+
     //--~~setters~~--
     public void setHP(int hp) { currentHP = hp; }
     public void setSP(int sp) { currentSP = sp; }

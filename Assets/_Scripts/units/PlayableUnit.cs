@@ -10,6 +10,7 @@ public class PlayableUnit : GameUnit
 
     //-------------fields-----------------
     [HideInInspector] public bool isBlocking;
+
   
 
     //-------implemented methods----------
@@ -20,11 +21,25 @@ public class PlayableUnit : GameUnit
     }
     public override List<GameUnit> getAlliesInRange()
     {
-        throw new System.NotImplementedException();
+        List<GameUnit> list = new List<GameUnit>();
+        foreach (PlayableUnit unit in GameManager.Instance.getBattleManager().ActivePlayerUnits)
+        {
+            int temp = controller.lengthOfShortestPath(unit.getController().position);
+            if (temp > -1 && temp <= (GameManager.MOVEMENT + 1))
+                list.Add(unit);
+        }
+        return list;
     }
     public override List<GameUnit> getEnemiesInRange()
     {
-        throw new System.NotImplementedException();
+        List<GameUnit> list = new List<GameUnit>();
+        foreach (EnemyUnit unit in GameManager.Instance.getBattleManager().ActiveEnemyUnits)
+        {
+            int temp = controller.lengthOfShortestPath(unit.getController().position);
+            if (temp > -1 && temp <= (GameManager.MOVEMENT + 1))
+                list.Add(unit);
+        }
+        return list;
     }
 
     //----------other methods--------------
@@ -32,6 +47,7 @@ public class PlayableUnit : GameUnit
     public new void Start()
     {
         base.Start();
-        GameManager.Instance.ActivePlayerUnits.Add(this);
+        GameManager.Instance.getBattleManager().ActivePlayerUnits.Add(this);
+        this.controller = gameObject.GetComponent<PlayerController>();
     }
 }

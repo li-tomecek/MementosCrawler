@@ -29,19 +29,33 @@ public class EnemyUnit : GameUnit
     //-------implemented methods----------
     public override void TakeTurn()
     {
-        //chooseAction();
+        chooseAction();
         executeMovement();
-        //GameManager.Instance.getBattleManager().UseMove(selected_move, target, this);
+        GameManager.Instance.getBattleManager().UseMove(selected_move, target, this);
 
         GameManager.Instance.getBattleManager().nextTurn();
     }
-    public override List<GameUnit> getAlliesInRange()       //positions taken from controller! its updates when the unit is moved by the controller
+    public override List<GameUnit> getAlliesInRange()   
     {
-        throw new System.NotImplementedException();
-    }                                                                   //TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        List<GameUnit> list = new List<GameUnit>();
+        foreach (EnemyUnit unit in GameManager.Instance.getBattleManager().ActiveEnemyUnits)
+        {
+            int temp = controller.lengthOfShortestPath(unit.getController().position);
+            if (temp > -1 && temp <= (GameManager.MOVEMENT + 1))
+                list.Add(unit);
+        }
+        return list;
+    }                                                                 
     public override List<GameUnit> getEnemiesInRange()
     {
-        throw new System.NotImplementedException();
+        List<GameUnit> list = new List<GameUnit>();
+        foreach (PlayableUnit unit in GameManager.Instance.getBattleManager().ActivePlayerUnits)
+        {
+            int temp = controller.lengthOfShortestPath(unit.getController().position);
+            if (temp > -1 && temp <= (GameManager.MOVEMENT + 1))
+                list.Add(unit);
+        }
+        return list;
     }
 
     //----------other methods--------------
@@ -50,6 +64,7 @@ public class EnemyUnit : GameUnit
         Debug.Log("choosing and action...");
 
         target = this;  //default value that should definitely be replaced within the following functions
+        target_coord = controller.position;
         float desire = -1.0f;
 
         foreach (Move m in moveset)
@@ -64,9 +79,8 @@ public class EnemyUnit : GameUnit
         }
 
         // ~3~ Select move with the highest "desireablilty"
-        //target_coord = something like getAdjacentCoords(target.getCoord())[0]; once i solve the getting the coord issue (shouldnt be too hard?)
+        target_coord = target.getController().position.findOpenAdjacentCoords()[0]; //idk if this will work, but it should return the  first adjacent coordinate that isnt full.
     }
-
     public float find_best_attack_target(float max_desire, Move move)  //**NOTE** 1/x does not provide a negative linear relationship btwn desire and the value of x. it would intead have to be some "max value" constant - x ** TO FIX FOR SOME RELATIONSHIPS (and adjust weights accordingly)
     {
         float desire, enemy_health;
@@ -119,8 +133,6 @@ public class EnemyUnit : GameUnit
 
         return max_desire;
     }
-
-
     public void executeMovement()
     {
         controller.MoveToDistantTile(target_coord);
@@ -132,7 +144,7 @@ public class EnemyUnit : GameUnit
     public new void Start()
     {
         base.Start();
-        GameManager.Instance.ActiveEnemyUnits.Add(this);
+        GameManager.Instance.getBattleManager().ActiveEnemyUnits.Add(this);
         this.controller = gameObject.GetComponent<UnitController>();
     }
 }

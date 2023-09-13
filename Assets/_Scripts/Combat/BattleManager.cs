@@ -6,6 +6,9 @@ public class BattleManager : MonoBehaviour
 {
     //-------------fields-----------------
     public List<GameUnit> activeUnits;
+    public List<PlayableUnit> ActivePlayerUnits;
+    public List<EnemyUnit> ActiveEnemyUnits;
+
     int turn_index;
     [HideInInspector] public bool blockPlayerInputs;
 
@@ -14,6 +17,8 @@ public class BattleManager : MonoBehaviour
     private void onAwake()
     {
         activeUnits = new List<GameUnit>();
+        ActivePlayerUnits = new List<PlayableUnit>();
+        ActiveEnemyUnits = new List<EnemyUnit>();
     }
     //-------------get/set----------------
     public List<GameUnit> getActiveUnits() { return activeUnits; }
@@ -46,11 +51,12 @@ public class BattleManager : MonoBehaviour
     {
         if(move.getType() == MoveType.ATTACK)
         {
-
+            Debug.Log("used an attack move");
         } else if(move.getType() == MoveType.HEAL)
         {
-
-        } else
+            Debug.Log("used a healing move");
+        }
+        else
         {
             Debug.Log("BUFF AND DEBUFF ACTIONS HAVE NOT BEEN IMPLEMENTED YET");
         }

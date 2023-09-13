@@ -12,9 +12,6 @@ public class GameManager : MonoBehaviour
         mode = Mode.BATTLE_MOVE;
         menuManager = gameObject.GetComponent<MenuManager>();
         battleManager = gameObject.GetComponent<BattleManager>();
-
-        ActivePlayerUnits = new List<PlayableUnit>();
-        ActiveEnemyUnits = new List<EnemyUnit>();
     }
 
     public const int MAX_STAT_VALUE = 100;
@@ -35,9 +32,6 @@ public class GameManager : MonoBehaviour
 
     MenuManager menuManager;
     BattleManager battleManager;
-
-    public List<PlayableUnit> ActivePlayerUnits;
-    public List<EnemyUnit> ActiveEnemyUnits;
 
     //-------METHODS-------
     public void swapActiveUnit(GameObject unit)

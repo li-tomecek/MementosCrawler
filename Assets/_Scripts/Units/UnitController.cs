@@ -144,6 +144,11 @@ public class UnitController : MonoBehaviour
             n = nodeQueue.First();
             nodeQueue.Remove(n);
 
+            if (n.coord == target)
+            {
+                break;
+            }
+
             List<Node> neighbours = n.getNeighbours(allNodes);
             foreach (Node neighbour in neighbours)
             {
@@ -160,8 +165,8 @@ public class UnitController : MonoBehaviour
                 }
             }
             n.visited = true;
-            if (n.coord == target)
-                break;
+            //if (n.coord == target)
+            //    break;
         } while(nodeQueue.Count > 0);
 
         //use list from A* to trace a path (reverse order)
@@ -181,6 +186,69 @@ public class UnitController : MonoBehaviour
         }
         
         StartCoroutine(PlayQueuedRoutines(corountineQueue));
+    }
+
+    public int lengthOfShortestPath(Coord target) // returns -1 if the target is not reachable
+    {
+        //this COULD be cleaned up so that there is not so much overlap between this and the "move to distant tile" function
+        //for the sake of my sanity at this moment, I will be copy-pasting a lot of code from the above method.
+        if (position == target)
+            return 0;
+
+        List<Node> nodeQueue = new List<Node>();
+        Node[,] allNodes = new Node[GameManager.Instance.columns, GameManager.Instance.rows];
+
+        foreach (MapTile tile in MapGrid.Instance.tiles)
+        {
+            Node temp = new Node();
+            temp.coord.X = tile.getX();
+            temp.coord.Y = tile.getY();
+            temp.manhattanDist = temp.getManhattanDistanceToCoord(target);
+            temp.traversible = tile.isTraversible();
+
+            allNodes[temp.coord.X, temp.coord.Y] = temp;
+
+            if (temp.coord == position)
+            {
+                temp.costToStart = 0;
+                nodeQueue.Add(temp);
+            }
+
+            if (temp.coord == target && !temp.traversible)
+                return -1;
+        }
+
+        //A* pathfinding using Manhattan distance as heuristic
+        Node n;
+        do
+        {
+            nodeQueue = nodeQueue.OrderBy(x => x.costToStart + x.manhattanDist).ToList();       //the maps are small enough that there should not be very many nodes in this at all, thus there is not really a time concern
+            n = nodeQueue.First();
+            nodeQueue.Remove(n);
+            if (n.coord == target)
+            {
+                return n.costToStart;
+            }
+
+            List<Node> neighbours = n.getNeighbours(allNodes);
+            foreach (Node neighbour in neighbours)
+            {
+                if (!neighbour.visited && neighbour.traversible)
+                {
+                    if (neighbour.costToStart == -1 || neighbour.costToStart > n.costToStart + 1)
+                    {
+                        neighbour.costToStart = n.costToStart + 1;
+                        neighbour.parent = n;
+
+                        if (!nodeQueue.Contains(neighbour))
+                            nodeQueue.Add(neighbour);
+                    }
+                }
+            }
+            n.visited = true;
+        } while (nodeQueue.Count > 0);
+
+        return -1;
     }
 }
 
