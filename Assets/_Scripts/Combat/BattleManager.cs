@@ -41,4 +41,18 @@ public class BattleManager : MonoBehaviour
 
         activeUnits[turn_index].TakeTurn();
     }
+
+    public void UseMove(Move move, GameUnit target, GameUnit user)
+    {
+        if(move.getType() == MoveType.ATTACK)
+        {
+
+        } else if(move.getType() == MoveType.HEAL)
+        {
+
+        } else
+        {
+            Debug.Log("BUFF AND DEBUFF ACTIONS HAVE NOT BEEN IMPLEMENTED YET");
+        }
+    }
 }

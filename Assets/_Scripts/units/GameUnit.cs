@@ -26,8 +26,6 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
     protected int currentHP, currentSP;
     protected UnitController controller;
 
-    public const int MOVEMENT = 4;  //how far the unit can move in one turn
-
 
     // --------Shared Methods----------
     public abstract void TakeTurn();

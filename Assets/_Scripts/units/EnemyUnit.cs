@@ -38,7 +38,7 @@ public class EnemyUnit : GameUnit
     public override List<GameUnit> getAlliesInRange()       //positions taken from controller! its updates when the unit is moved by the controller
     {
         throw new System.NotImplementedException();
-    }
+    }                                                                   //TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public override List<GameUnit> getEnemiesInRange()
     {
         throw new System.NotImplementedException();
@@ -64,7 +64,7 @@ public class EnemyUnit : GameUnit
         }
 
         // ~3~ Select move with the highest "desireablilty"
-        //target_coord = gotta figure this out
+        //target_coord = something like getAdjacentCoords(target.getCoord())[0]; once i solve the getting the coord issue (shouldnt be too hard?)
     }
 
     public float find_best_attack_target(float max_desire, Move move)  //**NOTE** 1/x does not provide a negative linear relationship btwn desire and the value of x. it would intead have to be some "max value" constant - x ** TO FIX FOR SOME RELATIONSHIPS (and adjust weights accordingly)

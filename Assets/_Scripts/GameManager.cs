@@ -17,6 +17,11 @@ public class GameManager : MonoBehaviour
         ActiveEnemyUnits = new List<EnemyUnit>();
     }
 
+    public const int MAX_STAT_VALUE = 100;
+    public const int MAX_SP_VALUE = 30;
+    public const int MAX_HP_VALUE = 100;
+    public const int MOVEMENT = 4;  //how far the unit can move in one turn
+
     public int rows = 1;
     public int columns = 1;
 

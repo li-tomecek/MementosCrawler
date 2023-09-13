@@ -21,6 +21,32 @@ public struct Coord
     }
     public int X { get; set; }
     public int Y { get; set; }
+
+    public List<Coord> findAdjacentCoords()
+    {
+        List<Coord> adj = new List<Coord>();
+        Coord temp = new Coord(X, Y);
+
+        for (int i = X - 1; i <= X + 1; i += 2)
+        {
+            if (!(i < 0 || i >= GameManager.Instance.columns))
+            {
+                temp.X = i;
+                adj.Add(temp);
+            }
+        }
+        temp.X = X;
+        for (int i = Y - 1; i <= Y + 1; i += 2)
+        {
+            if (!(i < 0 || i >= GameManager.Instance.rows))
+            {
+                temp.Y = i;
+                adj.Add(temp);
+            }
+        }
+        return adj;
+    }
+
     public override string ToString() => $"({X}, {Y})";
     public static bool operator ==(Coord c1, Coord c2)
     {
