@@ -30,10 +30,19 @@ public struct Coord
     {
         return ((c1.X != c2.X) || (c1.Y != c2.Y));
     }
+    public override bool Equals(object obj) //just to get rid fo warnings
+    {
+        return base.Equals(obj);
+    }
+    public override int GetHashCode()       //just to get rid of warnings
+    {
+        return base.GetHashCode();
+    }
 }
 public struct Stats
 {
     public int strength, defense, maxHP, maxSP, agility;
+
     //later if you want: luck, magic, intelligence
     //also later: strengths and weaknesses
 }

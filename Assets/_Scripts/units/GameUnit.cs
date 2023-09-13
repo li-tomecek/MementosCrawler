@@ -24,7 +24,10 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
     protected Move[] moveset;
     [SerializeField] protected Stats stats;
     protected int currentHP, currentSP;
-    private UnitController controller;
+    protected UnitController controller;
+
+    public const int MOVEMENT = 4;  //how far the unit can move in one turn
+
 
     // --------Shared Methods----------
     public abstract void TakeTurn();
@@ -82,6 +85,6 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
         stats.defense = 10;
         stats.agility = 10;
         stats.maxHP = 25;
-        stats.maxSP = 50;
+        stats.maxSP = 10;
     }
 }
