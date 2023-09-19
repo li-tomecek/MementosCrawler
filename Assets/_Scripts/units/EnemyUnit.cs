@@ -41,8 +41,8 @@ public class EnemyUnit : GameUnit
         List<GameUnit> list = new List<GameUnit>();
         foreach (EnemyUnit unit in GameManager.Instance.getBattleManager().ActiveEnemyUnits)
         {
-            int temp = controller.lengthOfShortestPath(unit.getController().position);
-            if (temp > -1 && temp <= (GameManager.MOVEMENT + 1))
+            int temp = controller.lengthOfShortestPathToAdjacent(unit.getController().position);
+            if (temp > -1 && temp <= (GameManager.MOVEMENT))
                 list.Add(unit);
         }
         return list;
@@ -52,18 +52,18 @@ public class EnemyUnit : GameUnit
         List<GameUnit> list = new List<GameUnit>();
         foreach (PlayableUnit unit in GameManager.Instance.getBattleManager().ActivePlayerUnits)
         {
-            int temp = controller.lengthOfShortestPath(unit.getController().position);
-            if (temp > -1 && temp <= (GameManager.MOVEMENT + 1))
+            int temp = controller.lengthOfShortestPathToAdjacent(unit.getController().position);
+            if (temp > -1 && temp <= (GameManager.MOVEMENT))
                 list.Add(unit);
         }
+
         return list;
     }
 
     //----------other methods--------------
     public void chooseAction()
     {
-        Debug.Log("choosing and action...");
-
+        Debug.Log("CHOOSING AN ACTION...");
         target = this;  //default value that should definitely be replaced within the following functions
         target_coord = controller.position;
         float desire = -1.0f;
@@ -80,7 +80,8 @@ public class EnemyUnit : GameUnit
         }
 
         // ~3~ Select move with the highest "desireablilty"
-        target_coord = target.getController().position.findOpenAdjacentCoords()[0]; //idk if this will work, but it should return the  first adjacent coordinate that isnt full.
+        if(target != this)
+            target_coord = target.getController().position.findOpenAdjacentCoords()[0]; //idk if this will work, but it should return the  first adjacent coordinate that isnt full.
     }
     public float find_best_attack_target(float max_desire, Move move)  //**NOTE** 1/x does not provide a negative linear relationship btwn desire and the value of x. it would intead have to be some "max value" constant - x ** TO FIX FOR SOME RELATIONSHIPS (and adjust weights accordingly)
     {
@@ -88,7 +89,7 @@ public class EnemyUnit : GameUnit
         float enemy_norm;
         float sp_norm;
         float accuracy_norm;
-
+  
         foreach (PlayableUnit unit in getEnemiesInRange())
         {
             remaining_health = Math.Max(0.0f,(unit.getHP() - (this.stats.strength + move.getPower() - unit.getStats().defense)));
@@ -106,10 +107,10 @@ public class EnemyUnit : GameUnit
                 sp_norm = remaining_sp / getSP();   //min = 0SP max = currentSP
                 accuracy_norm = move.getAccuracy() / 100.0f; //min = 0%TOCHANGE?, max = 100% accuracy
 
-                Debug.Log("Floats btwn 0-1? " + enemy_norm + " " + sp_norm + " " + accuracy_norm);
-
                 desire = (ENEMY_HEALTH_C * enemy_norm + ATK_SP_C * sp_norm + ACC_C * accuracy_norm + ATK_BUFFER);  //where the constants add up to 1. Buffer ensures, that even if the enemy is at full health, there will be a small 'desire' to attack them
             }
+
+            //Debug.Log("Checking move: " + move.name + " target: " + target.name + " desire: " + desire);
 
             if (desire > max_desire)
             {
@@ -134,6 +135,9 @@ public class EnemyUnit : GameUnit
         float desire, health_norm, sp_norm, remaining_sp;
         foreach(EnemyUnit unit in getAlliesInRange())
         {
+            if (unit.getHP() == unit.stats.maxHP)
+                return 0;
+
             remaining_sp = getSP() - move.getSPCost();
 
             if (remaining_sp < 0)
@@ -145,6 +149,8 @@ public class EnemyUnit : GameUnit
 
                 desire = (ALLY_HEALTH_C * health_norm) + (HEAL_SP_C * sp_norm);
             }
+            Debug.Log("Checking move: " + move.name + " Target: " + target.name + " Desire: " + desire);
+
 
             if (desire > max_desire)
             {

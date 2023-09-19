@@ -21,8 +21,8 @@ public class UnitController : MonoBehaviour
     private void Start()
     {
         transform.position = (MapGrid.Instance.gridToWorldCoords(startX,startY));
+        position = new Coord(startX, startY);
         MapGrid.Instance.tiles[startX, startY].setTraversible(false);
-
     }
 
     // ---------Shared Methods-----------
@@ -188,12 +188,15 @@ public class UnitController : MonoBehaviour
         StartCoroutine(PlayQueuedRoutines(corountineQueue));
     }
 
-    public int lengthOfShortestPath(Coord target) // returns -1 if the target is not reachable
+    public int lengthOfShortestPathToAdjacent(Coord target) // returns -1 if the target is not reachable BUT NOT if the target tile itself is non-traversible.
     {
         //this COULD be cleaned up so that there is not so much overlap between this and the "move to distant tile" function
         //for the sake of my sanity at this moment, I will be copy-pasting a lot of code from the above method.
-        if (position == target)
-            return 0;
+        
+        //Debug.Log("POSITION: " + position+" TARGET POSITION: " + target);
+          
+        //if (Mathf.Abs(position.X - target.X) + Mathf.Abs(position.Y - target.Y) > GameManager.MOVEMENT+1) 
+        //    return -1;
 
         List<Node> nodeQueue = new List<Node>();
         Node[,] allNodes = new Node[GameManager.Instance.columns, GameManager.Instance.rows];
@@ -213,9 +216,6 @@ public class UnitController : MonoBehaviour
                 temp.costToStart = 0;
                 nodeQueue.Add(temp);
             }
-
-            if (temp.coord == target && !temp.traversible)
-                return -1;
         }
 
         //A* pathfinding using Manhattan distance as heuristic
@@ -225,20 +225,24 @@ public class UnitController : MonoBehaviour
             nodeQueue = nodeQueue.OrderBy(x => x.costToStart + x.manhattanDist).ToList();       //the maps are small enough that there should not be very many nodes in this at all, thus there is not really a time concern
             n = nodeQueue.First();
             nodeQueue.Remove(n);
-            if (n.coord == target)
+            //Debug.Log("Checking Node: " + n.coord);
+            if (n.coord == target && n.costToStart != 0) //in the case that the unit is already standing on the tile, we dont want to return -1 unless there are no open adjacent tiles. (idk, better be consisitent just in case)
             {
-                return n.costToStart;
+                return n.costToStart - 1;   //this is more of a safety net
             }
 
             List<Node> neighbours = n.getNeighbours(allNodes);
             foreach (Node neighbour in neighbours)
             {
-                if (!neighbour.visited && neighbour.traversible)
+                if (neighbour.coord == target)
+                    return n.costToStart;
+                
+                if(!neighbour.visited && neighbour.traversible) //we add target even if that tile is not traversible because we just want to know if this tile has an adjacent reachable one
                 {
                     if (neighbour.costToStart == -1 || neighbour.costToStart > n.costToStart + 1)
                     {
                         neighbour.costToStart = n.costToStart + 1;
-                        neighbour.parent = n;
+                        //neighbour.parent = n;
 
                         if (!nodeQueue.Contains(neighbour))
                             nodeQueue.Add(neighbour);

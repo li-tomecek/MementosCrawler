@@ -24,8 +24,8 @@ public class PlayableUnit : GameUnit
         List<GameUnit> list = new List<GameUnit>();
         foreach (PlayableUnit unit in GameManager.Instance.getBattleManager().ActivePlayerUnits)
         {
-            int temp = controller.lengthOfShortestPath(unit.getController().position);
-            if (temp > -1 && temp <= (GameManager.MOVEMENT + 1))
+            int temp = controller.lengthOfShortestPathToAdjacent(unit.getController().position);
+            if (temp > -1 && temp <= (GameManager.MOVEMENT))
                 list.Add(unit);
         }
         return list;
@@ -35,8 +35,8 @@ public class PlayableUnit : GameUnit
         List<GameUnit> list = new List<GameUnit>();
         foreach (EnemyUnit unit in GameManager.Instance.getBattleManager().ActiveEnemyUnits)
         {
-            int temp = controller.lengthOfShortestPath(unit.getController().position);
-            if (temp > -1 && temp <= (GameManager.MOVEMENT + 1))
+            int temp = controller.lengthOfShortestPathToAdjacent(unit.getController().position);
+            if (temp > -1 && temp <= (GameManager.MOVEMENT))
                 list.Add(unit);
         }
         return list;

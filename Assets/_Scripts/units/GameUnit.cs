@@ -38,6 +38,8 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
         initializeTestUnit();   //obviously temporary
         Debug.Log("added "+ gameObject.name +  " to active unit list");
 
+        currentHP = stats.maxHP;
+        currentSP = stats.maxSP;
     }
 
 
