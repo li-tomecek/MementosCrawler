@@ -60,6 +60,11 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
         currentHP -= amt;
         currentHP = (currentHP < 0) ? 0 : currentHP;    //think this is correct syntax?
     }
+    public void increaseHP(int amt)
+    {
+        currentHP += amt;
+        currentHP = (currentHP > stats.maxHP) ? stats.maxHP : currentHP; 
+    }
     public void decreaseSP(int amt)
     {
         currentSP -= amt;

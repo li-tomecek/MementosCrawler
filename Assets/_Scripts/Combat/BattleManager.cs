@@ -9,6 +9,8 @@ public class BattleManager : MonoBehaviour
     public List<PlayableUnit> ActivePlayerUnits;
     public List<EnemyUnit> ActiveEnemyUnits;
 
+    private System.Random rand = new System.Random();
+
     int turn_index;
     [HideInInspector] public bool blockPlayerInputs;
 
@@ -51,10 +53,21 @@ public class BattleManager : MonoBehaviour
     {
         if(move.getType() == MoveType.ATTACK)
         {
-            Debug.Log("used an attack move");
-        } else if(move.getType() == MoveType.HEAL)      //TODO: make moves do something, and consider th case when there is no sp to use a move -- what should the enemy choose to so then???
+            if (rand.NextDouble() * 100 < move.getAccuracy())
+            {
+                int damage = user.getStats().strength + move.getPower() - target.getStats().defense;
+                target.decreaseHP(damage);
+                Debug.Log(user.name + " has dealt " + damage + " damage to " + target.name + "!");
+            }
+            else
+                Debug.Log("Attack missed!");
+
+        } else if(move.getType() == MoveType.HEAL) 
         {
-            Debug.Log("used a healing move");
+            //we dont care about accuracy, healing moves always hit
+            int health = user.getStats().strength + move.getPower();
+            target.increaseHP(health);
+            Debug.Log(user.name + " has restored " + health + "HP to " + target.name + ".");
         }
         else
         {

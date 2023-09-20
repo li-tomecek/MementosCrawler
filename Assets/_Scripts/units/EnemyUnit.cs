@@ -16,6 +16,7 @@ public class EnemyUnit : GameUnit
     private GameUnit target;
     private Coord target_coord = new Coord(1,1);//to remove default value;
     private Move selected_move;
+    private bool making_action;
 
 
     public const float ATK_BUFFER = 0.1f;            
@@ -32,7 +33,8 @@ public class EnemyUnit : GameUnit
     {
         chooseAction();
         executeMovement();
-        GameManager.Instance.getBattleManager().UseMove(selected_move, target, this);
+        if(making_action)
+            GameManager.Instance.getBattleManager().UseMove(selected_move, target, this);
 
         GameManager.Instance.getBattleManager().nextTurn();
     }
@@ -67,6 +69,7 @@ public class EnemyUnit : GameUnit
         target = this;  //default value that should definitely be replaced within the following functions
         target_coord = controller.position;
         float desire = -1.0f;
+        making_action = true;
 
         foreach (Move m in moveset)
         {
@@ -80,6 +83,8 @@ public class EnemyUnit : GameUnit
         }
 
         // ~3~ Select move with the highest "desireablilty"
+        if (desire <= 0)
+            making_action = false;
         if(target != this)
             target_coord = target.getController().position.findOpenAdjacentCoords()[0]; //idk if this will work, but it should return the  first adjacent coordinate that isnt full.
     }
