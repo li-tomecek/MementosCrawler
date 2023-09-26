@@ -78,13 +78,13 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
     public void initializeTestUnit()
     {
         moveset = new Move[4];
-        Move move = new Move("attack", MoveType.ATTACK, 10, 100, 1, 2);
+        Move move = new Move("atk 1", MoveType.ATTACK, 10, 100, 1, 2);
         moveset[0] = move;
-        move = new Move("buff", MoveType.BUFF, 10, 100, 1, 2);
+        move = new Move("atk 2", MoveType.ATTACK, 20, 50, 1, 3);
         moveset[1] = move;
-        move = new Move("debuff", MoveType.DEBUFF, 10, 100, 1, 2);
+        move = new Move("heal 10/3", MoveType.HEAL, 10, 100, 1, 3);
         moveset[2] = move;
-        move = new Move("heal", MoveType.HEAL, 10, 100, 1, 2);
+        move = new Move("heal 20/6", MoveType.HEAL, 20, 100, 1, 6);
         moveset[3] = move;
 
         stats.strength = 10;

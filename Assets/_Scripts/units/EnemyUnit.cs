@@ -114,8 +114,7 @@ public class EnemyUnit : GameUnit
 
                 desire = (ENEMY_HEALTH_C * enemy_norm + ATK_SP_C * sp_norm + ACC_C * accuracy_norm + ATK_BUFFER);  //where the constants add up to 1. Buffer ensures that, even if the enemy is at full health, there will be a small 'desire' to attack them
             }
-
-            Debug.Log("Checking move: " + move.name + " target: " + target.name + " desire: " + desire);
+            //Debug.Log("Checking move: " + move.name + " target: " + target.name + " desire: " + desire);
 
             if (desire > max_desire)
             {
@@ -186,8 +185,6 @@ public class EnemyUnit : GameUnit
             //pick a random enemy to move towards
             int i = rand.Next(0, GameManager.Instance.getBattleManager().ActivePlayerUnits.Count);
             controller.MoveTowardsTarget(GameManager.Instance.getBattleManager().ActivePlayerUnits[i].getController().position);
-
-            //Debug.Log("executing movement...");
         }
     }
 

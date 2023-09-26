@@ -49,7 +49,7 @@ public struct Coord
     public List<Coord> findOpenAdjacentCoords()
     {
         List<Coord> list = findAdjacentCoords();
-        foreach(Coord c in list)
+        foreach(Coord c in list.ToArray())  //hove to have ToArray() so that i can midify the contents of the actual list (remove elements) wiothout causing errors
         {
             if (!MapGrid.Instance.tiles[c.X, c.Y].isTraversible())
                 list.Remove(c);
