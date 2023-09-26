@@ -57,6 +57,10 @@ public struct Coord
 
         return list;
     }
+    public int manhattanDistTo(Coord c)
+    {
+        return (Mathf.Abs(c.Y - this.Y) + Mathf.Abs(c.X - this.X));
+    }
 
     public override string ToString() => $"({X}, {Y})";
     public static bool operator ==(Coord c1, Coord c2)

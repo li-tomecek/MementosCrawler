@@ -104,11 +104,35 @@ public class UnitController : MonoBehaviour
 
     public void MoveToDistantTile(Coord target)
     {
-
+        MoveToDistantTile(target, false);
+    }
+    public void MoveToDistantTile(Coord target, bool moveToAdjacent)
+    {
+        //moveToAdjacent is a boolean that determines if we are moveing the unit to the target tile, or simply an open tile adjacent to the target tile.
         Coord startCoord = MapGrid.Instance.worldToGridCoords(transform.position);
-        if (startCoord == target)
+
+       //time savers/edge-cases:
+        if (!moveToAdjacent && startCoord == target)
             return;
-        
+
+        if (moveToAdjacent && !target.findOpenAdjacentCoords().Any())
+        {
+            Debug.Log("There are no open adjacent tiles. Skipping movement.");
+            return;
+        }
+        if(!moveToAdjacent && !MapGrid.Instance.tiles[target.X, target.Y].isTraversible())
+        {
+            Debug.Log("The target tile is not traversible! Skipping movement.");
+            return;
+        }
+
+        if (moveToAdjacent && target == startCoord) //just move to first open adjacent tile.
+        {
+            MoveOneStep(target.findOpenAdjacentCoords()[0]);
+            return;
+        }
+
+
         List<Node> nodeQueue = new List<Node>();
         Node[,] allNodes = new Node[GameManager.Instance.columns, GameManager.Instance.rows];
 
@@ -127,13 +151,6 @@ public class UnitController : MonoBehaviour
                 temp.costToStart = 0;
                 nodeQueue.Add(temp);
             }
-
-            if(temp.coord == target && !temp.traversible)
-            {
-                Debug.Log("The target tile is not traversible! Skipping movement.");
-                return;
-            }
-
         }
         
         //A* pathfinding using Manhattan distance as heuristic
@@ -152,7 +169,7 @@ public class UnitController : MonoBehaviour
             List<Node> neighbours = n.getNeighbours(allNodes);
             foreach (Node neighbour in neighbours)
             {
-                if (!neighbour.visited && neighbour.traversible)
+                if (!neighbour.visited && (neighbour.traversible || neighbour.coord == target)) //in the case that we are looking for adjacent tiles, we dont care if the target is traversible. If we dont want adjacent, this is already checked above.
                 {
                     if( neighbour.costToStart == -1 || neighbour.costToStart > n.costToStart + 1)
                     {
@@ -160,23 +177,22 @@ public class UnitController : MonoBehaviour
                         neighbour.parent = n;
 
                         if (!nodeQueue.Contains(neighbour))
-                            nodeQueue.Add(neighbour);
+                            nodeQueue.Add(neighbour);   
                     }
                 }
             }
             n.visited = true;
-            //if (n.coord == target)
-            //    break;
         } while(nodeQueue.Count > 0);
 
         //use list from A* to trace a path (reverse order)
+        if (moveToAdjacent)
+            n = n.parent;
         List<Coord> pathToTarget = new List<Coord>();
-        do
+        while (n.coord != startCoord)
         {
             pathToTarget.Add(n.coord);
             n = n.parent;
-
-        } while (n.coord != startCoord);
+        }
 
         //for each step, get vector from current position to next adjacent tile, start coroutine
         Queue<IEnumerator> corountineQueue = new Queue<IEnumerator>();
@@ -192,8 +208,6 @@ public class UnitController : MonoBehaviour
     {
         //this COULD be cleaned up so that there is not so much overlap between this and the "move to distant tile" function
         //for the sake of my sanity at this moment, I will be copy-pasting a lot of code from the above method.
-        
-        //Debug.Log("POSITION: " + position+" TARGET POSITION: " + target);
           
         //if (Mathf.Abs(position.X - target.X) + Mathf.Abs(position.Y - target.Y) > GameManager.MOVEMENT+1) 
         //    return -1;
@@ -228,6 +242,7 @@ public class UnitController : MonoBehaviour
             //Debug.Log("Checking Node: " + n.coord);
             if (n.coord == target && n.costToStart != 0) //in the case that the unit is already standing on the tile, we dont want to return -1 unless there are no open adjacent tiles. (idk, better be consisitent just in case)
             {
+                
                 return n.costToStart - 1;   //this is more of a safety net
             }
 

@@ -66,36 +66,37 @@ public class EnemyUnit : GameUnit
     public void chooseAction()
     {
         Debug.Log("CHOOSING AN ACTION...");
-        target = this;  //default value that should definitely be replaced within the following functions
+        target = this;  //default value that is replaced within the following functions
         target_coord = controller.position;
         float desire = -1.0f;
         making_action = true;
+        List<GameUnit> attack_targets = getEnemiesInRange();
+        List<GameUnit> heal_targets = getAlliesInRange();
 
         foreach (Move m in moveset)
         {
             if (m.getType() == MoveType.ATTACK)         // ~1~ For each attack move, calculate attack desirablility for all reachable enemy units
-                desire = find_best_attack_target(desire, m);
+                desire = find_best_attack_target(desire, m, attack_targets);
 
             else if (m.getType() == MoveType.HEAL)      // ~2~ For each healing move, calculate heal desirablility for all reachable allied units
-                desire = find_best_heal_target(desire, m);
-
+                desire = find_best_heal_target(desire, m, heal_targets);
             //Note: desire value only replaced if a move with a higher "desireability" is found
         }
 
         // ~3~ Select move with the highest "desireablilty"
         if (desire <= 0)
             making_action = false;
-        if(target != this)
-            target_coord = target.getController().position.findOpenAdjacentCoords()[0]; //idk if this will work, but it should return the  first adjacent coordinate that isnt full.
+        if (target != this)
+            target_coord = target.getController().position;
     }
-    public float find_best_attack_target(float max_desire, Move move)  //**NOTE** 1/x does not provide a negative linear relationship btwn desire and the value of x. it would intead have to be some "max value" constant - x ** TO FIX FOR SOME RELATIONSHIPS (and adjust weights accordingly)
+    public float find_best_attack_target(float max_desire, Move move, List<GameUnit> targets)  //**NOTE** 1/x does not provide a negative linear relationship btwn desire and the value of x. it would intead have to be some "max value" constant - x ** TO FIX FOR SOME RELATIONSHIPS (and adjust weights accordingly)
     {
         float desire, remaining_health, remaining_sp;
         float enemy_norm;
         float sp_norm;
         float accuracy_norm;
   
-        foreach (PlayableUnit unit in getEnemiesInRange())
+        foreach (PlayableUnit unit in targets)
         {
             remaining_health = Math.Max(0.0f,(unit.getHP() - (this.stats.strength + move.getPower() - unit.getStats().defense)));
             remaining_sp = getSP() - move.getSPCost();
@@ -112,10 +113,10 @@ public class EnemyUnit : GameUnit
                 sp_norm = remaining_sp / getSP();   //min = 0SP max = currentSP
                 accuracy_norm = move.getAccuracy() / 100.0f; //min = 0%TOCHANGE?, max = 100% accuracy
 
-                desire = (ENEMY_HEALTH_C * enemy_norm + ATK_SP_C * sp_norm + ACC_C * accuracy_norm + ATK_BUFFER);  //where the constants add up to 1. Buffer ensures, that even if the enemy is at full health, there will be a small 'desire' to attack them
+                desire = (ENEMY_HEALTH_C * enemy_norm + ATK_SP_C * sp_norm + ACC_C * accuracy_norm + ATK_BUFFER);  //where the constants add up to 1. Buffer ensures that, even if the enemy is at full health, there will be a small 'desire' to attack them
             }
 
-            //Debug.Log("Checking move: " + move.name + " target: " + target.name + " desire: " + desire);
+            Debug.Log("Checking move: " + move.name + " target: " + target.name + " desire: " + desire);
 
             if (desire > max_desire)
             {
@@ -135,13 +136,13 @@ public class EnemyUnit : GameUnit
         }
         return max_desire;
     }
-    public float find_best_heal_target(float max_desire, Move move)
+    public float find_best_heal_target(float max_desire, Move move, List<GameUnit> targets)
     {
         float desire, health_norm, sp_norm, remaining_sp;
-        foreach(EnemyUnit unit in getAlliesInRange())
+        foreach(EnemyUnit unit in targets)
         {
             if (unit.getHP() == unit.stats.maxHP)
-                return 0;
+                return max_desire;
 
             remaining_sp = getSP() - move.getSPCost();
 
@@ -154,7 +155,7 @@ public class EnemyUnit : GameUnit
 
                 desire = (ALLY_HEALTH_C * health_norm) + (HEAL_SP_C * sp_norm);
             }
-            Debug.Log("Checking move: " + move.name + " Target: " + target.name + " Desire: " + desire);
+            //Debug.Log("Checking move: " + move.name + " Target: " + target.name + " Desire: " + desire);
 
 
             if (desire > max_desire)
@@ -178,8 +179,10 @@ public class EnemyUnit : GameUnit
     }
     public void executeMovement()
     {
-        controller.MoveToDistantTile(target_coord);
-        Debug.Log("executing movement...");
+        if(making_action && target != this)
+            controller.MoveToDistantTile(target_coord, true);
+        //Debug.Log("executing movement...");
+        Debug.Log("Moving to adjacent tile: " + target_coord.ToString());
 
     }
 
