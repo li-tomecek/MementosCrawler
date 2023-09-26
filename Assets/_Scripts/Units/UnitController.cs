@@ -203,7 +203,47 @@ public class UnitController : MonoBehaviour
         
         StartCoroutine(PlayQueuedRoutines(corountineQueue));
     }
+    public void MoveTowardsTarget(Coord target)
+    {
+        //moves towards the target. No pathfinding, so in theory they could be making bad movement decisions but thats a problem for later, if anything
+        int y_movement = target.Y - position.Y;
+        int x_movement = target.X - position.X;
+        int total_movement = 0;
+        Coord next_tile = position;
 
+        Queue<IEnumerator> corountineQueue = new Queue<IEnumerator>();
+        while (total_movement < GameManager.MOVEMENT)
+        {
+            if (y_movement < 0 && MapGrid.Instance.tiles[next_tile.X, next_tile.Y - 1].isTraversible())
+            {
+                next_tile.Y--;
+                corountineQueue.Enqueue(MoveOneStep(next_tile));
+                y_movement++;
+            }
+            else if (y_movement > 0 && MapGrid.Instance.tiles[next_tile.X, next_tile.Y + 1].isTraversible())
+            {
+                next_tile.Y++;
+                corountineQueue.Enqueue(MoveOneStep(next_tile));
+                y_movement--;
+            }
+            else if (x_movement < 0 && MapGrid.Instance.tiles[next_tile.X - 1, next_tile.Y].isTraversible())
+            {
+                next_tile.X--;
+                corountineQueue.Enqueue(MoveOneStep(next_tile));
+                x_movement++;
+            }
+            else if (x_movement > 0 && MapGrid.Instance.tiles[next_tile.X + 1, next_tile.Y].isTraversible())
+            {
+                next_tile.X++;
+                corountineQueue.Enqueue(MoveOneStep(next_tile));
+                x_movement--;
+            }
+            else
+                break;
+            total_movement++;
+        }
+        StartCoroutine(PlayQueuedRoutines(corountineQueue));
+    }
     public int lengthOfShortestPathToAdjacent(Coord target) // returns -1 if the target is not reachable BUT NOT if the target tile itself is non-traversible.
     {
         //this COULD be cleaned up so that there is not so much overlap between this and the "move to distant tile" function

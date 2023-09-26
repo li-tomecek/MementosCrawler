@@ -33,9 +33,8 @@ public class EnemyUnit : GameUnit
     {
         chooseAction();
         executeMovement();
-        if(making_action)
+        if (making_action)
             GameManager.Instance.getBattleManager().UseMove(selected_move, target, this);
-
         GameManager.Instance.getBattleManager().nextTurn();
     }
     public override List<GameUnit> getAlliesInRange()   
@@ -179,13 +178,18 @@ public class EnemyUnit : GameUnit
     }
     public void executeMovement()
     {
-        if(making_action && target != this)
+        if (making_action && target != this)
             controller.MoveToDistantTile(target_coord, true);
-        //Debug.Log("executing movement...");
-        Debug.Log("Moving to adjacent tile: " + target_coord.ToString());
+        else if (!making_action)
+        {
+            //if not doing anything, move towards an enemy so that you might make a move next turn
+            //pick a random enemy to move towards
+            int i = rand.Next(0, GameManager.Instance.getBattleManager().ActivePlayerUnits.Count);
+            controller.MoveTowardsTarget(GameManager.Instance.getBattleManager().ActivePlayerUnits[i].getController().position);
 
+            //Debug.Log("executing movement...");
+        }
     }
-
 
     public new void Start()
     {
