@@ -30,7 +30,7 @@ public class AbilitySelectMenu : MonoBehaviour
         //if enemies in range: select an enemy (list maybe? draw and indicator on the map to show which enemy?)
 
         //if no enemies: print some message? or make a noise?
-
+        //GameManager.Instance.getBattleManager().UseMove();
         GameManager.Instance.getBattleManager().nextTurn();
         gameObject.SetActive(false);
     }
