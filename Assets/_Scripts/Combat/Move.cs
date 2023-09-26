@@ -17,7 +17,7 @@ public class Move
         this.type = type;
         this.power = power;
         this.accuracy = accuracy;
-        this.frequency = freq;      //what the fuck is this i don't remember why i put this here maybe it has something to do with range? or crit hits?
+        this.frequency = freq;      //what the fuck is this i don't remember why i put this here maybe it has something to do with range? or crit hits? I THINK ITS LIKE THE SILLY HANDS: DO THEY HIT MULTIPLE TIMES!
         this.cost = cost;
     }
 

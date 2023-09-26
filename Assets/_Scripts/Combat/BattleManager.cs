@@ -6,6 +6,11 @@ public class BattleManager : MonoBehaviour
 {
     //-------------fields-----------------
     public List<GameUnit> activeUnits;
+    public List<PlayableUnit> ActivePlayerUnits;
+    public List<EnemyUnit> ActiveEnemyUnits;
+
+    private System.Random rand = new System.Random();
+
     int turn_index;
     [HideInInspector] public bool blockPlayerInputs;
 
@@ -14,6 +19,8 @@ public class BattleManager : MonoBehaviour
     private void onAwake()
     {
         activeUnits = new List<GameUnit>();
+        ActivePlayerUnits = new List<PlayableUnit>();
+        ActiveEnemyUnits = new List<EnemyUnit>();
     }
     //-------------get/set----------------
     public List<GameUnit> getActiveUnits() { return activeUnits; }
@@ -40,5 +47,31 @@ public class BattleManager : MonoBehaviour
             GameManager.Instance.getActiveUnit().GetComponent<PlayerController>().enabled = false;
 
         activeUnits[turn_index].TakeTurn();
+    }
+
+    public void UseMove(Move move, GameUnit target, GameUnit user)
+    {
+        if(move.getType() == MoveType.ATTACK)
+        {
+            if (rand.NextDouble() * 100 < move.getAccuracy())
+            {
+                int damage = user.getStats().strength + move.getPower() - target.getStats().defense;
+                target.decreaseHP(damage);
+                Debug.Log(user.name + " has dealt " + damage + " damage to " + target.name + "!");
+            }
+            else
+                Debug.Log("Attack missed!");
+
+        } else if(move.getType() == MoveType.HEAL) 
+        {
+            //we dont care about accuracy, healing moves always hit
+            int health = user.getStats().strength + move.getPower();
+            target.increaseHP(health);
+            Debug.Log(user.name + " has restored " + health + "HP to " + target.name + ".");
+        }
+        else
+        {
+            Debug.Log("BUFF AND DEBUFF ACTIONS HAVE NOT BEEN IMPLEMENTED YET");
+        }
     }
 }

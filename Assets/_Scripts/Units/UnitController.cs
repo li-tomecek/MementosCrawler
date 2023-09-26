@@ -21,8 +21,8 @@ public class UnitController : MonoBehaviour
     private void Start()
     {
         transform.position = (MapGrid.Instance.gridToWorldCoords(startX,startY));
+        position = new Coord(startX, startY);
         MapGrid.Instance.tiles[startX, startY].setTraversible(false);
-
     }
 
     // ---------Shared Methods-----------
@@ -104,11 +104,35 @@ public class UnitController : MonoBehaviour
 
     public void MoveToDistantTile(Coord target)
     {
-
+        MoveToDistantTile(target, false);
+    }
+    public void MoveToDistantTile(Coord target, bool moveToAdjacent)
+    {
+        //moveToAdjacent is a boolean that determines if we are moveing the unit to the target tile, or simply an open tile adjacent to the target tile.
         Coord startCoord = MapGrid.Instance.worldToGridCoords(transform.position);
-        if (startCoord == target)
+
+       //time savers/edge-cases:
+        if (!moveToAdjacent && startCoord == target)
             return;
-        
+
+        if (moveToAdjacent && !target.findOpenAdjacentCoords().Any())
+        {
+            Debug.Log("There are no open adjacent tiles. Skipping movement.");
+            return;
+        }
+        if(!moveToAdjacent && !MapGrid.Instance.tiles[target.X, target.Y].isTraversible())
+        {
+            Debug.Log("The target tile is not traversible! Skipping movement.");
+            return;
+        }
+
+        if (moveToAdjacent && target == startCoord) //just move to first open adjacent tile.
+        {
+            MoveOneStep(target.findOpenAdjacentCoords()[0]);
+            return;
+        }
+
+
         List<Node> nodeQueue = new List<Node>();
         Node[,] allNodes = new Node[GameManager.Instance.columns, GameManager.Instance.rows];
 
@@ -127,13 +151,6 @@ public class UnitController : MonoBehaviour
                 temp.costToStart = 0;
                 nodeQueue.Add(temp);
             }
-
-            if(temp.coord == target && !temp.traversible)
-            {
-                Debug.Log("The target tile is not traversible! Skipping movement.");
-                return;
-            }
-
         }
         
         //A* pathfinding using Manhattan distance as heuristic
@@ -144,10 +161,15 @@ public class UnitController : MonoBehaviour
             n = nodeQueue.First();
             nodeQueue.Remove(n);
 
+            if (n.coord == target)
+            {
+                break;
+            }
+
             List<Node> neighbours = n.getNeighbours(allNodes);
             foreach (Node neighbour in neighbours)
             {
-                if (!neighbour.visited && neighbour.traversible)
+                if (!neighbour.visited && (neighbour.traversible || neighbour.coord == target)) //in the case that we are looking for adjacent tiles, we dont care if the target is traversible. If we dont want adjacent, this is already checked above.
                 {
                     if( neighbour.costToStart == -1 || neighbour.costToStart > n.costToStart + 1)
                     {
@@ -155,23 +177,22 @@ public class UnitController : MonoBehaviour
                         neighbour.parent = n;
 
                         if (!nodeQueue.Contains(neighbour))
-                            nodeQueue.Add(neighbour);
+                            nodeQueue.Add(neighbour);   
                     }
                 }
             }
             n.visited = true;
-            if (n.coord == target)
-                break;
         } while(nodeQueue.Count > 0);
 
         //use list from A* to trace a path (reverse order)
+        if (moveToAdjacent)
+            n = n.parent;
         List<Coord> pathToTarget = new List<Coord>();
-        do
+        while (n.coord != startCoord)
         {
             pathToTarget.Add(n.coord);
             n = n.parent;
-
-        } while (n.coord != startCoord);
+        }
 
         //for each step, get vector from current position to next adjacent tile, start coroutine
         Queue<IEnumerator> corountineQueue = new Queue<IEnumerator>();
@@ -181,6 +202,112 @@ public class UnitController : MonoBehaviour
         }
         
         StartCoroutine(PlayQueuedRoutines(corountineQueue));
+    }
+    public void MoveTowardsTarget(Coord target)
+    {
+        //moves towards the target. No pathfinding, so in theory they could be making bad movement decisions but thats a problem for later, if anything
+        int y_movement = target.Y - position.Y;
+        int x_movement = target.X - position.X;
+        int total_movement = 0;
+        Coord next_tile = position;
+
+        Queue<IEnumerator> corountineQueue = new Queue<IEnumerator>();
+        while (total_movement < GameManager.MOVEMENT)
+        {
+            if (y_movement < 0 && MapGrid.Instance.tiles[next_tile.X, next_tile.Y - 1].isTraversible())
+            {
+                next_tile.Y--;
+                corountineQueue.Enqueue(MoveOneStep(next_tile));
+                y_movement++;
+            }
+            else if (y_movement > 0 && MapGrid.Instance.tiles[next_tile.X, next_tile.Y + 1].isTraversible())
+            {
+                next_tile.Y++;
+                corountineQueue.Enqueue(MoveOneStep(next_tile));
+                y_movement--;
+            }
+            else if (x_movement < 0 && MapGrid.Instance.tiles[next_tile.X - 1, next_tile.Y].isTraversible())
+            {
+                next_tile.X--;
+                corountineQueue.Enqueue(MoveOneStep(next_tile));
+                x_movement++;
+            }
+            else if (x_movement > 0 && MapGrid.Instance.tiles[next_tile.X + 1, next_tile.Y].isTraversible())
+            {
+                next_tile.X++;
+                corountineQueue.Enqueue(MoveOneStep(next_tile));
+                x_movement--;
+            }
+            else
+                break;
+            total_movement++;
+        }
+        StartCoroutine(PlayQueuedRoutines(corountineQueue));
+    }
+    public int lengthOfShortestPathToAdjacent(Coord target) // returns -1 if the target is not reachable BUT NOT if the target tile itself is non-traversible.
+    {
+        //this COULD be cleaned up so that there is not so much overlap between this and the "move to distant tile" function
+        //for the sake of my sanity at this moment, I will be copy-pasting a lot of code from the above method.
+          
+        //if (Mathf.Abs(position.X - target.X) + Mathf.Abs(position.Y - target.Y) > GameManager.MOVEMENT+1) 
+        //    return -1;
+
+        List<Node> nodeQueue = new List<Node>();
+        Node[,] allNodes = new Node[GameManager.Instance.columns, GameManager.Instance.rows];
+
+        foreach (MapTile tile in MapGrid.Instance.tiles)
+        {
+            Node temp = new Node();
+            temp.coord.X = tile.getX();
+            temp.coord.Y = tile.getY();
+            temp.manhattanDist = temp.getManhattanDistanceToCoord(target);
+            temp.traversible = tile.isTraversible();
+
+            allNodes[temp.coord.X, temp.coord.Y] = temp;
+
+            if (temp.coord == position)
+            {
+                temp.costToStart = 0;
+                nodeQueue.Add(temp);
+            }
+        }
+
+        //A* pathfinding using Manhattan distance as heuristic
+        Node n;
+        do
+        {
+            nodeQueue = nodeQueue.OrderBy(x => x.costToStart + x.manhattanDist).ToList();       //the maps are small enough that there should not be very many nodes in this at all, thus there is not really a time concern
+            n = nodeQueue.First();
+            nodeQueue.Remove(n);
+            //Debug.Log("Checking Node: " + n.coord);
+            if (n.coord == target && n.costToStart != 0) //in the case that the unit is already standing on the tile, we dont want to return -1 unless there are no open adjacent tiles. (idk, better be consisitent just in case)
+            {
+                
+                return n.costToStart - 1;   //this is more of a safety net
+            }
+
+            List<Node> neighbours = n.getNeighbours(allNodes);
+            foreach (Node neighbour in neighbours)
+            {
+                if (neighbour.coord == target)
+                    return n.costToStart;
+                
+                if(!neighbour.visited && neighbour.traversible) //we add target even if that tile is not traversible because we just want to know if this tile has an adjacent reachable one
+                {
+                    if (neighbour.costToStart == -1 || neighbour.costToStart > n.costToStart + 1)
+                    {
+                        neighbour.costToStart = n.costToStart + 1;
+                        //neighbour.parent = n;
+
+                        if (!nodeQueue.Contains(neighbour))
+                            nodeQueue.Add(neighbour);
+                    }
+                }
+            }
+            n.visited = true;
+        } while (nodeQueue.Count > 0);
+
+        return -1;
     }
 }
 
