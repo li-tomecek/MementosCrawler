@@ -8,10 +8,11 @@ using UnityEngine.EventSystems;
 public class ActionSelectMenu : MonoBehaviour
 {
 
-    public GameObject abilityButton;
+    public GameObject spellsButton;
     public void OnEnable()
     {
-        EventSystem.current.SetSelectedGameObject(abilityButton);
+        //tochange! dont want it hovering over spells button when you are unable to use spells
+        //EventSystem.current.SetSelectedGameObject(spellsButton);
     }
 
     public void OnAbilitiesButton()
