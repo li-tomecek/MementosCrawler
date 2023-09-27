@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class PlayerController : UnitController
 {
+    
     void Start()
     {
         moveToStart();
+        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
     }
 
     //----------other methods--------------
@@ -36,13 +38,13 @@ public class PlayerController : UnitController
 
         //swap sprite direction
         if (x > 0)
-            transform.localScale = Vector3.one;
+            spriteRenderer.flipX = false;                //transform.localScale = Vector3.one;
         else if (x < 0)
-            transform.localScale = new Vector3(-1, 1, 1);
+            spriteRenderer.flipX = true; //transform.localScale = new Vector3(-1, 1, 1);
 
         //actual sprite movement
         if (Input.GetAxisRaw("Vertical") != 0 && !isMoving)
-            StartCoroutine(MoveActor(Vector3.up * GameManager.Instance.tileHeight * y));
+                StartCoroutine(MoveActor(Vector3.up * GameManager.Instance.tileHeight * y));
 
         if (Input.GetAxisRaw("Horizontal") != 0 && !isMoving)
             StartCoroutine(MoveActor(Vector3.right * GameManager.Instance.tileWidth * x));

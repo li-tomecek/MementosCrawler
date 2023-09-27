@@ -14,15 +14,16 @@ public class UnitController : MonoBehaviour
     public int startX;
     public int startY;
 
-    public Coord position;
 
-    float movementDir;
+    public Coord position;
+    protected SpriteRenderer spriteRenderer;
 
     private void Start()
     {
         transform.position = (MapGrid.Instance.gridToWorldCoords(startX,startY));
         position = new Coord(startX, startY);
         MapGrid.Instance.tiles[startX, startY].setTraversible(false);
+        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
     }
 
     // ---------Shared Methods-----------
@@ -66,7 +67,10 @@ public class UnitController : MonoBehaviour
         origPos = transform.position;
         targetPos = MapGrid.Instance.gridToWorldCoords(target.X, target.Y);
         Coord startCoord = MapGrid.Instance.worldToGridCoords(origPos);
-
+        if (target.X < startCoord.X)
+            spriteRenderer.flipX = false;
+        else if (target.X > startCoord.X)
+            spriteRenderer.flipX = true;
 
         if (target.X != -1 && MapGrid.Instance.tiles[target.X, target.Y].isTraversible()) //this is just an extra layer of precaution at this point
         {
