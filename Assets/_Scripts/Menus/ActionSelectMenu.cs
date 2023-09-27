@@ -12,7 +12,7 @@ public class ActionSelectMenu : MonoBehaviour
     public void OnEnable()
     {
         //tochange! dont want it hovering over spells button when you are unable to use spells
-        //EventSystem.current.SetSelectedGameObject(spellsButton);
+        EventSystem.current.SetSelectedGameObject(spellsButton);
     }
 
     public void OnAbilitiesButton()
