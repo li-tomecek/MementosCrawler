@@ -16,8 +16,7 @@ public class ActionSelectMenu : MonoBehaviour
 
     public void OnAbilitiesButton()
     {
-        Debug.Log("Pressed the abilities button");
-        GameManager.Instance.getMenuManager().getAbilitySelectMenu().SetActive(true);
+        GameManager.Instance.getMenuManager().getSpellSelectMenu().SetActive(true);
         gameObject.SetActive(false);
     }
     public void OnGuardButton()

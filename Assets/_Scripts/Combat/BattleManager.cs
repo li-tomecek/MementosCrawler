@@ -56,6 +56,17 @@ public class BattleManager : MonoBehaviour
             if (rand.NextDouble() * 100 < move.getAccuracy())
             {
                 int damage = user.getStats().strength + move.getPower() - target.getStats().defense;
+                if(target is PlayableUnit)
+                {
+                    PlayableUnit unit = target as PlayableUnit;
+                    if (unit.isBlocking)
+                    {
+                        damage /= 2;
+                        Debug.Log("Target was blocking! Taking half damage.");
+                        unit.isBlocking = false;
+                    }
+                
+                }
                 target.decreaseHP(damage);
                 Debug.Log(user.name + " has dealt " + damage + " damage to " + target.name + "!");
             }

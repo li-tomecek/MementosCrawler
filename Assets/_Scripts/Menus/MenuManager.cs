@@ -10,9 +10,9 @@ public class MenuManager : MonoBehaviour
     [SerializeField]
     GameObject actionMenu;
     [SerializeField]
-    GameObject abilityMenu;
+    GameObject spellMenu;
 
     public GameObject getActionSelectMenu() { return actionMenu; }
-    public GameObject getAbilitySelectMenu() { return abilityMenu; }
+    public GameObject getSpellSelectMenu() { return spellMenu; }
 
 }

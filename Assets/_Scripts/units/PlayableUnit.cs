@@ -16,6 +16,7 @@ public class PlayableUnit : GameUnit
     //-------implemented methods----------
     public override void TakeTurn()
     {
+        isBlocking = false;
         GameManager.Instance.setMode(Mode.BATTLE_MOVE);
 
     }
