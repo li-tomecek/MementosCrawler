@@ -51,6 +51,7 @@ public class BattleManager : MonoBehaviour
 
     public void UseMove(Move move, GameUnit target, GameUnit user)
     {
+        //DEAL DAMAGE 
         GameManager.Instance.menuManager.setLongText(activeUnits[turn_index].gameObject.name + " used " + move.name + ".");
         if (move.getType() == MoveType.ATTACK)
         {
@@ -74,10 +75,11 @@ public class BattleManager : MonoBehaviour
             else
                 GameManager.Instance.menuManager.setLongText("Attack missed!");
 
-        } else if(move.getType() == MoveType.HEAL) 
+        } 
+        //RESTORE HEALTH
+        else if(move.getType() == MoveType.HEAL) 
         {
-            //we dont care about accuracy, healing moves always hit
-            int health = user.getStats().strength + move.getPower();
+            int health = user.getStats().strength + move.getPower();        //we dont care about accuracy, healing moves always hit
             target.increaseHP(health);
             GameManager.Instance.menuManager.setLongText(user.name + " has restored " + health + "HP to " + target.name + ".");
         }
@@ -85,5 +87,10 @@ public class BattleManager : MonoBehaviour
         {
             Debug.Log("BUFF AND DEBUFF ACTIONS HAVE NOT BEEN IMPLEMENTED YET");
         }
+
+        //UPDATE SLIDERS
+        GameManager.Instance.menuManager.updateSliders(target, user);
+
+
     }
 }
