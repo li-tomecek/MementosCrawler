@@ -17,14 +17,15 @@ public class ActionSelectMenu : MonoBehaviour
 
     public void OnAbilitiesButton()
     {
-        GameManager.Instance.getMenuManager().getSpellSelectMenu().SetActive(true);
+        GameManager.Instance.menuManager.setShortText("Which spell will you cast?");
+        GameManager.Instance.menuManager.getSpellSelectMenu().SetActive(true);
         gameObject.SetActive(false);
     }
     public void OnGuardButton()
     {
-        Debug.Log("This unit will take half damage from the next attack.");
+        GameManager.Instance.menuManager.setLongText("The unit will take half damage from the next attack this turn.");
         GameManager.Instance.getActiveUnit().GetComponent<PlayableUnit>().isBlocking = true;
-        GameManager.Instance.getBattleManager().nextTurn();
+        GameManager.Instance.battleManager.nextTurn();
         gameObject.SetActive(false);
     }
     public void OnWaitButton()
@@ -34,6 +35,7 @@ public class ActionSelectMenu : MonoBehaviour
     }
     public void OnExitButton()
     {
+        GameManager.Instance.menuManager.setLongText("It is " + GameManager.Instance.getActiveUnit().name + "\'s turn. Please take an action.");
         GameManager.Instance.setMode(Mode.BATTLE_MOVE);
         gameObject.SetActive(false);
     }

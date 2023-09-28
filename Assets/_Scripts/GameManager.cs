@@ -30,8 +30,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] Mode mode;
     bool justSwappedModes;
 
-    MenuManager menuManager;
-    BattleManager battleManager;
+    public MenuManager menuManager;
+    public BattleManager battleManager;
 
     //-------METHODS-------
     public void swapActiveUnit(GameObject unit)
@@ -70,8 +70,4 @@ public class GameManager : MonoBehaviour
         }
 
     }
-    
-    //I am hoping that the following code creates a 2D array that stores "references" to one of the TileMaster instances
-    //public TileMaster tileMaster = new TileMaster();
-    //public TileMaster[,] TileTypeGrid = new TileMaster[Instance.columns, Instance.rows];
 }

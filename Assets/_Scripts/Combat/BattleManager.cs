@@ -39,7 +39,7 @@ public class BattleManager : MonoBehaviour
         turn_index++;
         if (turn_index >= activeUnits.Count)
             turn_index = 0;
-        Debug.Log("It is now " + activeUnits[turn_index].gameObject.name + "'s turn.");
+        //GameManager.Instance.menuManager.setLongText("It is now " + activeUnits[turn_index].gameObject.name + "'s turn.");
 
         if (activeUnits[turn_index] is PlayableUnit)
             GameManager.Instance.swapActiveUnit(activeUnits[turn_index].gameObject);
@@ -51,7 +51,8 @@ public class BattleManager : MonoBehaviour
 
     public void UseMove(Move move, GameUnit target, GameUnit user)
     {
-        if(move.getType() == MoveType.ATTACK)
+        GameManager.Instance.menuManager.setLongText(activeUnits[turn_index].gameObject.name + " used " + move.name + ".");
+        if (move.getType() == MoveType.ATTACK)
         {
             if (rand.NextDouble() * 100 < move.getAccuracy())
             {
@@ -62,23 +63,23 @@ public class BattleManager : MonoBehaviour
                     if (unit.isBlocking)
                     {
                         damage /= 2;
-                        Debug.Log("Target was blocking! Taking half damage.");
+                        GameManager.Instance.menuManager.setLongText("Target was blocking! Taking half damage.");
                         unit.isBlocking = false;
                     }
                 
                 }
                 target.decreaseHP(damage);
-                Debug.Log(user.name + " has dealt " + damage + " damage to " + target.name + "!");
+                GameManager.Instance.menuManager.addToLongText(target.name + " took " + damage + " damage.");
             }
             else
-                Debug.Log("Attack missed!");
+                GameManager.Instance.menuManager.setLongText("Attack missed!");
 
         } else if(move.getType() == MoveType.HEAL) 
         {
             //we dont care about accuracy, healing moves always hit
             int health = user.getStats().strength + move.getPower();
             target.increaseHP(health);
-            Debug.Log(user.name + " has restored " + health + "HP to " + target.name + ".");
+            GameManager.Instance.menuManager.setLongText(user.name + " has restored " + health + "HP to " + target.name + ".");
         }
         else
         {

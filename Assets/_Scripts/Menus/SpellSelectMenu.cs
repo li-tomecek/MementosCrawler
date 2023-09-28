@@ -26,7 +26,7 @@ public class SpellSelectMenu : MonoBehaviour
     }
     IEnumerator waitForFrame()
     {
-        yield return 0; //dumbass bitch has to wait a frame before we can select a new game object.....
+        yield return 0; //has to wait a frame before we can select a new game object.....
         EventSystem.current.SetSelectedGameObject(spell_1_btn.gameObject);
     }
     public void OnButtonPress()
