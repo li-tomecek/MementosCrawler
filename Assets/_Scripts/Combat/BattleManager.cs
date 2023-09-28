@@ -88,9 +88,17 @@ public class BattleManager : MonoBehaviour
             Debug.Log("BUFF AND DEBUFF ACTIONS HAVE NOT BEEN IMPLEMENTED YET");
         }
 
-        //UPDATE SLIDERS
-        GameManager.Instance.menuManager.updateSliders(target, user);
-
+        //UPDATE SLIDERS IF A PLAYABLE CHARACTER IS INVOLVED
+        if (user is PlayableUnit)   //user casts some spell
+        {
+            GameManager.Instance.menuManager.sliderCanvas.updateTargetSlider(target);
+            GameManager.Instance.menuManager.sliderCanvas.updatePlayerSliders(user);
+        }
+        else if(target is PlayableUnit) //user is target of enemy spell
+        {
+            GameManager.Instance.menuManager.sliderCanvas.updatePlayerSliders(target);
+            //Debug.Log("Target is: " + target.name);
+        }
 
     }
 }

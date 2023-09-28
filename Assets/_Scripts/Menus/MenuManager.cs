@@ -13,15 +13,12 @@ public class MenuManager : MonoBehaviour
     [SerializeField]
     GameObject spellMenu;
     
+    public SliderCanvas sliderCanvas;
+    
     [SerializeField]
     TextMeshProUGUI shortText;
     [SerializeField]
     TextMeshProUGUI longText;
-
-    public Slider playerHP_slider;
-    public Slider enemyHP_slider;
-    public Slider playerSP_slider;
-
 
 
     public float text_delay = 0.01f;
@@ -75,23 +72,4 @@ public class MenuManager : MonoBehaviour
         typing = false;
     }
 
-    //-------SLIDERS-------
-    public void updateSliders(GameUnit target, GameUnit caster)
-    {
-        if (target is PlayableUnit)
-        {
-            playerHP_slider.value = ((float)target.getHP() / target.getStats().maxHP);
-            //playerHP_slider.GetComponent<Text>().text = target.getHP() + "/" + target.getStats().maxHP;
-        }
-        else 
-        { 
-            enemyHP_slider.value = ((float)target.getHP() / target.getStats().maxHP);
-            //enemyHP_slider.GetComponent<Text>().text = target.getHP() + "/" + target.getStats().maxHP;
-        }
-        if (caster is PlayableUnit)
-        {
-            playerSP_slider.value = ((float)caster.getSP() / caster.getStats().maxSP);
-            //playerSP_slider.GetComponent<Text>().text = caster.getSP() + "/" + caster.getStats().maxSP;
-        }
-    }
 }
