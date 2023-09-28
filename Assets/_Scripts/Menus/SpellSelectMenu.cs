@@ -40,6 +40,7 @@ public class SpellSelectMenu : MonoBehaviour
 
         Debug.Log("Player selected \"" + unit.getMoveset()[selection].name + "\"");
 
+
         //check for adjacent enemies
 
         //if enemies in range: select an enemy (list maybe? draw and indicator on the map to show which enemy?)

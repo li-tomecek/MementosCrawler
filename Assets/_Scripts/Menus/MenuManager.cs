@@ -57,5 +57,7 @@ public class MenuManager : MonoBehaviour
         gui.text += "\n";
         yield return new WaitForSeconds(0.7f); //wait for at least one second between lines.
         typing = false;
+
+        if(corountineQueue.Count <= 0)
     }
 }

@@ -28,6 +28,7 @@ public class PlayerController : UnitController
         if ((GameManager.Instance.getMode() == Mode.BATTLE_MOVE) && (Input.GetKeyDown(KeyCode.Return)))
         {
             GameManager.Instance.setMode(Mode.ACTION_SELECT);
+            GameManager.Instance.menuManager.setShortText("Make an action?");
             GameManager.Instance.getMenuManager().getActionSelectMenu().SetActive(true);
             return;
         }
