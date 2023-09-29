@@ -28,11 +28,15 @@ public class EnemyUnit : GameUnit
     public const float HEAL_SP_C = 0.35f;
 
 
-    //-------implemented methods----------
+    //---- IMPLEMENTED METHODS ----
     public override void TakeTurn()
     {
+        GameManager.Instance.setMode(Mode.ENEMY_TURN);
+        GameManager.Instance.getActivePlayer().GetComponent<PlayerController>().enabled = false;        //the last active playable unit will not move until their next turn.
+
         chooseAction();
         executeMovement();
+        
         if (making_action)
             GameManager.Instance.getBattleManager().UseMove(selected_move, target, this);
         GameManager.Instance.getBattleManager().nextTurn();
@@ -61,10 +65,10 @@ public class EnemyUnit : GameUnit
         return list;
     }
 
-    //----------other methods--------------
+    // ---- UNIQUE METHODS ----
+
     public void chooseAction()
     {
-        Debug.Log("CHOOSING AN ACTION...");
         target = this;  //default value that is replaced within the following functions
         target_coord = controller.position;
         float desire = -1.0f;
@@ -181,13 +185,14 @@ public class EnemyUnit : GameUnit
             controller.MoveToDistantTile(target_coord, true);
         else if (!making_action)
         {
-            //if not doing anything, move towards an enemy so that you might make a move next turn
-            //pick a random enemy to move towards
+            //if not doing anything, move towards a player unit so that you might make a move next turn
+            //pick a random player to move towards
             int i = rand.Next(0, GameManager.Instance.getBattleManager().ActivePlayerUnits.Count);
             controller.MoveTowardsTarget(GameManager.Instance.getBattleManager().ActivePlayerUnits[i].getController().position);
         }
     }
 
+    // ---- START ----
     public new void Start()
     {
         base.Start();

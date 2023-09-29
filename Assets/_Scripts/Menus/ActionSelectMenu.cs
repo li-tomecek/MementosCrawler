@@ -8,11 +8,11 @@ using UnityEngine.EventSystems;
 public class ActionSelectMenu : MonoBehaviour
 {
 
-    public GameObject spellsButton;
+    public GameObject defaultButton;
     public void OnEnable()
     {
         //tochange! dont want it hovering over spells button when you are unable to use spells
-        EventSystem.current.SetSelectedGameObject(spellsButton);
+        EventSystem.current.SetSelectedGameObject(defaultButton);
     }
 
     public void OnAbilitiesButton()
@@ -24,7 +24,8 @@ public class ActionSelectMenu : MonoBehaviour
     public void OnGuardButton()
     {
         GameManager.Instance.menuManager.setLongText("The unit will take half damage from the next attack this turn.");
-        GameManager.Instance.getActiveUnit().GetComponent<PlayableUnit>().isBlocking = true;
+        GameManager.Instance.battleManager.getActiveUnitAsPlayer().isBlocking = true;
+        
         GameManager.Instance.battleManager.nextTurn();
         gameObject.SetActive(false);
     }
@@ -35,8 +36,8 @@ public class ActionSelectMenu : MonoBehaviour
     }
     public void OnExitButton()
     {
-        GameManager.Instance.menuManager.setLongText("It is " + GameManager.Instance.getActiveUnit().name + "\'s turn. Please take an action.");
-        GameManager.Instance.setMode(Mode.BATTLE_MOVE);
+        GameManager.Instance.menuManager.setLongText("It is " + GameManager.Instance.battleManager.getActiveUnit().name + "\'s turn. Please take an action.");
+        GameManager.Instance.setMode(Mode.PLAYER_TURN);
         gameObject.SetActive(false);
     }
 }

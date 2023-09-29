@@ -215,8 +215,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1690822304}
   - {fileID: 733974459}
+  - {fileID: 1690822304}
   m_Father: {fileID: 2064398472}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -658,7 +658,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ab11ecbc7c3e7642be2075338baa7c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spellsButton: {fileID: 870845048}
+  defaultButton: {fileID: 1839435182}
 --- !u!114 &238093529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7329,14 +7329,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e2681868dd617546af286f9347ce6e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  menuManager: {fileID: 0}
+  battleManager: {fileID: 0}
   rows: 6
   columns: 9
   tileWidth: 0
   tileHeight: 0
-  activeUnit: {fileID: 1895327263}
+  activePlayerObject: {fileID: 1895327263}
   mode: 0
-  menuManager: {fileID: 0}
-  battleManager: {fileID: 0}
 --- !u!4 &581389920
 Transform:
   m_ObjectHideFlags: 0
@@ -7818,7 +7818,7 @@ Transform:
   - {fileID: 975513362}
   - {fileID: 388124380}
   m_Father: {fileID: 4903163}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!225 &733974460
 CanvasGroup:
@@ -12502,7 +12502,7 @@ Transform:
   - {fileID: 2015544974}
   - {fileID: 668051991}
   m_Father: {fileID: 4903163}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!225 &1690822305
 CanvasGroup:

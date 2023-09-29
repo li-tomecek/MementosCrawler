@@ -28,6 +28,8 @@ public class SliderCanvas : MonoBehaviour
 
         targetHP_slider = targetGroup.transform.GetChild(0).GetComponent<Slider>();
         target_name = targetGroup.transform.GetChild(1).GetComponent<Text>();
+
+        hideSliders();
     }
 
     //void Update() {}
@@ -67,5 +69,9 @@ public class SliderCanvas : MonoBehaviour
     public void showTargetSlider()
     {
         targetGroup.alpha = 1;
+    }
+    public void showPlayerSliders()
+    {
+        playerGroup.alpha = 1;
     }
 }

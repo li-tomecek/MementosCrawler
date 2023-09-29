@@ -14,7 +14,7 @@ public class SpellSelectMenu : MonoBehaviour
     {
         StartCoroutine(waitForFrame());
 
-        unit = GameManager.Instance.getActiveUnit().GetComponent<PlayableUnit>();  //should put exception around here ig..
+        unit = GameManager.Instance.battleManager.getActiveUnitAsPlayer();  //should put exception around here ig..
 
         spell_1_btn.transform.GetChild(0).GetComponent<Text>().text = unit.getMoveset()[0].name;
         spell_2_btn.transform.GetChild(0).GetComponent<Text>().text = unit.getMoveset()[1].name;

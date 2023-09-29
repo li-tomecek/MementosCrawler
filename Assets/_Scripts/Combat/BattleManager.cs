@@ -8,22 +8,38 @@ public class BattleManager : MonoBehaviour
     public List<GameUnit> activeUnits;
     public List<PlayableUnit> ActivePlayerUnits;
     public List<EnemyUnit> ActiveEnemyUnits;
+    [HideInInspector]
+    public bool blockPlayerInputs;
 
+    private GameUnit activeUnit;
     private System.Random rand = new System.Random();
-
     int turn_index;
-    [HideInInspector] public bool blockPlayerInputs;
 
     public int MOVEMENT = 4;       //represents how many tiles characters may move in one turn.
+
     //------constructors and start--------
     private void onAwake()
     {
         activeUnits = new List<GameUnit>();
         ActivePlayerUnits = new List<PlayableUnit>();
         ActiveEnemyUnits = new List<EnemyUnit>();
+
+        //setupBattle();
     }
     //-------------get/set----------------
     public List<GameUnit> getActiveUnits() { return activeUnits; }
+    public GameUnit getActiveUnit() { return activeUnit; }
+    public PlayableUnit getActiveUnitAsPlayer()
+    {
+        if(activeUnit is PlayableUnit)
+        {
+            return (activeUnit as PlayableUnit);
+        }
+        else
+        {
+            throw new CustomException("The active unit is not an instance of a PlayableUnit! Trying to access a playableUnit that does not exist here.");
+        }
+    }
 
     //----------other methods-------------
     public void setupBattle()
@@ -39,20 +55,27 @@ public class BattleManager : MonoBehaviour
         turn_index++;
         if (turn_index >= activeUnits.Count)
             turn_index = 0;
-        //GameManager.Instance.menuManager.setLongText("It is now " + activeUnits[turn_index].gameObject.name + "'s turn.");
 
-        if (activeUnits[turn_index] is PlayableUnit)
+        activeUnit = activeUnits[turn_index];
+        /**if (activeUnit is PlayableUnit)
+        {
             GameManager.Instance.swapActiveUnit(activeUnits[turn_index].gameObject);
+            GameManager.Instance.setMode(Mode.PLAYER_TURN);
+        }
         else
-            GameManager.Instance.getActiveUnit().GetComponent<PlayerController>().enabled = false;
+        {
+            GameManager.Instance.getActivePlayer().GetComponent<PlayerController>().enabled = false;
+            GameManager.Instance.setMode(Mode.ENEMY_TURN);
 
-        activeUnits[turn_index].TakeTurn();
+        }**/
+        GameManager.Instance.menuManager.setLongText("It is now " + activeUnit.name + "'s turn.");
+        activeUnit.TakeTurn();
     }
 
     public void UseMove(Move move, GameUnit target, GameUnit user)
     {
         //DEAL DAMAGE 
-        GameManager.Instance.menuManager.setLongText(activeUnits[turn_index].gameObject.name + " used " + move.name + ".");
+        GameManager.Instance.menuManager.setLongText(activeUnit.gameObject.name + " used " + move.name + ".");
         if (move.getType() == MoveType.ATTACK)
         {
             if (rand.NextDouble() * 100 < move.getAccuracy())
@@ -97,7 +120,6 @@ public class BattleManager : MonoBehaviour
         else if(target is PlayableUnit) //user is target of enemy spell
         {
             GameManager.Instance.menuManager.sliderCanvas.updatePlayerSliders(target);
-            //Debug.Log("Target is: " + target.name);
         }
 
     }

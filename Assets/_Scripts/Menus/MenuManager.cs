@@ -45,12 +45,17 @@ public class MenuManager : MonoBehaviour
     public void clearText() { shortText.text = ""; longText.text = ""; }
     public void setShortText(string text)
     {
-        longText.text = "";
-        shortText.text = text;
+        longText.gameObject.SetActive(false);
+        shortText.gameObject.SetActive(true);
+        
+        corountineQueue.Enqueue(AutoTypeText(shortText, text, true));
+        //shortText.text = text;
     }
     public void setLongText(string text)
     {
-        shortText.text = "";
+        shortText.gameObject.SetActive(false);
+        longText.gameObject.SetActive(true);
+
         corountineQueue.Enqueue(AutoTypeText(longText, text, true));
     }
     public void addToLongText(string text)
@@ -71,5 +76,4 @@ public class MenuManager : MonoBehaviour
         yield return new WaitForSeconds(0.7f); //wait for at least one second between lines.
         typing = false;
     }
-
 }
