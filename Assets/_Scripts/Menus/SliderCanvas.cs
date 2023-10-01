@@ -49,6 +49,7 @@ public class SliderCanvas : MonoBehaviour
         target_name.text = target.name;
         targetHP_slider.value = ((float)target.getHP() / target.getStats().maxHP);
         targetHP_slider.transform.GetComponentInChildren<Text>().text = string.Format("{0,3}/{1,-3}", target.getHP(), target.getStats().maxHP);
+        showTargetSlider();
     }
 
     //--- CHANGE VISIBILITY ----

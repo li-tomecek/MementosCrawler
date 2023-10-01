@@ -13,7 +13,7 @@ public class ActionSelectMenu : MonoBehaviour
 
     public void OnEnable()
     {
-        if (GameManager.Instance.getActivePlayer().GetComponent<PlayerController>().facedEnemy() != null)
+        if (GameManager.Instance.getActivePlayer().GetComponent<PlayerController>().target != null)
         {
             spellsButton.interactable = true;
             EventSystem.current.SetSelectedGameObject(spellsButton.gameObject);

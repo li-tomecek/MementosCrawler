@@ -4,6 +4,7 @@ using UnityEngine;
 
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
 
 public class SpellSelectMenu : MonoBehaviour
 {
@@ -16,19 +17,24 @@ public class SpellSelectMenu : MonoBehaviour
         StartCoroutine(waitForFrame());
 
         unit = GameManager.Instance.battleManager.getActiveUnitAsPlayer();
-        target = GameManager.Instance.getActivePlayer().GetComponent<PlayerController>().facedEnemy();
+        target = GameManager.Instance.getActivePlayer().GetComponent<PlayerController>().target;
 
         buttons = new[] { spell_1_btn.gameObject, spell_2_btn.gameObject, spell_3_btn.gameObject, spell_4_btn.gameObject };
 
         for (int i = 0; i < unit.getMoveset().Length; i++)
         {
             buttons[i].transform.GetChild(0).GetComponent<Text>().text = unit.getMoveset()[i].name;
-
-            if ((target is PlayableUnit && unit.getMoveset()[i].getType() == MoveType.ATTACK) || (target is EnemyUnit && unit.getMoveset()[i].getType() == MoveType.HEAL))
-                buttons[i].GetComponent<Button>().interactable = false;
-            else 
-                buttons[i].GetComponent<Button>().interactable = true;
-
+            try
+            {
+                if ((target is PlayableUnit && unit.getMoveset()[i].getType() == MoveType.ATTACK) || (target is EnemyUnit && unit.getMoveset()[i].getType() == MoveType.HEAL))
+                    buttons[i].GetComponent<Button>().interactable = false;
+                else
+                    buttons[i].GetComponent<Button>().interactable = true;
+            }
+            catch (NullReferenceException e)
+            {
+                Debug.Log("Trying to access a target that does not exist!" + e);
+            }
         }
     }
     IEnumerator waitForFrame()
@@ -48,8 +54,8 @@ public class SpellSelectMenu : MonoBehaviour
 
         Debug.Log("Player selected \"" + unit.getMoveset()[selection].name + "\"");
 
-        StartCoroutine(GameManager.Instance.battleManager.UseMove(unit.getMoveset()[selection], target, GameManager.Instance.battleManager.getActiveUnitAsPlayer()));
-        GameManager.Instance.getBattleManager().nextTurn();
+        unit.startTurnSequence(unit.getMoveset()[selection], target);   //have to have some intermediate function (startTurnSequence) as calling the Coroutine from inside this object created problems after I make it inactive!!
+
         gameObject.SetActive(false);
     }
 }

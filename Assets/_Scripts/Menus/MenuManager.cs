@@ -43,8 +43,8 @@ public class MenuManager : MonoBehaviour
         longText.gameObject.SetActive(false);
         shortText.gameObject.SetActive(true);
         
-        corountineQueue.Enqueue(AutoTypeText(shortText, text, true));
-        //shortText.text = text;
+        //corountineQueue.Enqueue(AutoTypeText(shortText, text, true));
+        shortText.text = text;
     }
     public void setLongText(string text)
     {

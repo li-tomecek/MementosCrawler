@@ -121,6 +121,7 @@ public class BattleManager : MonoBehaviour
             Debug.Log("BUFF AND DEBUFF ACTIONS HAVE NOT BEEN IMPLEMENTED YET");
         }
 
+        user.decreaseSP(move.getSPCost());
         yield return StartCoroutine(GameManager.Instance.menuManager.WaitForQueuedText());
 
         //UPDATE SLIDERS IF A PLAYABLE CHARACTER IS INVOLVED

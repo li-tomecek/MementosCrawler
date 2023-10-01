@@ -5,8 +5,7 @@ using UnityEngine;
 
 /**GLOBAL TODO:
  * Make player actions actually do something:
- *      - When facing an enemy: have enemy health bar show up in HUD, maybe have some sort of marker on tile? "spells" button become interactable
- *      - if not facing an enemy: spells button not interactable, and default selection is on "guard"?
+ *      - When facing an enemy: have enemy health bar show up in HUD, maybe have some sort of marker on tile?
  *      
  *      - THEN, try adding more playable characters and enemies.
  *      - restrict player movement to a clearly visible movement range.

@@ -6,6 +6,8 @@ public class PlayerController : UnitController
 {
     [HideInInspector]
     public Direction direction = Direction.S;
+
+    public GameUnit target = null;
     void Start()
     {
         moveToStart();
@@ -64,13 +66,21 @@ public class PlayerController : UnitController
 
         //actual sprite movement
         if (Input.GetAxisRaw("Vertical") != 0 && !isMoving)
+        {
             StartCoroutine(MoveActor(Vector3.up * GameManager.Instance.tileHeight * y));
+            target = facedTarget();
+        }
         if (Input.GetAxisRaw("Horizontal") != 0 && !isMoving)
+        {
             StartCoroutine(MoveActor(Vector3.right * GameManager.Instance.tileWidth * x));
-        
+            target = facedTarget();
+        }
+
+
+
     }
 
-    public GameUnit facedEnemy()
+    public GameUnit facedTarget()
     {
        // PlayerController controller = GameManager.Instance.getActivePlayer().GetComponent<PlayerController>();
         Coord adjacent = this.position;
@@ -90,12 +100,18 @@ public class PlayerController : UnitController
                 break;
         }
 
-        foreach (EnemyUnit enemy in GameManager.Instance.battleManager.ActiveEnemyUnits)
+        foreach (GameUnit unit in GameManager.Instance.battleManager.activeUnits)
         {
-            if (enemy.gameObject.GetComponent<UnitController>().position == adjacent)
-                return enemy;
-        }
+            if (unit.gameObject.GetComponent<UnitController>().position == adjacent)
+            {
+                if(unit != target)
+                    GameManager.Instance.menuManager.sliderCanvas.updateTargetSlider(unit);
+                return unit;
+            }
 
+        }
+        if (target != null)
+            GameManager.Instance.menuManager.sliderCanvas.hideTargetSlider();
         return null;
     }
 }
