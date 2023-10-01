@@ -68,7 +68,7 @@ public class MenuManager : MonoBehaviour
             yield return new WaitForSeconds(text_delay);
         }
         gui.text += "\n";
-        yield return new WaitForSeconds(0.7f); //wait for at least this long between lines.
+        yield return new WaitForSeconds(0.8f); //wait for at least this long between lines.
         typing = false;
     }
 

@@ -197,7 +197,9 @@ public class EnemyUnit : GameUnit
         //unit "takes action" and appropriate text is queued and displayed
         if (making_action)
             yield return StartCoroutine(GameManager.Instance.getBattleManager().UseMove(selected_move, target, this));
-        
+        else
+            GameManager.Instance.menuManager.setLongText(this.name + " will not take an action.");
+
         //change the turn
         GameManager.Instance.getBattleManager().nextTurn();
     }

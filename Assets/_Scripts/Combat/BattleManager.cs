@@ -97,7 +97,7 @@ public class BattleManager : MonoBehaviour
                     if (unit.isBlocking)
                     {
                         damage /= 2;
-                        GameManager.Instance.menuManager.setLongText("Target was blocking! Taking half damage.");
+                        GameManager.Instance.menuManager.addToLongText("Target was blocking! Taking half damage.");
                         unit.isBlocking = false;
                     }
                 
@@ -106,7 +106,7 @@ public class BattleManager : MonoBehaviour
                 GameManager.Instance.menuManager.addToLongText(target.name + " took " + damage + " damage.");
             }
             else
-                GameManager.Instance.menuManager.setLongText("Attack missed!");
+                GameManager.Instance.menuManager.addToLongText("Attack missed!");
 
         } 
         //RESTORE HEALTH
@@ -121,6 +121,8 @@ public class BattleManager : MonoBehaviour
             Debug.Log("BUFF AND DEBUFF ACTIONS HAVE NOT BEEN IMPLEMENTED YET");
         }
 
+        yield return StartCoroutine(GameManager.Instance.menuManager.WaitForQueuedText());
+
         //UPDATE SLIDERS IF A PLAYABLE CHARACTER IS INVOLVED
         if (user is PlayableUnit)   //user casts some spell
         {
@@ -131,7 +133,5 @@ public class BattleManager : MonoBehaviour
         {
             GameManager.Instance.menuManager.sliderCanvas.updatePlayerSliders(target);
         }
-
-        yield return StartCoroutine(GameManager.Instance.menuManager.WaitForQueuedText());
     }
 }
