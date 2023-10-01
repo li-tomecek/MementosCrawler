@@ -9,9 +9,9 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
     public GameUnit() { }
     public GameUnit(Move[] moveset, Stats stats)
     {
-        if (moveset.Length != 4)
+        if (moveset.Length != 3)
         {
-            Debug.Log("This unit's moveset must contain exactly 4 moves.");
+            Debug.Log("This unit's moveset must contain exactly 3 moves.");
             return;
         }
         this.moveset = moveset;
@@ -22,6 +22,7 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
 
     //--------Shared components---------
     protected Move[] moveset;
+    protected Move meleeAttack;
     [SerializeField] protected Stats stats;
     protected int currentHP, currentSP;
     protected UnitController controller;
@@ -40,6 +41,8 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
 
         currentHP = stats.maxHP;
         currentSP = stats.maxSP;
+
+        meleeAttack = new Move("a melee attack", MoveType.MELEE, 0, 75, 1, 0);
     }
 
 
@@ -50,6 +53,7 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
     public int getSP() { return currentSP; }
     public Move[] getMoveset() { return moveset; }
     public UnitController getController() { return controller; }
+    public Move getMelee() { return meleeAttack; }
 
     //--~~setters~~--
     public void setHP(int hp) { currentHP = hp; }
@@ -70,27 +74,27 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
         currentSP -= amt;
         currentSP = (currentSP < 0) ? 0 : currentSP;   
     }
+   
+    
     public int CompareTo(GameUnit other)
     {
         return (this.stats.agility.CompareTo(other.stats.agility) * -1);  //sorting lists in descending agility order
     }
-
     public void initializeTestUnit()
     {
-        moveset = new Move[4];
+        moveset = new Move[3];
         Move move = new Move("atk 1", MoveType.ATTACK, 10, 100, 1, 2);
         moveset[0] = move;
         move = new Move("atk 2", MoveType.ATTACK, 20, 50, 1, 3);
         moveset[1] = move;
         move = new Move("heal 10/3", MoveType.HEAL, 10, 100, 1, 3);
         moveset[2] = move;
-        move = new Move("heal 20/6", MoveType.HEAL, 20, 100, 1, 6);
-        moveset[3] = move;
 
         stats.strength = 10;
-        stats.defense = 10;
+        stats.defense = 8;
         stats.agility = 10;
         stats.maxHP = 25;
         stats.maxSP = 10;
+     
     }
 }

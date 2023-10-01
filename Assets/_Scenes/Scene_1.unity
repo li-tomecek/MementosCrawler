@@ -309,7 +309,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: spell_4
+  m_Text: BACK
 --- !u!222 &28480623
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -660,6 +660,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spellsButton: {fileID: 1839435184}
   guardButton: {fileID: 870845050}
+  meleeButton: {fileID: 1671357221}
 --- !u!114 &238093529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7751,7 +7752,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1926714409}
         m_TargetAssemblyTypeName: SpellSelectMenu, Assembly-CSharp
-        m_MethodName: OnButtonPress
+        m_MethodName: OnSpellButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8303,7 +8304,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1926714409}
         m_TargetAssemblyTypeName: SpellSelectMenu, Assembly-CSharp
-        m_MethodName: OnButtonPress
+        m_MethodName: OnSpellButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8436,7 +8437,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1926714409}
         m_TargetAssemblyTypeName: SpellSelectMenu, Assembly-CSharp
-        m_MethodName: OnButtonPress
+        m_MethodName: OnSpellButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8497,7 +8498,7 @@ GameObject:
   - component: {fileID: 1199962479}
   - component: {fileID: 1199962478}
   m_Layer: 5
-  m_Name: Spell 4
+  m_Name: Exit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8569,7 +8570,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1926714409}
         m_TargetAssemblyTypeName: SpellSelectMenu, Assembly-CSharp
-        m_MethodName: OnButtonPress
+        m_MethodName: OnExitButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -12388,7 +12389,7 @@ GameObject:
   - component: {fileID: 1671357222}
   - component: {fileID: 1671357221}
   m_Layer: 5
-  m_Name: Wait
+  m_Name: Melee
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12460,7 +12461,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 238093528}
         m_TargetAssemblyTypeName: ActionSelectMenu, Assembly-CSharp
-        m_MethodName: OnWaitButton
+        m_MethodName: OnMeleeButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -12892,6 +12893,7 @@ MonoBehaviour:
   startX: 0
   startY: 0
   direction: 0
+  target: {fileID: 0}
 --- !u!114 &1895327268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12975,7 +12977,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: WAIT
+  m_Text: MELEE
 --- !u!222 &1918764045
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -13127,8 +13129,7 @@ MonoBehaviour:
   spell_1_btn: {fileID: 1132750402}
   spell_2_btn: {fileID: 674464172}
   spell_3_btn: {fileID: 1142488625}
-  spell_4_btn: {fileID: 1199962478}
-  buttons: []
+  spell_buttons: []
 --- !u!114 &1926714410
 MonoBehaviour:
   m_ObjectHideFlags: 0

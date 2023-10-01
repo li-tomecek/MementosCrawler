@@ -10,24 +10,35 @@ public class ActionSelectMenu : MonoBehaviour
 
     public Button spellsButton;
     public Button guardButton;
+    public Button meleeButton;
+    GameUnit target;
 
     public void OnEnable()
     {
-        if (GameManager.Instance.getActivePlayer().GetComponent<PlayerController>().target != null)
+        GameManager.Instance.menuManager.setShortText("Make an action?");
+        StartCoroutine(waitForFrame());
+
+        target = GameManager.Instance.getActivePlayer().GetComponent<PlayerController>().target;
+        if (target != null)
         {
             spellsButton.interactable = true;
+            if(!(target is PlayableUnit))
+                meleeButton.interactable = true;
             EventSystem.current.SetSelectedGameObject(spellsButton.gameObject);
         }
         else
         {
             spellsButton.interactable = false;
+            meleeButton.interactable = false;
             EventSystem.current.SetSelectedGameObject(guardButton.gameObject);
         } 
     }
-
+    IEnumerator waitForFrame()
+    {
+        yield return 0; //has to wait a frame before we can select a new game object.....
+    }
     public void OnAbilitiesButton()
     {
-        GameManager.Instance.menuManager.setShortText("Which spell will you cast?");
         GameManager.Instance.menuManager.getSpellSelectMenu().SetActive(true);
         gameObject.SetActive(false);
     }
@@ -39,9 +50,11 @@ public class ActionSelectMenu : MonoBehaviour
         GameManager.Instance.battleManager.nextTurn();
         gameObject.SetActive(false);
     }
-    public void OnWaitButton()
+    public void OnMeleeButton()
     {
-        GameManager.Instance.getBattleManager().nextTurn();
+        PlayableUnit unit = GameManager.Instance.battleManager.getActiveUnitAsPlayer();
+        unit.startTurnSequence(unit.getMelee(), target);
+
         gameObject.SetActive(false);
     }
     public void OnExitButton()

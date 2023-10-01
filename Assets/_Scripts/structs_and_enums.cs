@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum MoveType
 {
-    ATTACK, BUFF, DEBUFF, HEAL
+    ATTACK, BUFF, DEBUFF, HEAL, MELEE
 }
 public enum Mode
 {

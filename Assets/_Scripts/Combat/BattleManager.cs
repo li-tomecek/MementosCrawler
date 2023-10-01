@@ -67,26 +67,17 @@ public class BattleManager : MonoBehaviour
             turn_index = 0;
 
         activeUnit = activeUnits[turn_index];
-        /**if (activeUnit is PlayableUnit)
-        {
-            GameManager.Instance.swapActiveUnit(activeUnits[turn_index].gameObject);
-            GameManager.Instance.setMode(Mode.PLAYER_TURN);
-        }
-        else
-        {
-            GameManager.Instance.getActivePlayer().GetComponent<PlayerController>().enabled = false;
-            GameManager.Instance.setMode(Mode.ENEMY_TURN);
 
-        }**/
         GameManager.Instance.menuManager.setLongText("It is now " + activeUnit.name + "'s turn.");
         activeUnit.TakeTurn();
     }
 
     public IEnumerator UseMove(Move move, GameUnit target, GameUnit user)
     {
-        //DEAL DAMAGE 
         GameManager.Instance.menuManager.setLongText(activeUnit.gameObject.name + " used " + move.name + ".");
-        if (move.getType() == MoveType.ATTACK)
+
+        //DEAL DAMAGE 
+        if (move.getType() == MoveType.ATTACK || move.getType() == MoveType.MELEE)
         {
             if (rand.NextDouble() * 100 < move.getAccuracy())
             {

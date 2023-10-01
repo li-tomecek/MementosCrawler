@@ -74,7 +74,7 @@ public class MenuManager : MonoBehaviour
 
     public IEnumerator WaitForQueuedText()
     {
-        while (typing)
+        while (typing || corountineQueue.Count > 0)
         {
             yield return null;  //hopefully we dont end up in infinite loop.
         }

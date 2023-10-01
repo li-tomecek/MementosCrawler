@@ -5,13 +5,15 @@ using UnityEngine;
 
 /**GLOBAL TODO:
  * Make player actions actually do something:
- *      - When facing an enemy: have enemy health bar show up in HUD, maybe have some sort of marker on tile?
+ *      - When facing an enemy: maybe have some sort of marker on tile and animation play!
  *      
  *      - THEN, try adding more playable characters and enemies.
  *      - restrict player movement to a clearly visible movement range.
  *      
  * Small fixes/re-works:
  *      - change moveset to 3 instead of 4 moves; change the last spell to a "back" button
+ *      - Change "wait" button to "melee" -- an attack that costs no SP but has no power (so it only uses the unit's strength stat), and lower accuracy (75% maybe?)
+ *      - add some arbitraty trigger so that the battle doesnt immediately start
  *      - Create a debug statement script to easily turn on/off certain debug statements from appearing in the console?
  **/
 public class GameManager : MonoBehaviour
