@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerController : UnitController
 {
-    Direction direction = Direction.S;
+    [HideInInspector]
+    public Direction direction = Direction.S;
     void Start()
     {
         moveToStart();
@@ -67,6 +68,35 @@ public class PlayerController : UnitController
         if (Input.GetAxisRaw("Horizontal") != 0 && !isMoving)
             StartCoroutine(MoveActor(Vector3.right * GameManager.Instance.tileWidth * x));
         
+    }
+
+    public GameUnit facedEnemy()
+    {
+       // PlayerController controller = GameManager.Instance.getActivePlayer().GetComponent<PlayerController>();
+        Coord adjacent = this.position;
+        switch (this.direction)
+        {
+            case Direction.N:
+                adjacent.Y++;
+                break;
+            case Direction.E:
+                adjacent.X++;
+                break;
+            case Direction.S:
+                adjacent.Y--;
+                break;
+            case Direction.W:
+                adjacent.X--;
+                break;
+        }
+
+        foreach (EnemyUnit enemy in GameManager.Instance.battleManager.ActiveEnemyUnits)
+        {
+            if (enemy.gameObject.GetComponent<UnitController>().position == adjacent)
+                return enemy;
+        }
+
+        return null;
     }
 }
 
