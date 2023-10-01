@@ -40,7 +40,7 @@ public class BattleManager : MonoBehaviour
     }
 
     //----------other methods-------------
-    public void StartBattle(GameUnit unit)
+    public void StartBattle()
     {
         activeUnits.Sort();
 
@@ -51,7 +51,7 @@ public class BattleManager : MonoBehaviour
     /**
      *  NOTE: This function is temporary!
      *  In the future, there will be a trigger to determine when a battle has started. When this happends, this trigger will call "Start Battle" adnd we will NOT have to sort here, 
-     *  just add active units before the battle starts!!
+     *  just add active units before the battle starts!! This function can also move all units to pre-determined start locations!
      * **/
     public void AddUnit(GameUnit unit) 
     {
@@ -62,6 +62,7 @@ public class BattleManager : MonoBehaviour
 
     public void nextTurn()
     {
+        GameManager.Instance.menuManager.sliderCanvas.hideSliders();
         turn_index++;
         if (turn_index >= activeUnits.Count)
             turn_index = 0;
@@ -74,6 +75,8 @@ public class BattleManager : MonoBehaviour
 
     public IEnumerator UseMove(Move move, GameUnit target, GameUnit user)
     {
+
+        GameManager.Instance.menuManager.sliderCanvas.updateTargetSlider(target);
         GameManager.Instance.menuManager.setLongText(activeUnit.gameObject.name + " used " + move.name + ".");
 
         //DEAL DAMAGE 
@@ -118,12 +121,8 @@ public class BattleManager : MonoBehaviour
         //UPDATE SLIDERS IF A PLAYABLE CHARACTER IS INVOLVED
         if (user is PlayableUnit)   //user casts some spell
         {
-            GameManager.Instance.menuManager.sliderCanvas.updateTargetSlider(target);
             GameManager.Instance.menuManager.sliderCanvas.updatePlayerSliders(user);
         }
-        else if(target is PlayableUnit) //user is target of enemy spell
-        {
-            GameManager.Instance.menuManager.sliderCanvas.updatePlayerSliders(target);
-        }
+        GameManager.Instance.menuManager.sliderCanvas.updateTargetSlider(target);   //always update target slider
     }
 }

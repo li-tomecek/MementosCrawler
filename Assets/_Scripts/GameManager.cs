@@ -4,10 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /**GLOBAL TODO:
- * Make player actions actually do something:
+ * Battle fixes:
  *      - When facing an enemy: maybe have some sort of marker on tile and animation play!
+ *      - Show some marker to display who is the current active unit
+ *      - make units die (get erased from board) when they lose all of their health
+ *      - add melee as an option to enemy units
+ *      - disable spells in for which the player does not have enough SP to cast
+ *      - display spell information in short text when hovering.
  *      
- *      - THEN, try adding more playable characters and enemies.
  *      - restrict player movement to a clearly visible movement range.
  *      
  * Small fixes/re-works:

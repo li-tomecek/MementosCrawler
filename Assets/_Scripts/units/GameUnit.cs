@@ -94,7 +94,7 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
         stats.defense = 8;
         stats.agility = 10;
         stats.maxHP = 25;
-        stats.maxSP = 10;
+        stats.maxSP = 5;
      
     }
 }

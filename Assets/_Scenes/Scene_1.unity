@@ -13270,6 +13270,7 @@ MonoBehaviour:
   spell_1_btn: {fileID: 1132750402}
   spell_2_btn: {fileID: 674464172}
   spell_3_btn: {fileID: 1142488625}
+  exit_btn: {fileID: 1199962478}
   spell_buttons: []
 --- !u!114 &1926714410
 MonoBehaviour:
