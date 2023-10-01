@@ -10,6 +10,7 @@ public enum Mode
 {
     PLAYER_TURN, FREE_MOVE, ACTION_SELECT, ENEMY_TURN
 }
+public enum Direction { N, E, S, W }
 
 public struct Coord
 {

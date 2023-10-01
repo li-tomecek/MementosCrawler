@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class PlayerController : UnitController
 {
-    
+    Direction direction = Direction.S;
     void Start()
     {
         moveToStart();
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        direction = Direction.S;
     }
 
     //----------other methods--------------
@@ -40,14 +41,29 @@ public class PlayerController : UnitController
 
         //swap sprite direction
         if (x > 0)
-            spriteRenderer.flipX = false;                //transform.localScale = Vector3.one;
+        {
+            spriteRenderer.flipX = false;
+            direction = Direction.E;
+        }
         else if (x < 0)
-            spriteRenderer.flipX = true;                //transform.localScale = new Vector3(-1, 1, 1);
+        {
+            spriteRenderer.flipX = true;
+            direction = Direction.W;
+        }
+        if (y > 0)
+        {
+            //change sprite here?
+            direction = Direction.N;
+        }
+        else if (y < 0)
+        {
+            //change sprite here?
+            direction = Direction.S;
+        }
 
         //actual sprite movement
         if (Input.GetAxisRaw("Vertical") != 0 && !isMoving)
-                StartCoroutine(MoveActor(Vector3.up * GameManager.Instance.tileHeight * y));
-
+            StartCoroutine(MoveActor(Vector3.up * GameManager.Instance.tileHeight * y));
         if (Input.GetAxisRaw("Horizontal") != 0 && !isMoving)
             StartCoroutine(MoveActor(Vector3.right * GameManager.Instance.tileWidth * x));
         
