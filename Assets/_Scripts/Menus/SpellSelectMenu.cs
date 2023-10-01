@@ -15,7 +15,7 @@ public class SpellSelectMenu : MonoBehaviour
     public void OnEnable()
     {
         GameManager.Instance.menuManager.setShortText("Which spell will you cast?");
-        StartCoroutine(waitForFrame());
+        StartCoroutine(setupDefaultSelect());
 
         unit = GameManager.Instance.battleManager.getActiveUnitAsPlayer();
         target = GameManager.Instance.getActivePlayer().GetComponent<PlayerController>().target;
@@ -37,11 +37,8 @@ public class SpellSelectMenu : MonoBehaviour
                 Debug.Log("Trying to access a target that does not exist!" + e);
             }
         }
-
-
-
     }
-    IEnumerator waitForFrame()
+    IEnumerator setupDefaultSelect()
     {
         yield return 0; //has to wait a frame before we can select a new game object.....
         EventSystem.current.SetSelectedGameObject(spell_1_btn.gameObject);

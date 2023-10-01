@@ -16,13 +16,17 @@ public class ActionSelectMenu : MonoBehaviour
     public void OnEnable()
     {
         GameManager.Instance.menuManager.setShortText("Make an action?");
-        StartCoroutine(waitForFrame());
-
         target = GameManager.Instance.getActivePlayer().GetComponent<PlayerController>().target;
+        StartCoroutine(setupDefaultSelect());
+    }
+    IEnumerator setupDefaultSelect()
+    {
+        yield return 0; //has to wait a frame before we can select a new game object.....
+        
         if (target != null)
         {
             spellsButton.interactable = true;
-            if(!(target is PlayableUnit))
+            if (!(target is PlayableUnit))
                 meleeButton.interactable = true;
             EventSystem.current.SetSelectedGameObject(spellsButton.gameObject);
         }
@@ -31,11 +35,7 @@ public class ActionSelectMenu : MonoBehaviour
             spellsButton.interactable = false;
             meleeButton.interactable = false;
             EventSystem.current.SetSelectedGameObject(guardButton.gameObject);
-        } 
-    }
-    IEnumerator waitForFrame()
-    {
-        yield return 0; //has to wait a frame before we can select a new game object.....
+        }
     }
     public void OnAbilitiesButton()
     {

@@ -11,8 +11,6 @@ using UnityEngine;
  *      - restrict player movement to a clearly visible movement range.
  *      
  * Small fixes/re-works:
- *      - change moveset to 3 instead of 4 moves; change the last spell to a "back" button
- *      - Change "wait" button to "melee" -- an attack that costs no SP but has no power (so it only uses the unit's strength stat), and lower accuracy (75% maybe?)
  *      - add some arbitraty trigger so that the battle doesnt immediately start
  *      - Create a debug statement script to easily turn on/off certain debug statements from appearing in the console?
  **/
