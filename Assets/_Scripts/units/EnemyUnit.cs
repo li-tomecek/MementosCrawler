@@ -82,6 +82,7 @@ public class EnemyUnit : GameUnit
                 desire = find_best_heal_target(desire, m, heal_targets);
             //Note: desire value only replaced if a move with a higher "desireability" is found
         }
+        desire = find_best_attack_target(desire, meleeAttack, attack_targets);
 
         // ~3~ Select move with the highest "desireablilty"
         if (desire <= 0)
@@ -115,7 +116,6 @@ public class EnemyUnit : GameUnit
 
                 desire = (ENEMY_HEALTH_C * enemy_norm + ATK_SP_C * sp_norm + ACC_C * accuracy_norm + ATK_BUFFER);  //where the constants add up to 1. Buffer ensures that, even if the enemy is at full health, there will be a small 'desire' to attack them
             }
-            //Debug.Log("Checking move: " + move.name + " target: " + target.name + " desire: " + desire);
 
             if (desire > max_desire)
             {
@@ -203,8 +203,6 @@ public class EnemyUnit : GameUnit
         //change the turn
         GameManager.Instance.getBattleManager().nextTurn();
     }
-
-
 
     // ---- START ----
     public new void Start()
