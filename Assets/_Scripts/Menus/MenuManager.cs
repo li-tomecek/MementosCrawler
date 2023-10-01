@@ -28,13 +28,8 @@ public class MenuManager : MonoBehaviour
     //-------UPDATE AND ON AWAKE-------
     void Update()
     {
-        if (!typing && corountineQueue.Count > 0)
+        if (!typing && corountineQueue.Count > 0)         //we no longer do this in update! We call this after we have queued the appropriate text?
             StartCoroutine(corountineQueue.Dequeue());
-    }
-
-    private void Awake()
-    {
-        //playerHP_slider = 
     }
 
     //-------MENUS-------
@@ -53,7 +48,7 @@ public class MenuManager : MonoBehaviour
     }
     public void setLongText(string text)
     {
-        shortText.gameObject.SetActive(false);
+        shortText.gameObject.SetActive(false);  //Think there may be problems with setting these values here and not when the actual coroutine starts. If there is a queue of text with short & long mixed?
         longText.gameObject.SetActive(true);
 
         corountineQueue.Enqueue(AutoTypeText(longText, text, true));
@@ -73,7 +68,15 @@ public class MenuManager : MonoBehaviour
             yield return new WaitForSeconds(text_delay);
         }
         gui.text += "\n";
-        yield return new WaitForSeconds(0.7f); //wait for at least one second between lines.
+        yield return new WaitForSeconds(0.7f); //wait for at least this long between lines.
         typing = false;
+    }
+
+    public IEnumerator WaitForQueuedText()
+    {
+        while (typing)
+        {
+            yield return null;  //hopefully we dont end up in infinite loop.
+        }
     }
 }

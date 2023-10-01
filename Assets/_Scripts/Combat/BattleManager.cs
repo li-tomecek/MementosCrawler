@@ -11,7 +11,7 @@ public class BattleManager : MonoBehaviour
     [HideInInspector]
     public bool blockPlayerInputs;
 
-    private GameUnit activeUnit;
+    private GameUnit activeUnit;        //the unit whose turn it is currently
     private System.Random rand = new System.Random();
     int turn_index;
 
@@ -23,8 +23,6 @@ public class BattleManager : MonoBehaviour
         activeUnits = new List<GameUnit>();
         ActivePlayerUnits = new List<PlayableUnit>();
         ActiveEnemyUnits = new List<EnemyUnit>();
-
-        //setupBattle();
     }
     //-------------get/set----------------
     public List<GameUnit> getActiveUnits() { return activeUnits; }
@@ -42,12 +40,24 @@ public class BattleManager : MonoBehaviour
     }
 
     //----------other methods-------------
-    public void setupBattle()
+    public void StartBattle(GameUnit unit)
     {
         activeUnits.Sort();
-        turn_index = -1;
 
+        turn_index = -1;
+        activeUnit = activeUnits[0];
         nextTurn();
+    }
+    /**
+     *  NOTE: This function is temporary!
+     *  In the future, there will be a trigger to determine when a battle has started. When this happends, this trigger will call "Start Battle" adnd we will NOT have to sort here, 
+     *  just add active units before the battle starts!!
+     * **/
+    public void AddUnit(GameUnit unit) 
+    {
+        activeUnits.Add(unit);
+        activeUnits.Sort(); //probably a better way to do this rather that re-sort everytime a unit is inserted (could do once all units are inserted) but list is small enough that it should be negligible?
+        activeUnit = activeUnits[0];
     }
 
     public void nextTurn()
@@ -72,7 +82,7 @@ public class BattleManager : MonoBehaviour
         activeUnit.TakeTurn();
     }
 
-    public void UseMove(Move move, GameUnit target, GameUnit user)
+    public IEnumerator UseMove(Move move, GameUnit target, GameUnit user)
     {
         //DEAL DAMAGE 
         GameManager.Instance.menuManager.setLongText(activeUnit.gameObject.name + " used " + move.name + ".");
@@ -122,5 +132,6 @@ public class BattleManager : MonoBehaviour
             GameManager.Instance.menuManager.sliderCanvas.updatePlayerSliders(target);
         }
 
+        yield return StartCoroutine(GameManager.Instance.menuManager.WaitForQueuedText());
     }
 }

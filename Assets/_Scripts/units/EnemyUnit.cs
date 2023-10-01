@@ -9,6 +9,13 @@ public class EnemyUnit : GameUnit
     public EnemyUnit() : base() { }
     public EnemyUnit(Move[] moveset, Stats stats) : base(moveset, stats) { }
 
+    public const float ATK_BUFFER = 0.1f;
+    public const float ENEMY_HEALTH_C = 0.45f;      //these 4 must add up to 1
+    public const float ATK_SP_C = 0.25f;
+    public const float ACC_C = 0.20f;
+
+    public const float ALLY_HEALTH_C = 0.65f;        //these 2 must add up to 1
+    public const float HEAL_SP_C = 0.35f;
 
     //--move selection variables--
     private System.Random rand = new System.Random();
@@ -18,14 +25,7 @@ public class EnemyUnit : GameUnit
     private Move selected_move;
     private bool making_action;
 
-
-    public const float ATK_BUFFER = 0.1f;            
-    public const float ENEMY_HEALTH_C = 0.45f;      //these 4 must add up to 1
-    public const float ATK_SP_C = 0.25f;
-    public const float ACC_C = 0.20f;
-
-    public const float ALLY_HEALTH_C = 0.65f;        //these 2 must add up to 1
-    public const float HEAL_SP_C = 0.35f;
+    Queue<IEnumerator> coroutineQueue = new Queue<IEnumerator>();
 
 
     //---- IMPLEMENTED METHODS ----
@@ -35,11 +35,8 @@ public class EnemyUnit : GameUnit
         GameManager.Instance.getActivePlayer().GetComponent<PlayerController>().enabled = false;        //the last active playable unit will not move until their next turn.
 
         chooseAction();
-        executeMovement();
-        
-        if (making_action)
-            GameManager.Instance.getBattleManager().UseMove(selected_move, target, this);
-        GameManager.Instance.getBattleManager().nextTurn();
+
+        StartCoroutine(ExecuteTurnSequence());
     }
     public override List<GameUnit> getAlliesInRange()   
     {
@@ -66,7 +63,7 @@ public class EnemyUnit : GameUnit
     }
 
     // ---- UNIQUE METHODS ----
-
+    // -- choosing actions
     public void chooseAction()
     {
         target = this;  //default value that is replaced within the following functions
@@ -179,18 +176,33 @@ public class EnemyUnit : GameUnit
 
         return max_desire;
     }
-    public void executeMovement()
+    public IEnumerator executeMovement()
     {
         if (making_action && target != this)
-            controller.MoveToDistantTile(target_coord, true);
+           yield return controller.MoveToDistantTile(target_coord, true);
         else if (!making_action)
         {
             //if not doing anything, move towards a player unit so that you might make a move next turn
             //pick a random player to move towards
             int i = rand.Next(0, GameManager.Instance.getBattleManager().ActivePlayerUnits.Count);
-            controller.MoveTowardsTarget(GameManager.Instance.getBattleManager().ActivePlayerUnits[i].getController().position);
+            yield return controller.MoveTowardsTarget(GameManager.Instance.getBattleManager().ActivePlayerUnits[i].getController().position);
         }
     }
+    // -- action order / coroutines
+    IEnumerator ExecuteTurnSequence()
+    {
+        //Unit moves towards target (if there is one)
+        yield return StartCoroutine(executeMovement());   
+        
+        //unit "takes action" and appropriate text is queued and displayed
+        if (making_action)
+            yield return StartCoroutine(GameManager.Instance.getBattleManager().UseMove(selected_move, target, this));
+        
+        //change the turn
+        GameManager.Instance.getBattleManager().nextTurn();
+    }
+
+
 
     // ---- START ----
     public new void Start()
@@ -199,4 +211,6 @@ public class EnemyUnit : GameUnit
         GameManager.Instance.getBattleManager().ActiveEnemyUnits.Add(this);
         this.controller = gameObject.GetComponent<UnitController>();
     }
+
+  
 }

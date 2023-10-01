@@ -41,14 +41,14 @@ public class SliderCanvas : MonoBehaviour
         playerHP_slider.value = ((float)unit.getHP() / unit.getStats().maxHP);
         playerSP_slider.value = ((float)unit.getSP() / unit.getStats().maxSP);
 
-        playerHP_slider.transform.GetComponentInChildren<Text>().text = string.Format("{0,3}/{0,-3}", unit.getHP(), unit.getStats().maxHP);
-        playerSP_slider.transform.GetComponentInChildren<Text>().text = string.Format("{0,3}/{0,-3}", unit.getSP(), unit.getStats().maxSP);
+        playerHP_slider.transform.GetComponentInChildren<Text>().text = string.Format("{0,3}/{1,-3}", unit.getHP(), unit.getStats().maxHP);
+        playerSP_slider.transform.GetComponentInChildren<Text>().text = string.Format("{0,3}/{1,-3}", unit.getSP(), unit.getStats().maxSP);
     }
     public void updateTargetSlider(GameUnit target)
     {
         target_name.text = target.name;
         targetHP_slider.value = ((float)target.getHP() / target.getStats().maxHP);
-        targetHP_slider.transform.GetComponentInChildren<Text>().text = string.Format("{0,3}/{0,-3}", target.getHP(), target.getStats().maxHP);
+        targetHP_slider.transform.GetComponentInChildren<Text>().text = string.Format("{0,3}/{1,-3}", target.getHP(), target.getStats().maxHP);
     }
 
     //--- CHANGE VISIBILITY ----
