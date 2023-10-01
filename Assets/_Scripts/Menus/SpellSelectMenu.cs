@@ -49,11 +49,8 @@ public class SpellSelectMenu : MonoBehaviour
 
         if (selection < 0)      //just for backup. Should never execute, as it should be impossible for the player to make a selection outside of the valid range.
         {
-            Debug.Log("INVALID SELECTION, SKIPPING PLAYER ACTION.");
-            return;
+            throw new CustomException("Player tried to select a spell that does not exist!");
         }
-
-        Debug.Log("Player selected \"" + unit.getMoveset()[selection].name + "\"");
 
         unit.startTurnSequence(unit.getMoveset()[selection], target);   //have to have some intermediate function (startTurnSequence) as calling the Coroutine from inside this object created problems after I make it inactive!!
         gameObject.SetActive(false);

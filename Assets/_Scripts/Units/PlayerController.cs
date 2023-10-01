@@ -8,10 +8,11 @@ public class PlayerController : UnitController
     public Direction direction = Direction.S;
 
     public GameUnit target = null;
-    void Start()
+    new void Start()
     {
-        moveToStart();
-        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        //moveToStart();
+        //spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        base.Start();
         direction = Direction.S;
     }
 

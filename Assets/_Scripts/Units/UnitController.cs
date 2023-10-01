@@ -18,7 +18,7 @@ public class UnitController : MonoBehaviour
     public Coord position;
     protected SpriteRenderer spriteRenderer;
 
-    private void Start()
+    protected void Start()
     {
         transform.position = (MapGrid.Instance.gridToWorldCoords(startX,startY));
         position = new Coord(startX, startY);
@@ -59,7 +59,6 @@ public class UnitController : MonoBehaviour
         }
         isMoving = false;
     }
-
     protected IEnumerator MoveOneStep(Coord target)
     {
         float elapsedTime = 0;
@@ -91,7 +90,6 @@ public class UnitController : MonoBehaviour
         }
 
     }
-
     private IEnumerator PlayQueuedRoutines(Queue<IEnumerator> coroutines)
     {
         IEnumerator currentCoroutine;
