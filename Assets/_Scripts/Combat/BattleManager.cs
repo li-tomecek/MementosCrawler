@@ -8,13 +8,15 @@ public class BattleManager : MonoBehaviour
     public List<GameUnit> activeUnits;
     public List<PlayableUnit> ActivePlayerUnits;
     public List<EnemyUnit> ActiveEnemyUnits;
+    [HideInInspector]
+    public bool blockPlayerInputs;
 
+    private GameUnit activeUnit;        //the unit whose turn it is currently
     private System.Random rand = new System.Random();
-
     int turn_index;
-    [HideInInspector] public bool blockPlayerInputs;
 
     public int MOVEMENT = 4;       //represents how many tiles characters may move in one turn.
+
     //------constructors and start--------
     private void onAwake()
     {
@@ -24,14 +26,38 @@ public class BattleManager : MonoBehaviour
     }
     //-------------get/set----------------
     public List<GameUnit> getActiveUnits() { return activeUnits; }
+    public GameUnit getActiveUnit() { return activeUnit; }
+    public PlayableUnit getActiveUnitAsPlayer()
+    {
+        if(activeUnit is PlayableUnit)
+        {
+            return (activeUnit as PlayableUnit);
+        }
+        else
+        {
+            throw new CustomException("The active unit is not an instance of a PlayableUnit! Trying to access a playableUnit that does not exist here.");
+        }
+    }
 
     //----------other methods-------------
-    public void setupBattle()
+    public void StartBattle(GameUnit unit)
     {
         activeUnits.Sort();
-        turn_index = -1;
 
+        turn_index = -1;
+        activeUnit = activeUnits[0];
         nextTurn();
+    }
+    /**
+     *  NOTE: This function is temporary!
+     *  In the future, there will be a trigger to determine when a battle has started. When this happends, this trigger will call "Start Battle" adnd we will NOT have to sort here, 
+     *  just add active units before the battle starts!!
+     * **/
+    public void AddUnit(GameUnit unit) 
+    {
+        activeUnits.Add(unit);
+        activeUnits.Sort(); //probably a better way to do this rather that re-sort everytime a unit is inserted (could do once all units are inserted) but list is small enough that it should be negligible?
+        activeUnit = activeUnits[0];
     }
 
     public void nextTurn()
@@ -39,19 +65,28 @@ public class BattleManager : MonoBehaviour
         turn_index++;
         if (turn_index >= activeUnits.Count)
             turn_index = 0;
-        Debug.Log("It is now " + activeUnits[turn_index].gameObject.name + "'s turn.");
 
-        if (activeUnits[turn_index] is PlayableUnit)
+        activeUnit = activeUnits[turn_index];
+        /**if (activeUnit is PlayableUnit)
+        {
             GameManager.Instance.swapActiveUnit(activeUnits[turn_index].gameObject);
+            GameManager.Instance.setMode(Mode.PLAYER_TURN);
+        }
         else
-            GameManager.Instance.getActiveUnit().GetComponent<PlayerController>().enabled = false;
+        {
+            GameManager.Instance.getActivePlayer().GetComponent<PlayerController>().enabled = false;
+            GameManager.Instance.setMode(Mode.ENEMY_TURN);
 
-        activeUnits[turn_index].TakeTurn();
+        }**/
+        GameManager.Instance.menuManager.setLongText("It is now " + activeUnit.name + "'s turn.");
+        activeUnit.TakeTurn();
     }
 
-    public void UseMove(Move move, GameUnit target, GameUnit user)
+    public IEnumerator UseMove(Move move, GameUnit target, GameUnit user)
     {
-        if(move.getType() == MoveType.ATTACK)
+        //DEAL DAMAGE 
+        GameManager.Instance.menuManager.setLongText(activeUnit.gameObject.name + " used " + move.name + ".");
+        if (move.getType() == MoveType.ATTACK)
         {
             if (rand.NextDouble() * 100 < move.getAccuracy())
             {
@@ -62,27 +97,41 @@ public class BattleManager : MonoBehaviour
                     if (unit.isBlocking)
                     {
                         damage /= 2;
-                        Debug.Log("Target was blocking! Taking half damage.");
+                        GameManager.Instance.menuManager.addToLongText("Target was blocking! Taking half damage.");
                         unit.isBlocking = false;
                     }
                 
                 }
                 target.decreaseHP(damage);
-                Debug.Log(user.name + " has dealt " + damage + " damage to " + target.name + "!");
+                GameManager.Instance.menuManager.addToLongText(target.name + " took " + damage + " damage.");
             }
             else
-                Debug.Log("Attack missed!");
+                GameManager.Instance.menuManager.addToLongText("Attack missed!");
 
-        } else if(move.getType() == MoveType.HEAL) 
+        } 
+        //RESTORE HEALTH
+        else if(move.getType() == MoveType.HEAL) 
         {
-            //we dont care about accuracy, healing moves always hit
-            int health = user.getStats().strength + move.getPower();
+            int health = user.getStats().strength + move.getPower();        //we dont care about accuracy, healing moves always hit
             target.increaseHP(health);
-            Debug.Log(user.name + " has restored " + health + "HP to " + target.name + ".");
+            GameManager.Instance.menuManager.setLongText(user.name + " has restored " + health + "HP to " + target.name + ".");
         }
         else
         {
             Debug.Log("BUFF AND DEBUFF ACTIONS HAVE NOT BEEN IMPLEMENTED YET");
+        }
+
+        yield return StartCoroutine(GameManager.Instance.menuManager.WaitForQueuedText());
+
+        //UPDATE SLIDERS IF A PLAYABLE CHARACTER IS INVOLVED
+        if (user is PlayableUnit)   //user casts some spell
+        {
+            GameManager.Instance.menuManager.sliderCanvas.updateTargetSlider(target);
+            GameManager.Instance.menuManager.sliderCanvas.updatePlayerSliders(user);
+        }
+        else if(target is PlayableUnit) //user is target of enemy spell
+        {
+            GameManager.Instance.menuManager.sliderCanvas.updatePlayerSliders(target);
         }
     }
 }

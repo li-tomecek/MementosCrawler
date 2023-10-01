@@ -14,7 +14,7 @@ public class SpellSelectMenu : MonoBehaviour
     {
         StartCoroutine(waitForFrame());
 
-        unit = GameManager.Instance.getActiveUnit().GetComponent<PlayableUnit>();  //should put exception around here ig..
+        unit = GameManager.Instance.battleManager.getActiveUnitAsPlayer();
 
         spell_1_btn.transform.GetChild(0).GetComponent<Text>().text = unit.getMoveset()[0].name;
         spell_2_btn.transform.GetChild(0).GetComponent<Text>().text = unit.getMoveset()[1].name;
@@ -26,7 +26,7 @@ public class SpellSelectMenu : MonoBehaviour
     }
     IEnumerator waitForFrame()
     {
-        yield return 0; //dumbass bitch has to wait a frame before we can select a new game object.....
+        yield return 0; //has to wait a frame before we can select a new game object.....
         EventSystem.current.SetSelectedGameObject(spell_1_btn.gameObject);
     }
     public void OnButtonPress()
@@ -39,6 +39,7 @@ public class SpellSelectMenu : MonoBehaviour
         }
 
         Debug.Log("Player selected \"" + unit.getMoveset()[selection].name + "\"");
+
 
         //check for adjacent enemies
 

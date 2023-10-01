@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class PlayerController : UnitController
 {
+    
     void Start()
     {
         moveToStart();
+        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
     }
 
     //----------other methods--------------
@@ -14,35 +16,37 @@ public class PlayerController : UnitController
     private void moveToStart()  
     {
         int column = Mathf.CeilToInt(GameManager.Instance.columns / 2.0f) - 1; 
-        //transform.position = (GameObject.Find("PlayingField").GetComponent<MapGrid>().gridToWorldCoords(column, 0));
         transform.position = (MapGrid.Instance.gridToWorldCoords(column, 0));
+        MapGrid.Instance.tiles[column, 0].setTraversible(false);
     }
 
     public void checkInputs()
     {
-        if (GameManager.Instance.getBattleManager().blockPlayerInputs)
+        if (GameManager.Instance.getMode() == Mode.ENEMY_TURN || GameManager.Instance.getBattleManager().blockPlayerInputs)
             return;
-        //--------player has chosen their location-------------
-        if ((GameManager.Instance.getMode() == Mode.BATTLE_MOVE) && (Input.GetKeyDown(KeyCode.Return)))
+
+        //------ACTION INPUTS-------------
+        if ((GameManager.Instance.getMode() == Mode.PLAYER_TURN) && (Input.GetKeyDown(KeyCode.Return)))
         {
             GameManager.Instance.setMode(Mode.ACTION_SELECT);
+            GameManager.Instance.menuManager.setShortText("Make an action?");
             GameManager.Instance.getMenuManager().getActionSelectMenu().SetActive(true);
             return;
         }
 
-        //--------MOVEMENT---------
+        //--------MOVEMENT INPUTS---------
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
 
         //swap sprite direction
         if (x > 0)
-            transform.localScale = Vector3.one;
+            spriteRenderer.flipX = false;                //transform.localScale = Vector3.one;
         else if (x < 0)
-            transform.localScale = new Vector3(-1, 1, 1);
+            spriteRenderer.flipX = true;                //transform.localScale = new Vector3(-1, 1, 1);
 
         //actual sprite movement
         if (Input.GetAxisRaw("Vertical") != 0 && !isMoving)
-            StartCoroutine(MoveActor(Vector3.up * GameManager.Instance.tileHeight * y));
+                StartCoroutine(MoveActor(Vector3.up * GameManager.Instance.tileHeight * y));
 
         if (Input.GetAxisRaw("Horizontal") != 0 && !isMoving)
             StartCoroutine(MoveActor(Vector3.right * GameManager.Instance.tileWidth * x));

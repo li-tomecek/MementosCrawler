@@ -11,14 +11,14 @@ public class PlayableUnit : GameUnit
     //-------------fields-----------------
     [HideInInspector] public bool isBlocking;
 
-  
 
-    //-------implemented methods----------
+    //---- IMPLEMENTED METHODS ----
     public override void TakeTurn()
     {
-        isBlocking = false;
-        GameManager.Instance.setMode(Mode.BATTLE_MOVE);
+        GameManager.Instance.swapActiveUnit(this.gameObject);
+        GameManager.Instance.setMode(Mode.PLAYER_TURN);
 
+        isBlocking = false;
     }
     public override List<GameUnit> getAlliesInRange()
     {
@@ -43,8 +43,9 @@ public class PlayableUnit : GameUnit
         return list;
     }
 
-    //----------other methods--------------
-
+    //---- UNIQUE METHODS ----
+    
+    //---- START ----
     public new void Start()
     {
         base.Start();

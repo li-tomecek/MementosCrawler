@@ -34,7 +34,7 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
 
     public void Start()
     {
-        GameManager.Instance.getBattleManager().activeUnits.Add(this);
+        GameManager.Instance.getBattleManager().AddUnit(this);
         initializeTestUnit();   //obviously temporary
         Debug.Log("added "+ gameObject.name +  " to active unit list");
 

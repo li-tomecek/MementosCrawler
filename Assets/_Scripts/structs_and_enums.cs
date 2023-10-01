@@ -8,9 +8,8 @@ public enum MoveType
 }
 public enum Mode
 {
-    BATTLE_MOVE, FREE_MOVE, ACTION_SELECT, ENEMY_TURN
+    PLAYER_TURN, FREE_MOVE, ACTION_SELECT, ENEMY_TURN
 }
-
 
 public struct Coord
 {

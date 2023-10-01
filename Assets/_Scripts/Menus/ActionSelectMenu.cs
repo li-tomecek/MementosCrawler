@@ -8,22 +8,25 @@ using UnityEngine.EventSystems;
 public class ActionSelectMenu : MonoBehaviour
 {
 
-    public GameObject abilityButton;
+    public GameObject defaultButton;
     public void OnEnable()
     {
-        EventSystem.current.SetSelectedGameObject(abilityButton);
+        //tochange! dont want it hovering over spells button when you are unable to use spells
+        EventSystem.current.SetSelectedGameObject(defaultButton);
     }
 
     public void OnAbilitiesButton()
     {
-        GameManager.Instance.getMenuManager().getSpellSelectMenu().SetActive(true);
+        GameManager.Instance.menuManager.setShortText("Which spell will you cast?");
+        GameManager.Instance.menuManager.getSpellSelectMenu().SetActive(true);
         gameObject.SetActive(false);
     }
     public void OnGuardButton()
     {
-        Debug.Log("This unit will take half damage from the next attack.");
-        GameManager.Instance.getActiveUnit().GetComponent<PlayableUnit>().isBlocking = true;
-        GameManager.Instance.getBattleManager().nextTurn();
+        GameManager.Instance.menuManager.setLongText("The unit will take half damage from the next attack this turn.");
+        GameManager.Instance.battleManager.getActiveUnitAsPlayer().isBlocking = true;
+        
+        GameManager.Instance.battleManager.nextTurn();
         gameObject.SetActive(false);
     }
     public void OnWaitButton()
@@ -33,7 +36,8 @@ public class ActionSelectMenu : MonoBehaviour
     }
     public void OnExitButton()
     {
-        GameManager.Instance.setMode(Mode.BATTLE_MOVE);
+        GameManager.Instance.menuManager.setLongText("It is " + GameManager.Instance.battleManager.getActiveUnit().name + "\'s turn. Please take an action.");
+        GameManager.Instance.setMode(Mode.PLAYER_TURN);
         gameObject.SetActive(false);
     }
 }
