@@ -5,11 +5,12 @@ using UnityEngine;
 
 /**GLOBAL TODO:
  * Battle fixes:
- *      - When facing an enemy: maybe have some sort of marker on tile and animation play!
  *      - Show some marker to display who is the current active unit
- *      - make units die (get erased from board) when they lose all of their health
- *      
+ *      - make units die (get erased from board) when they lose all of their health    
  *      - restrict player movement to a clearly visible movement range.
+ *      
+ *      - battle start/vistory/gameover screen?
+ *      - small animations for attacking or taking damage?
  *      
  * Small fixes/re-works:
  *      - add some arbitraty trigger so that the battle doesnt immediately start

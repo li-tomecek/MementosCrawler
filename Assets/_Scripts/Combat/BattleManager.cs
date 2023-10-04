@@ -67,6 +67,24 @@ public class BattleManager : MonoBehaviour
         GameManager.Instance.battleManager.disableSelectionSquare();
         GameManager.Instance.menuManager.sliderCanvas.hideSliders();
 
+        
+        //IF BATTLE IS OVER
+        if(ActivePlayerUnits.Count <= 0)
+        {
+            //TEMP
+            GameManager.Instance.menuManager.setLongText("GAME OVER!");
+            GameManager.Instance.setMode(Mode.FREE_MOVE);
+            return;
+        }
+        else if(ActiveEnemyUnits.Count <= 0)
+        {
+            //TEMP
+            GameManager.Instance.menuManager.setLongText("BATTLE WON!");
+            GameManager.Instance.setMode(Mode.FREE_MOVE);
+            return;
+        }
+
+
         turn_index++;
         if (turn_index >= activeUnits.Count)
             turn_index = 0;
@@ -130,6 +148,21 @@ public class BattleManager : MonoBehaviour
             Debug.Log("BUFF AND DEBUFF ACTIONS HAVE NOT BEEN IMPLEMENTED YET");
         }
         yield return StartCoroutine(GameManager.Instance.menuManager.WaitForQueuedText());
+
+        //IF TARGET HAS BEEN KILLED
+        if(target.getHP() <= 0)
+        {
+            activeUnits.Remove(target);
+            if (target is PlayableUnit)
+                ActivePlayerUnits.Remove(target as PlayableUnit);
+            else
+                ActiveEnemyUnits.Remove(target as EnemyUnit);
+
+            target.gameObject.SetActive(false);
+            MapGrid.Instance.tiles[target.getController().position.X, target.getController().position.Y].setTraversible(true);
+            
+            //would maybe play some noise here?
+        }
 
     }
     IEnumerator updateSliders(GameUnit user, GameUnit target)
