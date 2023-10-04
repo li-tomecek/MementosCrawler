@@ -5,8 +5,7 @@ using UnityEngine;
 
 /**GLOBAL TODO:
  * Battle fixes:
- *      - Show some marker to display who is the current active unit
- *      - make units die (get erased from board) when they lose all of their health    
+ *      - Show some marker to display who is the current active unit 
  *      - restrict player movement to a clearly visible movement range.
  *      
  *      - battle start/vistory/gameover screen?

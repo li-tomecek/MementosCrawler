@@ -9,13 +9,13 @@ public class EnemyUnit : GameUnit
     public EnemyUnit() : base() { }
     public EnemyUnit(Move[] moveset, Stats stats) : base(moveset, stats) { }
 
-    public const float ATK_BUFFER = 0.1f;
-    public const float ENEMY_HEALTH_C = 0.45f;      //these 4 must add up to 1
-    public const float ATK_SP_C = 0.25f;
-    public const float ACC_C = 0.20f;
+    //public const float ATK_BUFFER = 0.05f;
+    public const float ENEMY_HEALTH_C = 0.50f;      //these 3 must add up to 1
+    public const float ATK_SP_C = 0.225f;
+    public const float ACC_C = 0.275f;
 
-    public const float ALLY_HEALTH_C = 0.65f;        //these 2 must add up to 1
-    public const float HEAL_SP_C = 0.35f;
+    public const float ALLY_HEALTH_C = 0.75f;        //these 2 must add up to 1
+    public const float HEAL_SP_C = 0.25f;
 
     //--move selection variables--
     private System.Random rand = new System.Random();
@@ -104,8 +104,8 @@ public class EnemyUnit : GameUnit
 
             if (remaining_sp < 0)
                 desire = 0;
-            else if (remaining_health <= 0)
-                desire = 1;
+            //else if (remaining_health <= 0)
+            //    desire = 1 + remaining_sp;      //this so that its purel based on SP?
             else
             {
                 //Normalize each "contributor" (scale 0-1) and then do a linear combination that results in a final number on a scale of 0-1
@@ -114,7 +114,7 @@ public class EnemyUnit : GameUnit
                 sp_norm = remaining_sp / getSP();   //min = 0SP max = currentSP
                 accuracy_norm = move.getAccuracy() / 100.0f; //min = 0%TOCHANGE?, max = 100% accuracy
 
-                desire = (ENEMY_HEALTH_C * enemy_norm + ATK_SP_C * sp_norm + ACC_C * accuracy_norm + ATK_BUFFER);  //where the constants add up to 1. Buffer ensures that, even if the enemy is at full health, there will be a small 'desire' to attack them
+                desire = (ENEMY_HEALTH_C * enemy_norm + ATK_SP_C * sp_norm + ACC_C * accuracy_norm);  //where the constants add up to 1. Buffer ensures that, even if the enemy is at full health, there will be a small 'desire' to attack them GOT RID OF BUFFER
             }
 
             if (desire > max_desire)
