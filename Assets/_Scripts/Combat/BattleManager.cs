@@ -15,6 +15,8 @@ public class BattleManager : MonoBehaviour
     private System.Random rand = new System.Random();
     int turn_index;
 
+    [SerializeField] GameObject targetSelectionSquare;
+
     public int MOVEMENT = 4;       //represents how many tiles characters may move in one turn.
 
     //------constructors and start--------
@@ -62,7 +64,9 @@ public class BattleManager : MonoBehaviour
 
     public void nextTurn()
     {
+        GameManager.Instance.battleManager.disableSelectionSquare();
         GameManager.Instance.menuManager.sliderCanvas.hideSliders();
+
         turn_index++;
         if (turn_index >= activeUnits.Count)
             turn_index = 0;
@@ -77,6 +81,7 @@ public class BattleManager : MonoBehaviour
     {
 
         GameManager.Instance.menuManager.sliderCanvas.updateTargetSlider(target);
+        GameManager.Instance.battleManager.setSelectionSquarePosition(target.gameObject.transform.position);
         GameManager.Instance.menuManager.setLongText(activeUnit.gameObject.name + " used " + move.name + ".");
 
         //DEAL DAMAGE 
@@ -97,6 +102,11 @@ public class BattleManager : MonoBehaviour
                 
                 }
                 target.decreaseHP(damage);
+                user.decreaseSP(move.getSPCost());
+
+                yield return StartCoroutine(GameManager.Instance.menuManager.WaitForQueuedText());
+                yield return StartCoroutine(updateSliders(user, target));
+
                 GameManager.Instance.menuManager.addToLongText(target.name + " took " + damage + " damage.");
             }
             else
@@ -108,21 +118,38 @@ public class BattleManager : MonoBehaviour
         {
             int health = user.getStats().strength + move.getPower();        //we dont care about accuracy, healing moves always hit
             target.increaseHP(health);
+            user.decreaseSP(move.getSPCost());
+
+            yield return StartCoroutine(GameManager.Instance.menuManager.WaitForQueuedText());
+            yield return StartCoroutine(updateSliders(user, target));
+
             GameManager.Instance.menuManager.setLongText(user.name + " has restored " + health + "HP to " + target.name + ".");
         }
         else
         {
             Debug.Log("BUFF AND DEBUFF ACTIONS HAVE NOT BEEN IMPLEMENTED YET");
         }
-
-        user.decreaseSP(move.getSPCost());
         yield return StartCoroutine(GameManager.Instance.menuManager.WaitForQueuedText());
 
+    }
+    IEnumerator updateSliders(GameUnit user, GameUnit target)
+    {
         //UPDATE SLIDERS IF A PLAYABLE CHARACTER IS INVOLVED
         if (user is PlayableUnit)   //user casts some spell
         {
             GameManager.Instance.menuManager.sliderCanvas.updatePlayerSliders(user);
         }
         GameManager.Instance.menuManager.sliderCanvas.updateTargetSlider(target);   //always update target slider
+        yield return new WaitForSeconds(0.7f);  //wait to see updated sliders
+    }
+
+    public void setSelectionSquarePosition(Vector3 position)
+    {
+        targetSelectionSquare.SetActive(true);
+        targetSelectionSquare.transform.position = position;
+    }
+    public void disableSelectionSquare()
+    {
+        targetSelectionSquare.SetActive(false); ;
     }
 }

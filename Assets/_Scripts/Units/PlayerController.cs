@@ -75,9 +75,6 @@ public class PlayerController : UnitController
             StartCoroutine(MoveActor(Vector3.right * GameManager.Instance.tileWidth * x));
             target = facedTarget();
         }
-
-
-
     }
 
     public GameUnit facedTarget()
@@ -106,12 +103,14 @@ public class PlayerController : UnitController
             {
                 if(unit != target)
                     GameManager.Instance.menuManager.sliderCanvas.updateTargetSlider(unit);
+                GameManager.Instance.battleManager.setSelectionSquarePosition(unit.gameObject.transform.position);
                 return unit;
             }
 
         }
         if (target != null)
             GameManager.Instance.menuManager.sliderCanvas.hideTargetSlider();
+        GameManager.Instance.battleManager.disableSelectionSquare();
         return null;
     }
 }
