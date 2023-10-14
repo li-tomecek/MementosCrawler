@@ -8,7 +8,7 @@ using UnityEngine;
  *      - Show some marker to display who is the current active unit 
  *      - restrict player movement to a clearly visible movement range.
  *      
- *      - battle start/vistory/gameover screen?
+ *      - battle start/victory/gameover screen?
  *      - small animations for attacking or taking damage?
  *      
  * Small fixes/re-works:

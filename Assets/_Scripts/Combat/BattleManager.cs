@@ -16,6 +16,7 @@ public class BattleManager : MonoBehaviour
     int turn_index;
 
     [SerializeField] GameObject targetSelectionSquare;
+    [SerializeField] GameObject turnArrow;
 
     public int MOVEMENT = 4;       //represents how many tiles characters may move in one turn.
 
@@ -64,7 +65,8 @@ public class BattleManager : MonoBehaviour
 
     public void nextTurn()
     {
-        GameManager.Instance.battleManager.disableSelectionSquare();
+        disableTurnArrow();
+        disableSelectionSquare();
         GameManager.Instance.menuManager.sliderCanvas.hideSliders();
 
         
@@ -73,7 +75,6 @@ public class BattleManager : MonoBehaviour
         {
             //TEMP
             GameManager.Instance.menuManager.setLongText("GAME OVER!");
-            GameManager.Instance.setMode(Mode.FREE_MOVE);
             return;
         }
         else if(ActiveEnemyUnits.Count <= 0)
@@ -90,7 +91,7 @@ public class BattleManager : MonoBehaviour
             turn_index = 0;
 
         activeUnit = activeUnits[turn_index];
-
+        
         GameManager.Instance.menuManager.setLongText("It is now " + activeUnit.name + "'s turn.");
         activeUnit.TakeTurn();
     }
@@ -99,7 +100,7 @@ public class BattleManager : MonoBehaviour
     {
 
         GameManager.Instance.menuManager.sliderCanvas.updateTargetSlider(target);
-        GameManager.Instance.battleManager.setSelectionSquarePosition(target.gameObject.transform.position);
+        setSelectionSquarePosition(target.gameObject.transform.position);
         GameManager.Instance.menuManager.setLongText(activeUnit.gameObject.name + " used " + move.name + ".");
 
         //DEAL DAMAGE 
@@ -184,5 +185,15 @@ public class BattleManager : MonoBehaviour
     public void disableSelectionSquare()
     {
         targetSelectionSquare.SetActive(false); ;
+    }
+
+    public void setTurnArrowPosition(Vector3 position)
+    {
+        turnArrow.SetActive(true);
+        turnArrow.transform.position = position + (Vector3.up * 0.1f);
+    }
+    public void disableTurnArrow()
+    {
+        turnArrow.SetActive(false);
     }
 }

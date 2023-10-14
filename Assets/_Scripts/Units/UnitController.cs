@@ -76,7 +76,7 @@ public class UnitController : MonoBehaviour
             while (elapsedTime < timeToMove)
             {
                 transform.position = Vector3.Lerp(origPos, targetPos, elapsedTime / timeToMove);
-
+                GameManager.Instance.battleManager.setTurnArrowPosition(this.transform.position);
                 elapsedTime += Time.deltaTime;
                 yield return null;
 
@@ -86,6 +86,7 @@ public class UnitController : MonoBehaviour
             MapGrid.Instance.tiles[startCoord.X, startCoord.Y].setTraversible(true);
             MapGrid.Instance.tiles[target.X, target.Y].setTraversible(false);
             position = target;
+
             //Debug.Log("Position is now " + position.ToString());
         }
 

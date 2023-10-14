@@ -63,6 +63,7 @@ public class PlayerController : UnitController
             //change sprite here?
             direction = Direction.S;
         }
+        GameManager.Instance.battleManager.setTurnArrowPosition(this.transform.position);
 
         //actual sprite movement
         if (Input.GetAxisRaw("Vertical") != 0 && !isMoving)
