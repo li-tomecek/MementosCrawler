@@ -17,6 +17,8 @@ public class BattleManager : MonoBehaviour
 
     [SerializeField] GameObject targetSelectionSquare;
     [SerializeField] GameObject turnArrow;
+    [HideInInspector] public List<GameObject> reachableTiles = new List<GameObject>();
+    public GameObject tileVisualizer;
 
     public int MOVEMENT = 4;       //represents how many tiles characters may move in one turn.
 
@@ -67,6 +69,7 @@ public class BattleManager : MonoBehaviour
     {
         disableTurnArrow();
         disableSelectionSquare();
+        destroyMovementVisualizer();
         GameManager.Instance.menuManager.sliderCanvas.hideSliders();
 
         
@@ -177,6 +180,7 @@ public class BattleManager : MonoBehaviour
         yield return new WaitForSeconds(0.7f);  //wait to see updated sliders
     }
 
+    // -- visual game objects and sprites --
     public void setSelectionSquarePosition(Vector3 position)
     {
         targetSelectionSquare.SetActive(true);
@@ -186,7 +190,6 @@ public class BattleManager : MonoBehaviour
     {
         targetSelectionSquare.SetActive(false); ;
     }
-
     public void setTurnArrowPosition(Vector3 position)
     {
         turnArrow.SetActive(true);
@@ -195,5 +198,12 @@ public class BattleManager : MonoBehaviour
     public void disableTurnArrow()
     {
         turnArrow.SetActive(false);
+    }
+    
+    public void destroyMovementVisualizer()
+    {
+        foreach (GameObject obj in reachableTiles)
+            Destroy(obj);
+        reachableTiles.Clear();
     }
 }

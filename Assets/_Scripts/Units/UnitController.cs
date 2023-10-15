@@ -17,7 +17,8 @@ public class UnitController : MonoBehaviour
 
     public Coord position;
     protected SpriteRenderer spriteRenderer;
-    public List<Coord> reachableCoords = new List<Coord>();
+    [HideInInspector] public List<Coord> reachableCoords = new List<Coord>();
+  
 
     protected void Start()
     {
@@ -315,25 +316,37 @@ public class UnitController : MonoBehaviour
     }
     public List<Coord> getReachableCoords(int max_movement)
     {
+        Coord temp_coord;
+        GameObject temp_tile;
         List<Coord> coords = new List<Coord>();
+        
         coords.Add(position);
+        temp_tile = Instantiate(GameManager.Instance.battleManager.tileVisualizer, MapGrid.Instance.gridToWorldCoords(position.X, position.Y), Quaternion.identity);
+        temp_tile.SetActive(true);
+        GameManager.Instance.battleManager.reachableTiles.Add(temp_tile);
 
         int min_x = Math.Max(0, position.X - max_movement);
         int min_y = Math.Max(0, position.Y - max_movement);
         int max_x = Math.Min(GameManager.Instance.columns - 1, position.X + max_movement);
         int max_y = Math.Min(GameManager.Instance.rows - 1, position.Y + max_movement);
    
-        Coord temp;
+   
         for (int i = min_x; i <= max_x; i++)
         {
             for (int j = min_y; j <= max_y; j++)
             {
                 if (position.manhattanDistTo(i, j) > max_movement || !MapGrid.Instance.tiles[i, j].isTraversible())
                     continue;
-                if (lengthOfShortestPathToAdjacent(position) < max_movement)
+                
+                temp_coord = new Coord(i, j);
+                if (lengthOfShortestPathToAdjacent(temp_coord) < max_movement)
                 {
-                    temp = new Coord(i, j);
-                    coords.Add(temp);
+                    temp_tile = Instantiate(GameManager.Instance.battleManager.tileVisualizer, MapGrid.Instance.gridToWorldCoords(i, j), Quaternion.identity);
+                    temp_tile.SetActive(true);
+                    GameManager.Instance.battleManager.reachableTiles.Add(temp_tile);
+
+                    coords.Add(temp_coord);
+                    //Debug.Log("Shortest Path to " + temp_coord.ToString + ": " + );
                 }
             }
         }
