@@ -5,7 +5,6 @@ using UnityEngine;
 
 /**GLOBAL TODO:
  * Battle fixes:
- *      - Show some marker to display who is the current active unit 
  *      - restrict player movement to a clearly visible movement range.
  *      
  *      - battle start/victory/gameover screen?

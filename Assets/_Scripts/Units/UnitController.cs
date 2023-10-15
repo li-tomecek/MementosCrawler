@@ -17,6 +17,7 @@ public class UnitController : MonoBehaviour
 
     public Coord position;
     protected SpriteRenderer spriteRenderer;
+    public List<Coord> reachableCoords = new List<Coord>();
 
     protected void Start()
     {
@@ -40,7 +41,9 @@ public class UnitController : MonoBehaviour
         Coord coord = MapGrid.Instance.worldToGridCoords(targetPos);
         Coord startCoord = MapGrid.Instance.worldToGridCoords(origPos);
 
-        if (coord.X != -1 && MapGrid.Instance.tiles[coord.X, coord.Y].isTraversible())
+        if (coord.X != -1
+            && MapGrid.Instance.tiles[coord.X, coord.Y].isTraversible()
+            && (reachableCoords.Contains(coord) || GameManager.Instance.getMode() != Mode.PLAYER_TURN))
         {
             while (elapsedTime < timeToMove)
             {
@@ -100,7 +103,6 @@ public class UnitController : MonoBehaviour
             yield return StartCoroutine(currentCoroutine);
         }
     }
-
     public void MoveToDistantTile(Coord target)
     {
         MoveToDistantTile(target, false);
@@ -311,6 +313,33 @@ public class UnitController : MonoBehaviour
 
         return -1;
     }
+    public List<Coord> getReachableCoords(int max_movement)
+    {
+        List<Coord> coords = new List<Coord>();
+        coords.Add(position);
+
+        int min_x = Math.Max(0, position.X - max_movement);
+        int min_y = Math.Max(0, position.Y - max_movement);
+        int max_x = Math.Min(GameManager.Instance.columns - 1, position.X + max_movement);
+        int max_y = Math.Min(GameManager.Instance.rows - 1, position.Y + max_movement);
+   
+        Coord temp;
+        for (int i = min_x; i <= max_x; i++)
+        {
+            for (int j = min_y; j <= max_y; j++)
+            {
+                if (position.manhattanDistTo(i, j) > max_movement || !MapGrid.Instance.tiles[i, j].isTraversible())
+                    continue;
+                if (lengthOfShortestPathToAdjacent(position) < max_movement)
+                {
+                    temp = new Coord(i, j);
+                    coords.Add(temp);
+                }
+            }
+        }
+        return coords;
+    }
+
 }
 
 

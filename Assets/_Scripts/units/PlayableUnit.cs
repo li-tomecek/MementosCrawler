@@ -15,6 +15,7 @@ public class PlayableUnit : GameUnit
     //---- IMPLEMENTED METHODS ----
     public override void TakeTurn()
     {
+        controller.reachableCoords = controller.getReachableCoords(GameManager.MOVEMENT);
         GameManager.Instance.swapActiveUnit(this.gameObject);
         GameManager.Instance.setMode(Mode.PLAYER_TURN);
 

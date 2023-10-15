@@ -74,8 +74,8 @@ public abstract class GameUnit : MonoBehaviour, IComparable<GameUnit>
         currentSP -= amt;
         currentSP = (currentSP < 0) ? 0 : currentSP;   
     }
-   
-    
+
+    //-------SHARED METHODS----------
     public int CompareTo(GameUnit other)
     {
         return (this.stats.agility.CompareTo(other.stats.agility) * -1);  //sorting lists in descending agility order
