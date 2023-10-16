@@ -4,11 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /**GLOBAL TODO:
- * Battle fixes:
- *      - restrict player movement to a clearly visible movement range.
- *      
+ * TILE/MAP REWORK:
+ *  - FIXED TILE SIZE  - corners are calculated from this and not vice versa (makes sizing calcuations easier and consistent)
+ *  - Make tile/map creation simpler?
+ * 
+ * 
+ * battle changes:     
  *      - battle start/victory/gameover screen?
  *      - small animations for attacking or taking damage?
+ *      - sound effects!
  *      
  * Small fixes/re-works:
  *      - add some arbitraty trigger so that the battle doesnt immediately start
