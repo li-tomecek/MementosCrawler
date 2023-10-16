@@ -4,13 +4,13 @@ using UnityEngine;
 
 public enum MoveType
 {
-    ATTACK, BUFF, DEBUFF, HEAL
+    ATTACK, BUFF, DEBUFF, HEAL, MELEE
 }
 public enum Mode
 {
-    BATTLE_MOVE, FREE_MOVE, ACTION_SELECT, ENEMY_TURN
+    PLAYER_TURN, FREE_MOVE, ACTION_SELECT, ENEMY_TURN
 }
-
+public enum Direction { N, E, S, W }
 
 public struct Coord
 {
@@ -60,6 +60,10 @@ public struct Coord
     public int manhattanDistTo(Coord c)
     {
         return (Mathf.Abs(c.Y - this.Y) + Mathf.Abs(c.X - this.X));
+    }
+    public int manhattanDistTo(int x, int y)
+    {
+        return (Mathf.Abs(y - this.Y) + Mathf.Abs(x - this.X));
     }
 
     public override string ToString() => $"({X}, {Y})";

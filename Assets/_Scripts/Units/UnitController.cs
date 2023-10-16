@@ -14,15 +14,18 @@ public class UnitController : MonoBehaviour
     public int startX;
     public int startY;
 
+
     public Coord position;
+    protected SpriteRenderer spriteRenderer;
+    [HideInInspector] public List<Coord> reachableCoords = new List<Coord>();
+  
 
-    float movementDir;
-
-    private void Start()
+    protected void Start()
     {
         transform.position = (MapGrid.Instance.gridToWorldCoords(startX,startY));
         position = new Coord(startX, startY);
         MapGrid.Instance.tiles[startX, startY].setTraversible(false);
+        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
     }
 
     // ---------Shared Methods-----------
@@ -39,7 +42,9 @@ public class UnitController : MonoBehaviour
         Coord coord = MapGrid.Instance.worldToGridCoords(targetPos);
         Coord startCoord = MapGrid.Instance.worldToGridCoords(origPos);
 
-        if (coord.X != -1 && MapGrid.Instance.tiles[coord.X, coord.Y].isTraversible())
+        if (coord.X != -1
+            && MapGrid.Instance.tiles[coord.X, coord.Y].isTraversible()
+            && (reachableCoords.Contains(coord) || GameManager.Instance.getMode() != Mode.PLAYER_TURN))
         {
             while (elapsedTime < timeToMove)
             {
@@ -58,7 +63,6 @@ public class UnitController : MonoBehaviour
         }
         isMoving = false;
     }
-
     protected IEnumerator MoveOneStep(Coord target)
     {
         float elapsedTime = 0;
@@ -66,14 +70,17 @@ public class UnitController : MonoBehaviour
         origPos = transform.position;
         targetPos = MapGrid.Instance.gridToWorldCoords(target.X, target.Y);
         Coord startCoord = MapGrid.Instance.worldToGridCoords(origPos);
-
+        if (target.X < startCoord.X)
+            spriteRenderer.flipX = false;
+        else if (target.X > startCoord.X)
+            spriteRenderer.flipX = true;
 
         if (target.X != -1 && MapGrid.Instance.tiles[target.X, target.Y].isTraversible()) //this is just an extra layer of precaution at this point
         {
             while (elapsedTime < timeToMove)
             {
                 transform.position = Vector3.Lerp(origPos, targetPos, elapsedTime / timeToMove);
-
+                GameManager.Instance.battleManager.setTurnArrowPosition(this.transform.position);
                 elapsedTime += Time.deltaTime;
                 yield return null;
 
@@ -83,53 +90,51 @@ public class UnitController : MonoBehaviour
             MapGrid.Instance.tiles[startCoord.X, startCoord.Y].setTraversible(true);
             MapGrid.Instance.tiles[target.X, target.Y].setTraversible(false);
             position = target;
+
             //Debug.Log("Position is now " + position.ToString());
         }
 
     }
-
     private IEnumerator PlayQueuedRoutines(Queue<IEnumerator> coroutines)
     {
-        GameManager.Instance.getBattleManager().blockPlayerInputs = true;
         IEnumerator currentCoroutine;
         while(coroutines.Count > 0)
         {
             currentCoroutine = coroutines.Dequeue();
             yield return StartCoroutine(currentCoroutine);
         }
-        GameManager.Instance.getBattleManager().blockPlayerInputs = false;
-
-
     }
-
     public void MoveToDistantTile(Coord target)
     {
         MoveToDistantTile(target, false);
     }
-    public void MoveToDistantTile(Coord target, bool moveToAdjacent)
+    public IEnumerator MoveToDistantTile(Coord target, bool moveToAdjacent)
     {
         //moveToAdjacent is a boolean that determines if we are moveing the unit to the target tile, or simply an open tile adjacent to the target tile.
         Coord startCoord = MapGrid.Instance.worldToGridCoords(transform.position);
 
        //time savers/edge-cases:
         if (!moveToAdjacent && startCoord == target)
-            return;
+            yield break;
 
         if (moveToAdjacent && !target.findOpenAdjacentCoords().Any())
         {
             Debug.Log("There are no open adjacent tiles. Skipping movement.");
-            return;
+            yield break;
+
         }
-        if(!moveToAdjacent && !MapGrid.Instance.tiles[target.X, target.Y].isTraversible())
+        if (!moveToAdjacent && !MapGrid.Instance.tiles[target.X, target.Y].isTraversible())
         {
             Debug.Log("The target tile is not traversible! Skipping movement.");
-            return;
+            yield break;
+            
         }
 
         if (moveToAdjacent && target == startCoord) //just move to first open adjacent tile.
         {
-            MoveOneStep(target.findOpenAdjacentCoords()[0]);
-            return;
+            //MoveOneStep(target.findOpenAdjacentCoords()[0]);
+            yield return StartCoroutine(MoveOneStep(target.findOpenAdjacentCoords()[0]));
+            yield break;
         }
 
 
@@ -201,9 +206,9 @@ public class UnitController : MonoBehaviour
             corountineQueue.Enqueue(MoveOneStep(pathToTarget.ElementAt(i)));
         }
         
-        StartCoroutine(PlayQueuedRoutines(corountineQueue));
+        yield return StartCoroutine(PlayQueuedRoutines(corountineQueue));
     }
-    public void MoveTowardsTarget(Coord target)
+    public IEnumerator MoveTowardsTarget(Coord target)
     {
         //moves towards the target. No pathfinding, so in theory they could be making bad movement decisions but thats a problem for later, if anything
         int y_movement = target.Y - position.Y;
@@ -242,7 +247,7 @@ public class UnitController : MonoBehaviour
                 break;
             total_movement++;
         }
-        StartCoroutine(PlayQueuedRoutines(corountineQueue));
+        yield return StartCoroutine(PlayQueuedRoutines(corountineQueue));
     }
     public int lengthOfShortestPathToAdjacent(Coord target) // returns -1 if the target is not reachable BUT NOT if the target tile itself is non-traversible.
     {
@@ -309,6 +314,45 @@ public class UnitController : MonoBehaviour
 
         return -1;
     }
+    public List<Coord> getReachableCoords(int max_movement)
+    {
+        Coord temp_coord;
+        GameObject temp_tile;
+        List<Coord> coords = new List<Coord>();
+        
+        coords.Add(position);
+        temp_tile = Instantiate(GameManager.Instance.battleManager.tileVisualizer, MapGrid.Instance.gridToWorldCoords(position.X, position.Y), Quaternion.identity);
+        temp_tile.SetActive(true);
+        GameManager.Instance.battleManager.reachableTiles.Add(temp_tile);
+
+        int min_x = Math.Max(0, position.X - max_movement);
+        int min_y = Math.Max(0, position.Y - max_movement);
+        int max_x = Math.Min(GameManager.Instance.columns - 1, position.X + max_movement);
+        int max_y = Math.Min(GameManager.Instance.rows - 1, position.Y + max_movement);
+   
+   
+        for (int i = min_x; i <= max_x; i++)
+        {
+            for (int j = min_y; j <= max_y; j++)
+            {
+                if (position.manhattanDistTo(i, j) > max_movement || !MapGrid.Instance.tiles[i, j].isTraversible())
+                    continue;
+                
+                temp_coord = new Coord(i, j);
+                if (lengthOfShortestPathToAdjacent(temp_coord) < max_movement)
+                {
+                    temp_tile = Instantiate(GameManager.Instance.battleManager.tileVisualizer, MapGrid.Instance.gridToWorldCoords(i, j), Quaternion.identity);
+                    temp_tile.SetActive(true);
+                    GameManager.Instance.battleManager.reachableTiles.Add(temp_tile);
+
+                    coords.Add(temp_coord);
+                    //Debug.Log("Shortest Path to " + temp_coord.ToString + ": " + );
+                }
+            }
+        }
+        return coords;
+    }
+
 }
 
 

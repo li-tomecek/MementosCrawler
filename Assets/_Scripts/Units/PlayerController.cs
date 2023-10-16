@@ -4,9 +4,16 @@ using UnityEngine;
 
 public class PlayerController : UnitController
 {
-    void Start()
+    [HideInInspector]
+    public Direction direction = Direction.S;
+
+    public GameUnit target = null;
+    new void Start()
     {
-        moveToStart();
+        //moveToStart();
+        //spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        base.Start();
+        direction = Direction.S;
     }
 
     //----------other methods--------------
@@ -14,39 +21,98 @@ public class PlayerController : UnitController
     private void moveToStart()  
     {
         int column = Mathf.CeilToInt(GameManager.Instance.columns / 2.0f) - 1; 
-        //transform.position = (GameObject.Find("PlayingField").GetComponent<MapGrid>().gridToWorldCoords(column, 0));
         transform.position = (MapGrid.Instance.gridToWorldCoords(column, 0));
+        MapGrid.Instance.tiles[column, 0].setTraversible(false);
     }
 
     public void checkInputs()
     {
-        if (GameManager.Instance.getBattleManager().blockPlayerInputs)
+        if (GameManager.Instance.getMode() == Mode.ENEMY_TURN || GameManager.Instance.getBattleManager().blockPlayerInputs)
             return;
-        //--------player has chosen their location-------------
-        if ((GameManager.Instance.getMode() == Mode.BATTLE_MOVE) && (Input.GetKeyDown(KeyCode.Return)))
+
+        //------ACTION INPUTS-------------
+        if ((GameManager.Instance.getMode() == Mode.PLAYER_TURN) && (Input.GetKeyDown(KeyCode.Return)))
         {
             GameManager.Instance.setMode(Mode.ACTION_SELECT);
             GameManager.Instance.getMenuManager().getActionSelectMenu().SetActive(true);
             return;
         }
 
-        //--------MOVEMENT---------
+        //--------MOVEMENT INPUTS---------
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
 
         //swap sprite direction
         if (x > 0)
-            transform.localScale = Vector3.one;
+        {
+            spriteRenderer.flipX = false;
+            direction = Direction.E;
+        }
         else if (x < 0)
-            transform.localScale = new Vector3(-1, 1, 1);
+        {
+            spriteRenderer.flipX = true;
+            direction = Direction.W;
+        }
+        if (y > 0)
+        {
+            //change sprite here?
+            direction = Direction.N;
+        }
+        else if (y < 0)
+        {
+            //change sprite here?
+            direction = Direction.S;
+        }
+        GameManager.Instance.battleManager.setTurnArrowPosition(this.transform.position);
 
         //actual sprite movement
         if (Input.GetAxisRaw("Vertical") != 0 && !isMoving)
+        {
             StartCoroutine(MoveActor(Vector3.up * GameManager.Instance.tileHeight * y));
-
+            target = facedTarget();
+        }
         if (Input.GetAxisRaw("Horizontal") != 0 && !isMoving)
+        {
             StartCoroutine(MoveActor(Vector3.right * GameManager.Instance.tileWidth * x));
-        
+            target = facedTarget();
+        }
+    }
+
+    public GameUnit facedTarget()
+    {
+       // PlayerController controller = GameManager.Instance.getActivePlayer().GetComponent<PlayerController>();
+        Coord adjacent = this.position;
+        switch (this.direction)
+        {
+            case Direction.N:
+                adjacent.Y++;
+                break;
+            case Direction.E:
+                adjacent.X++;
+                break;
+            case Direction.S:
+                adjacent.Y--;
+                break;
+            case Direction.W:
+                adjacent.X--;
+                break;
+        }
+
+        foreach (GameUnit unit in GameManager.Instance.battleManager.activeUnits)
+        {
+            if (unit.gameObject.GetComponent<UnitController>().position == adjacent)
+            {
+                if(unit != target)
+                    GameManager.Instance.menuManager.sliderCanvas.updateTargetSlider(unit);
+                GameManager.Instance.battleManager.setSelectionSquarePosition(unit.gameObject.transform.position);
+                return unit;
+            }
+
+        }
+        if (target != null)
+            GameManager.Instance.menuManager.sliderCanvas.hideTargetSlider();
+        GameManager.Instance.battleManager.disableSelectionSquare();
+        return null;
     }
 }
 

@@ -11,13 +11,15 @@ public class PlayableUnit : GameUnit
     //-------------fields-----------------
     [HideInInspector] public bool isBlocking;
 
-  
 
-    //-------implemented methods----------
+    //---- IMPLEMENTED METHODS ----
     public override void TakeTurn()
     {
-        GameManager.Instance.setMode(Mode.BATTLE_MOVE);
+        controller.reachableCoords = controller.getReachableCoords(GameManager.MOVEMENT);
+        GameManager.Instance.swapActiveUnit(this.gameObject);
+        GameManager.Instance.setMode(Mode.PLAYER_TURN);
 
+        isBlocking = false;
     }
     public override List<GameUnit> getAlliesInRange()
     {
@@ -42,8 +44,21 @@ public class PlayableUnit : GameUnit
         return list;
     }
 
-    //----------other methods--------------
+    //---- UNIQUE METHODS ----
+    public void startTurnSequence(Move move, GameUnit target)   //This method is an intermediate method (ik, messy) as calling the coroutine from within the menu causes problems once the menu is deactivated!
+    {
+        StartCoroutine(ExecuteTurnSequence(move, target));
+    }
+    IEnumerator ExecuteTurnSequence(Move move, GameUnit target)
+    {
+        //unit "takes action" and appropriate text is queued and displayed
+        yield return StartCoroutine(GameManager.Instance.battleManager.UseMove(move, target, this));
 
+        //change the turn
+        GameManager.Instance.getBattleManager().nextTurn();
+    }
+
+    //---- START ----
     public new void Start()
     {
         base.Start();

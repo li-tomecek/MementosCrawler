@@ -9,6 +9,13 @@ public class EnemyUnit : GameUnit
     public EnemyUnit() : base() { }
     public EnemyUnit(Move[] moveset, Stats stats) : base(moveset, stats) { }
 
+    //public const float ATK_BUFFER = 0.05f;
+    public const float ENEMY_HEALTH_C = 0.50f;      //these 3 must add up to 1
+    public const float ATK_SP_C = 0.225f;
+    public const float ACC_C = 0.275f;
+
+    public const float ALLY_HEALTH_C = 0.75f;        //these 2 must add up to 1
+    public const float HEAL_SP_C = 0.25f;
 
     //--move selection variables--
     private System.Random rand = new System.Random();
@@ -18,24 +25,18 @@ public class EnemyUnit : GameUnit
     private Move selected_move;
     private bool making_action;
 
-
-    public const float ATK_BUFFER = 0.1f;            
-    public const float ENEMY_HEALTH_C = 0.45f;      //these 4 must add up to 1
-    public const float ATK_SP_C = 0.25f;
-    public const float ACC_C = 0.20f;
-
-    public const float ALLY_HEALTH_C = 0.65f;        //these 2 must add up to 1
-    public const float HEAL_SP_C = 0.35f;
+    Queue<IEnumerator> coroutineQueue = new Queue<IEnumerator>();
 
 
-    //-------implemented methods----------
+    //---- IMPLEMENTED METHODS ----
     public override void TakeTurn()
     {
+        GameManager.Instance.setMode(Mode.ENEMY_TURN);
+        GameManager.Instance.getActivePlayer().GetComponent<PlayerController>().enabled = false;        //the last active playable unit will not move until their next turn.
+
         chooseAction();
-        executeMovement();
-        if (making_action)
-            GameManager.Instance.getBattleManager().UseMove(selected_move, target, this);
-        GameManager.Instance.getBattleManager().nextTurn();
+
+        StartCoroutine(ExecuteTurnSequence());
     }
     public override List<GameUnit> getAlliesInRange()   
     {
@@ -61,10 +62,10 @@ public class EnemyUnit : GameUnit
         return list;
     }
 
-    //----------other methods--------------
+    // ---- UNIQUE METHODS ----
+    // -- choosing actions
     public void chooseAction()
     {
-        Debug.Log("CHOOSING AN ACTION...");
         target = this;  //default value that is replaced within the following functions
         target_coord = controller.position;
         float desire = -1.0f;
@@ -81,6 +82,7 @@ public class EnemyUnit : GameUnit
                 desire = find_best_heal_target(desire, m, heal_targets);
             //Note: desire value only replaced if a move with a higher "desireability" is found
         }
+        desire = find_best_attack_target(desire, meleeAttack, attack_targets);
 
         // ~3~ Select move with the highest "desireablilty"
         if (desire <= 0)
@@ -102,8 +104,8 @@ public class EnemyUnit : GameUnit
 
             if (remaining_sp < 0)
                 desire = 0;
-            else if (remaining_health <= 0)
-                desire = 1;
+            //else if (remaining_health <= 0)
+            //    desire = 1 + remaining_sp;      //this so that its purel based on SP?
             else
             {
                 //Normalize each "contributor" (scale 0-1) and then do a linear combination that results in a final number on a scale of 0-1
@@ -112,9 +114,8 @@ public class EnemyUnit : GameUnit
                 sp_norm = remaining_sp / getSP();   //min = 0SP max = currentSP
                 accuracy_norm = move.getAccuracy() / 100.0f; //min = 0%TOCHANGE?, max = 100% accuracy
 
-                desire = (ENEMY_HEALTH_C * enemy_norm + ATK_SP_C * sp_norm + ACC_C * accuracy_norm + ATK_BUFFER);  //where the constants add up to 1. Buffer ensures that, even if the enemy is at full health, there will be a small 'desire' to attack them
+                desire = (ENEMY_HEALTH_C * enemy_norm + ATK_SP_C * sp_norm + ACC_C * accuracy_norm);  //where the constants add up to 1. Buffer ensures that, even if the enemy is at full health, there will be a small 'desire' to attack them GOT RID OF BUFFER
             }
-            //Debug.Log("Checking move: " + move.name + " target: " + target.name + " desire: " + desire);
 
             if (desire > max_desire)
             {
@@ -175,23 +176,41 @@ public class EnemyUnit : GameUnit
 
         return max_desire;
     }
-    public void executeMovement()
+    public IEnumerator executeMovement()
     {
         if (making_action && target != this)
-            controller.MoveToDistantTile(target_coord, true);
+           yield return controller.MoveToDistantTile(target_coord, true);
         else if (!making_action)
         {
-            //if not doing anything, move towards an enemy so that you might make a move next turn
-            //pick a random enemy to move towards
+            //if not doing anything, move towards a player unit so that you might make a move next turn
+            //pick a random player to move towards
             int i = rand.Next(0, GameManager.Instance.getBattleManager().ActivePlayerUnits.Count);
-            controller.MoveTowardsTarget(GameManager.Instance.getBattleManager().ActivePlayerUnits[i].getController().position);
+            yield return controller.MoveTowardsTarget(GameManager.Instance.getBattleManager().ActivePlayerUnits[i].getController().position);
         }
     }
+    // -- action order / coroutines
+    IEnumerator ExecuteTurnSequence()
+    {
+        //Unit moves towards target (if there is one)
+        yield return StartCoroutine(executeMovement());   
+        
+        //unit "takes action" and appropriate text is queued and displayed
+        if (making_action)
+            yield return StartCoroutine(GameManager.Instance.getBattleManager().UseMove(selected_move, target, this));
+        else
+            GameManager.Instance.menuManager.setLongText(this.name + " will not take an action.");
 
+        //change the turn
+        GameManager.Instance.getBattleManager().nextTurn();
+    }
+
+    // ---- START ----
     public new void Start()
     {
         base.Start();
         GameManager.Instance.getBattleManager().ActiveEnemyUnits.Add(this);
         this.controller = gameObject.GetComponent<UnitController>();
     }
+
+  
 }

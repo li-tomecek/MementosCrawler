@@ -3,47 +3,65 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/**GLOBAL TODO:
+ * Battle fixes:
+ *      - restrict player movement to a clearly visible movement range.
+ *      
+ *      - battle start/victory/gameover screen?
+ *      - small animations for attacking or taking damage?
+ *      
+ * Small fixes/re-works:
+ *      - add some arbitraty trigger so that the battle doesnt immediately start
+ *      - Create a debug statement script to easily turn on/off certain debug statements from appearing in the console?
+ **/
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     private void Awake()
     {
         Instance = this;
-        mode = Mode.BATTLE_MOVE;
         menuManager = gameObject.GetComponent<MenuManager>();
         battleManager = gameObject.GetComponent<BattleManager>();
+
+        mode = Mode.PLAYER_TURN;
+        //battleManager.setupBattle();
     }
 
+    // ---- CONSTANTS ----
     public const int MAX_STAT_VALUE = 100;
     public const int MAX_SP_VALUE = 30;
     public const int MAX_HP_VALUE = 100;
     public const int MOVEMENT = 4;  //how far the unit can move in one turn
 
+    // ---- OTHER FIELDS ----
+    // -- managers 
+    [HideInInspector] public MenuManager menuManager;
+    [HideInInspector] public BattleManager battleManager;
+
+    // -- tiles 
     public int rows = 1;
     public int columns = 1;
-
     [HideInInspector] public float tileWidth;
     [HideInInspector] public float tileHeight;
 
+    // -- units and mode
     [SerializeField]
-    GameObject activeUnit;
+    GameObject activePlayerObject;
     [SerializeField] Mode mode;
     bool justSwappedModes;
 
-    MenuManager menuManager;
-    BattleManager battleManager;
 
     //-------METHODS-------
     public void swapActiveUnit(GameObject unit)
     {
-        activeUnit.GetComponent<PlayerController>().enabled = false;    //this might not even be necessary anymore since i moved the checkMovementInputs to this class??
+        activePlayerObject.GetComponent<PlayerController>().enabled = false;    //this might not even be necessary anymore since i moved the checkMovementInputs to this class??
         unit.GetComponent<PlayerController>().enabled = true;
-        activeUnit = unit;
+        activePlayerObject = unit;
 
     }
 
     //-------Getters and Setters-------
-    public GameObject getActiveUnit() {return this.activeUnit;}
+    public GameObject getActivePlayer() {return this.activePlayerObject; }
     public MenuManager getMenuManager() {return this.menuManager; }
     public BattleManager getBattleManager() {return this.battleManager; }
     public Mode getMode() {return this.mode; }
@@ -64,14 +82,13 @@ public class GameManager : MonoBehaviour
             return;          //ensures one frame delay between mode swaps
         }
 
-        if (mode == Mode.FREE_MOVE || mode == Mode.BATTLE_MOVE)
+        if (mode == Mode.PLAYER_TURN)
         {
-            activeUnit.GetComponent<PlayerController>().checkInputs();
+            menuManager.sliderCanvas.updatePlayerSliders(activePlayerObject.GetComponent<PlayableUnit>());
+            menuManager.sliderCanvas.showPlayerSliders();
+
+            activePlayerObject.GetComponent<PlayerController>().checkInputs();
         }
 
     }
-    
-    //I am hoping that the following code creates a 2D array that stores "references" to one of the TileMaster instances
-    //public TileMaster tileMaster = new TileMaster();
-    //public TileMaster[,] TileTypeGrid = new TileMaster[Instance.columns, Instance.rows];
 }
