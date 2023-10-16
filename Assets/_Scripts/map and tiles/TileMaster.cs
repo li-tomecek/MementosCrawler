@@ -13,10 +13,6 @@ public enum TileType
 
 public class TileMaster
 {
-    protected int movementPenalty;
-    protected TileType type;
-    protected bool isTraversable;
-
     //Children instances
     GroundTile groundTile = new GroundTile();
     PillarTile pillarTile = new PillarTile();
@@ -26,8 +22,15 @@ public class TileMaster
 
 }
 
+public class CustomTile 
+{
+    protected int movementPenalty;
+    protected TileType type;
+    protected bool isTraversable;
+}
+
 //are all subclasses creating new children?? m-- YES BUT THEY ARE NOT ACCESSIBLE  BC THEY ARE PRIVATE UGHHHHHHHH
-public class GroundTile : TileMaster
+public class GroundTile : CustomTile
 {
     private void Start()
     {
@@ -37,7 +40,7 @@ public class GroundTile : TileMaster
     }
 }
 
-public class PillarTile : TileMaster
+public class PillarTile : CustomTile
 {
     private void Start()
     {
@@ -47,7 +50,7 @@ public class PillarTile : TileMaster
     }
 }
 
-public class DoorTile : TileMaster
+public class DoorTile : CustomTile
 {
     private void Start()
     {
@@ -57,7 +60,7 @@ public class DoorTile : TileMaster
     }
 }
 
-public class ChestOpenTile : TileMaster
+public class ChestOpenTile : CustomTile
 {
     private void Start()
     {
@@ -67,7 +70,7 @@ public class ChestOpenTile : TileMaster
     }
 }
 
-public class ChestClosedTile : TileMaster
+public class ChestClosedTile : CustomTile
 {
     private void Start()
     {
