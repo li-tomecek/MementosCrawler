@@ -11,6 +11,7 @@ using UnityEngine;
  *      - small animations for attacking or taking damage?
  *      
  * Small fixes/re-works:
+ *      - GetMouseWorldPOsition or something to click on a desitred tile and have the player move there
  *      - add some arbitraty trigger so that the battle doesnt immediately start
  *      - Create a debug statement script to easily turn on/off certain debug statements from appearing in the console?
  **/

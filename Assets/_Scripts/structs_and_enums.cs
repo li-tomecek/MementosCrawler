@@ -65,7 +65,6 @@ public struct Coord
     {
         return (Mathf.Abs(y - this.Y) + Mathf.Abs(x - this.X));
     }
-
     public override string ToString() => $"({X}, {Y})";
     public static bool operator ==(Coord c1, Coord c2)
     {
