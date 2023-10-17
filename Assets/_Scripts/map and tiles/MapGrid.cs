@@ -15,6 +15,7 @@ public class MapGrid : MonoBehaviour
 
     [HideInInspector] public MapTile[,] tiles;
     private LineRenderer lr;
+    public float lineWidth = 0.008f;
 
 
     public static MapGrid Instance { get; private set; }
@@ -95,8 +96,8 @@ public class MapGrid : MonoBehaviour
 
         //DRAW THE GRID
         lr = GetComponent<LineRenderer>();
-        lr.startWidth = 0.008f;
-        lr.endWidth = 0.008f;
+        lr.startWidth = lineWidth;
+        lr.endWidth = lineWidth;
 
         lr.positionCount = lineVerts.Count;
         lr.SetPositions(lineVerts.ToArray());

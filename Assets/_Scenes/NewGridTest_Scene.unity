@@ -381,8 +381,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   menuManager: {fileID: 0}
   battleManager: {fileID: 0}
-  rows: 10
-  columns: 6
+  rows: 6
+  columns: 10
   tileWidth: 0
   tileHeight: 0
   activePlayerObject: {fileID: 822993738}
@@ -6622,6 +6622,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1474390078674125824, guid: 61acba3f3f2712044a6465d6c31a7b9c, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.004
+      objectReference: {fileID: 0}
+    - target: {fileID: 1474390078674125824, guid: 61acba3f3f2712044a6465d6c31a7b9c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.004
+      objectReference: {fileID: 0}
+    - target: {fileID: 1474390078674125824, guid: 61acba3f3f2712044a6465d6c31a7b9c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -9155,6 +9163,14 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1470732661862947070, guid: 529d91a348cee1c4fa50f5676ddc838a, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1470732661862947070, guid: 529d91a348cee1c4fa50f5676ddc838a, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1470732661862947070, guid: 529d91a348cee1c4fa50f5676ddc838a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -10078,6 +10094,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34fa5c94f4f3bc541a6bc723c3aabb4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lineWidth: 0.05
 --- !u!1 &2013408313
 GameObject:
   m_ObjectHideFlags: 0
