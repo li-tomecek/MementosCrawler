@@ -9,7 +9,7 @@ public class BattleManager : MonoBehaviour
     public List<PlayableUnit> ActivePlayerUnits;
     public List<EnemyUnit> ActiveEnemyUnits;
     [HideInInspector]
-    public bool blockPlayerInputs;
+    //public bool blockPlayerInputs;
 
     private GameUnit activeUnit;        //the unit whose turn it is currently
     private System.Random rand = new System.Random();
@@ -19,8 +19,6 @@ public class BattleManager : MonoBehaviour
     [SerializeField] GameObject turnArrow;
     [HideInInspector] public List<GameObject> reachableTiles = new List<GameObject>();
     public GameObject tileVisualizer;
-
-    public int MOVEMENT = 4;       //represents how many tiles characters may move in one turn.
 
     //------constructors and start--------
     private void onAwake()
@@ -52,17 +50,6 @@ public class BattleManager : MonoBehaviour
         turn_index = -1;
         activeUnit = activeUnits[0];
         nextTurn();
-    }
-    /**
-     *  NOTE: This function is temporary!
-     *  In the future, there will be a trigger to determine when a battle has started. When this happends, this trigger will call "Start Battle" adnd we will NOT have to sort here, 
-     *  just add active units before the battle starts!! This function can also move all units to pre-determined start locations!
-     * **/
-    public void AddUnit(GameUnit unit) 
-    {
-        activeUnits.Add(unit);
-        activeUnits.Sort(); //probably a better way to do this rather that re-sort everytime a unit is inserted (could do once all units are inserted) but list is small enough that it should be negligible?
-        activeUnit = activeUnits[0];
     }
 
     public void nextTurn()
@@ -163,7 +150,7 @@ public class BattleManager : MonoBehaviour
                 ActiveEnemyUnits.Remove(target as EnemyUnit);
 
             target.gameObject.SetActive(false);
-            MapGrid.Instance.tiles[target.getController().position.X, target.getController().position.Y].setTraversible(true);
+            MapGrid.Instance.tiles[target.getController().grid_pos.X, target.getController().grid_pos.Y].setTraversible(true);
             
             //would maybe play some noise here?
         }
@@ -193,7 +180,7 @@ public class BattleManager : MonoBehaviour
     public void setTurnArrowPosition(Vector3 position)
     {
         turnArrow.SetActive(true);
-        turnArrow.transform.position = position + (Vector3.up * 0.1f);
+        turnArrow.transform.position = position + (Vector3.up * 0.5f);
     }
     public void disableTurnArrow()
     {

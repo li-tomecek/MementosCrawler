@@ -4,9 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /**GLOBAL TODO:
- * Battle fixes:
- *      - restrict player movement to a clearly visible movement range.
- *      
+ * Battle fixes: *      
  *      - battle start/victory/gameover screen?
  *      - small animations for attacking or taking damage?
  *      
@@ -24,7 +22,7 @@ public class GameManager : MonoBehaviour
         menuManager = gameObject.GetComponent<MenuManager>();
         battleManager = gameObject.GetComponent<BattleManager>();
 
-        mode = Mode.PLAYER_TURN;
+        mode = Mode.FREE_MOVE;
         //battleManager.setupBattle();
     }
 
@@ -40,10 +38,10 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public BattleManager battleManager;
 
     // -- tiles 
-    public int rows = 1;
-    public int columns = 1;
-    [HideInInspector] public float tileWidth;
-    [HideInInspector] public float tileHeight;
+    //public int rows = 1;
+    //public int columns = 1;
+    //[HideInInspector] public float tileWidth;
+    //[HideInInspector] public float tileHeight;
 
     // -- units and mode
     [SerializeField]
@@ -90,6 +88,9 @@ public class GameManager : MonoBehaviour
 
             activePlayerObject.GetComponent<PlayerController>().checkInputs();
         }
-
+        if(mode == Mode.FREE_MOVE)
+        {
+            battleManager.StartBattle();
+        }
     }
 }

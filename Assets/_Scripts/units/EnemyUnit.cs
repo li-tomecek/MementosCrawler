@@ -43,7 +43,7 @@ public class EnemyUnit : GameUnit
         List<GameUnit> list = new List<GameUnit>();
         foreach (EnemyUnit unit in GameManager.Instance.getBattleManager().ActiveEnemyUnits)
         {
-            int temp = controller.lengthOfShortestPathToAdjacent(unit.getController().position);
+            int temp = controller.lengthOfShortestPathToAdjacent(unit.getController().grid_pos);
             if (temp > -1 && temp <= (GameManager.MOVEMENT))
                 list.Add(unit);
         }
@@ -54,7 +54,7 @@ public class EnemyUnit : GameUnit
         List<GameUnit> list = new List<GameUnit>();
         foreach (PlayableUnit unit in GameManager.Instance.getBattleManager().ActivePlayerUnits)
         {
-            int temp = controller.lengthOfShortestPathToAdjacent(unit.getController().position);
+            int temp = controller.lengthOfShortestPathToAdjacent(unit.getController().grid_pos);
             if (temp > -1 && temp <= (GameManager.MOVEMENT))
                 list.Add(unit);
         }
@@ -67,7 +67,7 @@ public class EnemyUnit : GameUnit
     public void chooseAction()
     {
         target = this;  //default value that is replaced within the following functions
-        target_coord = controller.position;
+        target_coord = controller.grid_pos;
         float desire = -1.0f;
         making_action = true;
         List<GameUnit> attack_targets = getEnemiesInRange();
@@ -88,7 +88,7 @@ public class EnemyUnit : GameUnit
         if (desire <= 0)
             making_action = false;
         if (target != this)
-            target_coord = target.getController().position;
+            target_coord = target.getController().grid_pos;
     }
     public float find_best_attack_target(float max_desire, Move move, List<GameUnit> targets)  //**NOTE** 1/x does not provide a negative linear relationship btwn desire and the value of x. it would intead have to be some "max value" constant - x ** TO FIX FOR SOME RELATIONSHIPS (and adjust weights accordingly)
     {
@@ -185,7 +185,7 @@ public class EnemyUnit : GameUnit
             //if not doing anything, move towards a player unit so that you might make a move next turn
             //pick a random player to move towards
             int i = rand.Next(0, GameManager.Instance.getBattleManager().ActivePlayerUnits.Count);
-            yield return controller.MoveTowardsTarget(GameManager.Instance.getBattleManager().ActivePlayerUnits[i].getController().position);
+            yield return controller.MoveTowardsTarget(GameManager.Instance.getBattleManager().ActivePlayerUnits[i].getController().grid_pos);
         }
     }
     // -- action order / coroutines

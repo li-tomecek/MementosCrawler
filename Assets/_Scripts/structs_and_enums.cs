@@ -12,16 +12,16 @@ public enum Mode
 }
 public enum Direction { N, E, S, W }
 
+[System.Serializable]
 public struct Coord
 {
+    public int X;
+    public int Y;
     public Coord(int x, int y)
     {
-        X = x;
-        Y = y;
+       this.X = x;
+       this.Y = y;
     }
-    public int X { get; set; }
-    public int Y { get; set; }
-
     public List<Coord> findAdjacentCoords()
     {
         List<Coord> adj = new List<Coord>();
@@ -29,7 +29,7 @@ public struct Coord
 
         for (int i = X - 1; i <= X + 1; i += 2)
         {
-            if (!(i < 0 || i >= GameManager.Instance.columns))
+            if (!(i < 0 || i >= MapGrid.Instance.columns))
             {
                 temp.X = i;
                 adj.Add(temp);
@@ -38,7 +38,7 @@ public struct Coord
         temp.X = X;
         for (int i = Y - 1; i <= Y + 1; i += 2)
         {
-            if (!(i < 0 || i >= GameManager.Instance.rows))
+            if (!(i < 0 || i >= MapGrid.Instance.rows))
             {
                 temp.Y = i;
                 adj.Add(temp);

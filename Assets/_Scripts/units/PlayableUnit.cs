@@ -15,7 +15,7 @@ public class PlayableUnit : GameUnit
     //---- IMPLEMENTED METHODS ----
     public override void TakeTurn()
     {
-        controller.reachableCoords = controller.getReachableCoords(GameManager.MOVEMENT);
+        controller.reachableCoords = controller.setReachableTiles(GameManager.MOVEMENT);
         GameManager.Instance.swapActiveUnit(this.gameObject);
         GameManager.Instance.setMode(Mode.PLAYER_TURN);
 
@@ -26,7 +26,7 @@ public class PlayableUnit : GameUnit
         List<GameUnit> list = new List<GameUnit>();
         foreach (PlayableUnit unit in GameManager.Instance.getBattleManager().ActivePlayerUnits)
         {
-            int temp = controller.lengthOfShortestPathToAdjacent(unit.getController().position);
+            int temp = controller.lengthOfShortestPathToAdjacent(unit.getController().grid_pos);
             if (temp > -1 && temp <= (GameManager.MOVEMENT))
                 list.Add(unit);
         }
@@ -37,7 +37,7 @@ public class PlayableUnit : GameUnit
         List<GameUnit> list = new List<GameUnit>();
         foreach (EnemyUnit unit in GameManager.Instance.getBattleManager().ActiveEnemyUnits)
         {
-            int temp = controller.lengthOfShortestPathToAdjacent(unit.getController().position);
+            int temp = controller.lengthOfShortestPathToAdjacent(unit.getController().grid_pos);
             if (temp > -1 && temp <= (GameManager.MOVEMENT))
                 list.Add(unit);
         }
