@@ -58,12 +58,12 @@ public class PlayerController : UnitController
         //actual sprite movement
         if (Input.GetAxisRaw("Vertical") != 0 && !isMoving)
         {
-            StartCoroutine(MoveActor(Vector3.up * MapGrid.Instance.tileSize * y));
+            StartCoroutine(MoveInDirection(Vector3.up * MapGrid.Instance.tileSize * y));
             target = facedTarget();
         }
         if (Input.GetAxisRaw("Horizontal") != 0 && !isMoving)
         {
-            StartCoroutine(MoveActor(Vector3.right * MapGrid.Instance.tileSize * x));
+            StartCoroutine(MoveInDirection(Vector3.right * MapGrid.Instance.tileSize * x));
             target = facedTarget();
         }
     }

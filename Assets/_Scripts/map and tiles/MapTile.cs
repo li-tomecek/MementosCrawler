@@ -34,6 +34,18 @@ public class MapTile
         this.occupant = obj;
         traversible = false;
     }
+    public bool hasOccupant()
+    {
+        return !(occupant == null);
+    }
+    public void clearOccupant()
+    {
+        if(occupant != null)
+        {
+            occupant = null;
+            traversible = true;
+        }
+    }
     public bool isTraversible()
     {
         return traversible;

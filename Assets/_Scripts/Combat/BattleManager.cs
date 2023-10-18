@@ -17,7 +17,7 @@ public class BattleManager : MonoBehaviour
 
     [SerializeField] GameObject targetSelectionSquare;
     [SerializeField] GameObject turnArrow;
-    [HideInInspector] public List<GameObject> reachableTiles = new List<GameObject>();
+    [HideInInspector] public List<GameObject> visibleTiles = new List<GameObject>();
     public GameObject tileVisualizer;
 
     //------constructors and start--------
@@ -189,8 +189,8 @@ public class BattleManager : MonoBehaviour
     
     public void destroyMovementVisualizer()
     {
-        foreach (GameObject obj in reachableTiles)
+        foreach (GameObject obj in visibleTiles)
             Destroy(obj);
-        reachableTiles.Clear();
+        visibleTiles.Clear();
     }
 }

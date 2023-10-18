@@ -11,8 +11,6 @@ public class UnitController : MonoBehaviour
     protected bool isMoving;
     protected Vector3 origPos, targetPos;
     public float timeToMove = 5.0f;
-    public int startX;
-    public int startY;
 
 
     public Coord grid_pos;
@@ -40,7 +38,7 @@ public class UnitController : MonoBehaviour
     }
 
     // ---------Shared Methods-----------
-    protected IEnumerator MoveActor(Vector3 direction)
+    protected IEnumerator MoveInDirection(Vector3 direction)
     {
         isMoving = true;
 
@@ -66,8 +64,8 @@ public class UnitController : MonoBehaviour
             }
 
             transform.position = targetPos; //just to be safe
-            MapGrid.Instance.tiles[startCoord.X, startCoord.Y].setTraversible(true);
-            MapGrid.Instance.tiles[coord.X, coord.Y].setTraversible(false);
+            MapGrid.Instance.tiles[startCoord.X, startCoord.Y].clearOccupant();
+            MapGrid.Instance.tiles[coord.X, coord.Y].setOccupant(gameObject);
             grid_pos = coord;
             //Debug.Log("Position is now " + position.ToString());
 
@@ -98,8 +96,8 @@ public class UnitController : MonoBehaviour
             }
 
             transform.position = targetPos; //just to be safe
-            MapGrid.Instance.tiles[startCoord.X, startCoord.Y].setTraversible(true);
-            MapGrid.Instance.tiles[target.X, target.Y].setTraversible(false);
+            MapGrid.Instance.tiles[startCoord.X, startCoord.Y].clearOccupant();
+            MapGrid.Instance.tiles[target.X, target.Y].setOccupant(gameObject);
             grid_pos = target;
 
             //Debug.Log("Position is now " + position.ToString());
@@ -331,30 +329,36 @@ public class UnitController : MonoBehaviour
         GameObject temp_tile;
         List<Coord> coords = new List<Coord>() { grid_pos };
 
-        temp_tile = Instantiate(GameManager.Instance.battleManager.tileVisualizer, MapGrid.Instance.gridToWorldCoords(grid_pos.X, grid_pos.Y), Quaternion.identity);
-        temp_tile.SetActive(true);
-        
-        GameManager.Instance.battleManager.reachableTiles.Add(temp_tile);
-
-        int min_x = Math.Max(0, grid_pos.X - max_movement);
-        int min_y = Math.Max(0, grid_pos.Y - max_movement);
-        int max_x = Math.Min(MapGrid.Instance.columns - 1, grid_pos.X + max_movement);
-        int max_y = Math.Min(MapGrid.Instance.rows - 1, grid_pos.Y + max_movement);
+        int min_x = Math.Max(0, grid_pos.X -( max_movement+1));
+        int min_y = Math.Max(0, grid_pos.Y - (max_movement+1));
+        int max_x = Math.Min(MapGrid.Instance.columns - 1, grid_pos.X + (max_movement+1));
+        int max_y = Math.Min(MapGrid.Instance.rows - 1, grid_pos.Y + (max_movement+1));
    
    
         for (int i = min_x; i <= max_x; i++)
         {
             for (int j = min_y; j <= max_y; j++)
             {
-                if (grid_pos.manhattanDistTo(i, j) > max_movement || !MapGrid.Instance.tiles[i, j].isTraversible())
-                    continue;
-                
+                if (grid_pos.manhattanDistTo(i, j) > max_movement+1 || (!MapGrid.Instance.tiles[i, j].isTraversible() && !MapGrid.Instance.tiles[i, j].hasOccupant()))
+                    continue;   //if tile is out of reach, or there is some sort of obstacle? might have to change this later when obstacles are added
+
                 temp_coord = new Coord(i, j);
-                if (lengthOfShortestPathToAdjacent(temp_coord) < max_movement)
+                if (lengthOfShortestPathToAdjacent(temp_coord) == max_movement || (temp_coord != grid_pos && MapGrid.Instance.tiles[i, j].hasOccupant())) //tiles adjacent to walkable tiles
                 {
                     temp_tile = Instantiate(GameManager.Instance.battleManager.tileVisualizer, MapGrid.Instance.gridToWorldCoords(i, j), Quaternion.identity);
                     temp_tile.SetActive(true);
-                    GameManager.Instance.battleManager.reachableTiles.Add(temp_tile);
+                    Color tmp =  Color.red;
+                    tmp.a = 0.15f; //set it to red tile
+                    temp_tile.GetComponentInChildren<SpriteRenderer>().color = tmp; //set it to red tile
+                    GameManager.Instance.battleManager.visibleTiles.Add(temp_tile);
+
+                    //not added to reachable tiles list
+                }
+                else if (lengthOfShortestPathToAdjacent(temp_coord) < max_movement) //walkable tiles
+                {
+                    temp_tile = Instantiate(GameManager.Instance.battleManager.tileVisualizer, MapGrid.Instance.gridToWorldCoords(i, j), Quaternion.identity);
+                    temp_tile.SetActive(true);
+                    GameManager.Instance.battleManager.visibleTiles.Add(temp_tile);
 
                     coords.Add(temp_coord);
                 }
