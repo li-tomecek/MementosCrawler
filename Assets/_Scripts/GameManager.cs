@@ -5,7 +5,6 @@ using UnityEngine;
 
 /**GLOBAL TODO:
  * NEXT:
- *  - Streamline unit creation - Make stats customizable from the editor to easily change them
  *  - Figure out how to add pillars, interactible chests
  *  - figure out how to swap rooms -- do I swap scenes? or just change the active map and re-load the start positions?
  *      * i think scene transitions are the way to go according to forums. keeps it cleaner and less resource-intensive

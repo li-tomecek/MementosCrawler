@@ -180,7 +180,7 @@ public class BattleManager : MonoBehaviour
     public void setTurnArrowPosition(Vector3 position)
     {
         turnArrow.SetActive(true);
-        turnArrow.transform.position = position + (Vector3.up * 0.5f);
+        turnArrow.transform.position = position + (Vector3.up * 0.4f);
     }
     public void disableTurnArrow()
     {

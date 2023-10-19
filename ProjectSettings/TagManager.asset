@@ -48,3 +48,9 @@ TagManager:
   - name: Player
     uniqueID: 1633027367
     locked: 0
+  - name: Walls
+    uniqueID: 167933931
+    locked: 0
+  - name: New Layer
+    uniqueID: 1478976887
+    locked: 0
