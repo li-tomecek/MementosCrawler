@@ -125,8 +125,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeToMove: 0.25
-  startX: 4
-  startY: 0
   grid_pos:
     X: 0
     Y: 0
@@ -145,6 +143,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e95f3ee6a6dd22c4aaee36c06d55a03b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveset:
+  - type: 0
+    power: 10
+    accuracy: 100
+    frequency: 1
+    cost: 2
+    name: Atk 1
+  - type: 0
+    power: 20
+    accuracy: 50
+    frequency: 1
+    cost: 3
+    name: Atk 2
+  - type: 3
+    power: 10
+    accuracy: 100
+    frequency: 1
+    cost: 3
+    name: Heal
+  stats:
+    strength: 10
+    defense: 8
+    maxHP: 25
+    maxSP: 10
+    agility: 10
   isBlocking: 0
 --- !u!95 &4132917650335530168
 Animator:

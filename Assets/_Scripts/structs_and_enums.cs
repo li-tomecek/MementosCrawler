@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public enum MoveType
 {
     ATTACK, BUFF, DEBUFF, HEAL, MELEE
@@ -83,9 +84,10 @@ public struct Coord
         return base.GetHashCode();
     }
 }
+[System.Serializable]
 public struct Stats
 {
-    public int strength, defense, maxHP, maxSP, agility;
+    public int maxHP, maxSP, strength, defense, agility;
 
     //later if you want: luck, magic, intelligence
     //also later: strengths and weaknesses

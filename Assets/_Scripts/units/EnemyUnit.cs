@@ -191,6 +191,8 @@ public class EnemyUnit : GameUnit
     // -- action order / coroutines
     IEnumerator ExecuteTurnSequence()
     {
+        yield return StartCoroutine(GameManager.Instance.menuManager.WaitForQueuedText());
+
         //Unit moves towards target (if there is one)
         yield return StartCoroutine(executeMovement());   
         

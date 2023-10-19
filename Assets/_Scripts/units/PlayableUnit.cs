@@ -51,6 +51,7 @@ public class PlayableUnit : GameUnit
     }
     IEnumerator ExecuteTurnSequence(Move move, GameUnit target)
     {
+        yield return StartCoroutine(GameManager.Instance.menuManager.WaitForQueuedText());
         //unit "takes action" and appropriate text is queued and displayed
         yield return StartCoroutine(GameManager.Instance.battleManager.UseMove(move, target, this));
 
