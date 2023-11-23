@@ -10,24 +10,14 @@ public class PlayerController : UnitController
     public GameUnit target = null;
     new void Start()
     {
-        //moveToStart();
-        //spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         base.Start();
         direction = Direction.S;
     }
 
     //----------other methods--------------
-    /**Moves the player character to the bottom row in the middle/left-mid cell of the grid**/
-    private void moveToStart()  
-    {
-        int column = Mathf.CeilToInt(GameManager.Instance.columns / 2.0f) - 1; 
-        transform.position = (MapGrid.Instance.gridToWorldCoords(column, 0));
-        MapGrid.Instance.tiles[column, 0].setTraversible(false);
-    }
-
     public void checkInputs()
     {
-        if (GameManager.Instance.getMode() == Mode.ENEMY_TURN || GameManager.Instance.getBattleManager().blockPlayerInputs)
+        if (GameManager.Instance.getMode() == Mode.ENEMY_TURN)// || GameManager.Instance.getBattleManager().blockPlayerInputs)
             return;
 
         //------ACTION INPUTS-------------
@@ -68,12 +58,12 @@ public class PlayerController : UnitController
         //actual sprite movement
         if (Input.GetAxisRaw("Vertical") != 0 && !isMoving)
         {
-            StartCoroutine(MoveActor(Vector3.up * GameManager.Instance.tileHeight * y));
+            StartCoroutine(MoveInDirection(Vector3.up * MapGrid.Instance.tileSize * y));
             target = facedTarget();
         }
         if (Input.GetAxisRaw("Horizontal") != 0 && !isMoving)
         {
-            StartCoroutine(MoveActor(Vector3.right * GameManager.Instance.tileWidth * x));
+            StartCoroutine(MoveInDirection(Vector3.right * MapGrid.Instance.tileSize * x));
             target = facedTarget();
         }
     }
@@ -81,7 +71,7 @@ public class PlayerController : UnitController
     public GameUnit facedTarget()
     {
        // PlayerController controller = GameManager.Instance.getActivePlayer().GetComponent<PlayerController>();
-        Coord adjacent = this.position;
+        Coord adjacent = this.grid_pos;
         switch (this.direction)
         {
             case Direction.N:
@@ -100,7 +90,7 @@ public class PlayerController : UnitController
 
         foreach (GameUnit unit in GameManager.Instance.battleManager.activeUnits)
         {
-            if (unit.gameObject.GetComponent<UnitController>().position == adjacent)
+            if (unit.gameObject.GetComponent<UnitController>().grid_pos == adjacent)
             {
                 if(unit != target)
                     GameManager.Instance.menuManager.sliderCanvas.updateTargetSlider(unit);

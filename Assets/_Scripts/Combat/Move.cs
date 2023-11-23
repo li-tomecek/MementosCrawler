@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Move
 {
-    private MoveType type;
-    private int power = 0;
-    private int accuracy = 0;
-    private int frequency = 1;      //??
-    private int cost = 1;           //SP cost
+    [SerializeField] private MoveType type;
+    [SerializeField] private int power = 0;
+    [SerializeField] private int accuracy = 0;
+    [SerializeField] private int frequency = 1;      //??
+    [SerializeField] private int cost = 1;           //SP cost
     public string name;
 
     public Move (string name, MoveType type, int power, int accuracy, int freq, int cost)

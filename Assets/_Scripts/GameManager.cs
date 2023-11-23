@@ -4,17 +4,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /**GLOBAL TODO:
- * TILE/MAP REWORK:
- *  - FIXED TILE SIZE  - corners are calculated from this and not vice versa (makes sizing calcuations easier and consistent)
- *  - Make tile/map creation simpler?
+ * NEXT:
+ *  - Figure out how to add pillars, interactible chests
+ *  - figure out how to swap rooms -- do I swap scenes? or just change the active map and re-load the start positions?
+ *      * i think scene transitions are the way to go according to forums. keeps it cleaner and less resource-intensive
  * 
- * 
- * battle changes:     
+ * Battle fixes:     
+ *      - **fix turn pacing! does not wait for text when player guards or enemy does not make a move.
  *      - battle start/victory/gameover screen?
  *      - small animations for attacking or taking damage?
- *      - sound effects!
  *      
  * Small fixes/re-works:
+ *      - GetMouseWorldPOsition or something to click on a desitred tile and have the player move there
  *      - add some arbitraty trigger so that the battle doesnt immediately start
  *      - Create a debug statement script to easily turn on/off certain debug statements from appearing in the console?
  **/
@@ -27,7 +28,7 @@ public class GameManager : MonoBehaviour
         menuManager = gameObject.GetComponent<MenuManager>();
         battleManager = gameObject.GetComponent<BattleManager>();
 
-        mode = Mode.PLAYER_TURN;
+        mode = Mode.FREE_MOVE;
         //battleManager.setupBattle();
     }
 
@@ -43,10 +44,10 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public BattleManager battleManager;
 
     // -- tiles 
-    public int rows = 1;
-    public int columns = 1;
-    [HideInInspector] public float tileWidth;
-    [HideInInspector] public float tileHeight;
+    //public int rows = 1;
+    //public int columns = 1;
+    //[HideInInspector] public float tileWidth;
+    //[HideInInspector] public float tileHeight;
 
     // -- units and mode
     [SerializeField]
@@ -93,6 +94,9 @@ public class GameManager : MonoBehaviour
 
             activePlayerObject.GetComponent<PlayerController>().checkInputs();
         }
-
+        if(mode == Mode.FREE_MOVE)
+        {
+            battleManager.StartBattle();
+        }
     }
 }

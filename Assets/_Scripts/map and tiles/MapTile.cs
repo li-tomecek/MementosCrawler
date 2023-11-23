@@ -6,15 +6,11 @@ using UnityEngine;
 //NOTE: AT SOME POINT, THIS LINE-DRAWING SYSTEM SHOULD BE REMOVED AND REPLACED WITH PRE-MADE TILES THAT ARE JUST TRANSPARENT SQUARES WITH A BORDER
 public class MapTile
 {
-    // Start is called before the first frame update
-
-    //private int x;
-    //private int y;      //grid coordinates? may not need them at all.
     private Coord coord;
 
-    //maybe want a center point so avoid doing calcualtions easch turn?
-
     private bool traversible = true;
+    public int movementCost = 1;
+    private GameObject occupant;
 
 
     public MapTile(int x, int y)
@@ -33,6 +29,23 @@ public class MapTile
     public int getX(){ return this.coord.X;}
     public int getY(){ return this.coord.Y; }
     public Coord getCoord(){ return this.coord; }
+    public GameObject getOccupant() { return this.occupant; }
+    public void setOccupant(GameObject obj){
+        this.occupant = obj;
+        traversible = false;
+    }
+    public bool hasOccupant()
+    {
+        return !(occupant == null);
+    }
+    public void clearOccupant()
+    {
+        if(occupant != null)
+        {
+            occupant = null;
+            traversible = true;
+        }
+    }
     public bool isTraversible()
     {
         return traversible;
