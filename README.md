@@ -5,7 +5,7 @@ top-down, 2D, environment with grid-based movement.
 
 ## Description
 
-In this rogue-like game, the player will control a cast of wizards as they traverse through a series of rooms in an arcane dungeon, each containing a turn-based strategy minigame. Player and enemy units alike
+In this rogue-like game, the player will control a cast of wizards as they traverse through a series of rooms in an arcane tower, each containing a turn-based strategy minigame. Player and enemy units alike
 must determine how to best utilize their offensive and defensive spells, melee attacks, and other moves to elimiate their opponents while managing their own heath and sp (spell points).
 
 ![Demo Clip](https://github.com/li-tomecek/MementosCrawler/assets/60552485/389d9454-9dd1-4862-a1e1-f5046297c9f7)
